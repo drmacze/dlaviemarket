@@ -40,8 +40,9 @@ async function derivePassword(password: string, salt: Uint8Array, iterations = I
     false,
     ['deriveBits'],
   )
+  const saltBuffer = new Uint8Array(salt).buffer as ArrayBuffer
   const bits = await crypto.subtle.deriveBits(
-    { name: 'PBKDF2', hash: 'SHA-256', salt, iterations },
+    { name: 'PBKDF2', hash: 'SHA-256', salt: saltBuffer, iterations },
     keyMaterial,
     256,
   )
@@ -342,7 +343,7 @@ export default function AccountSystem() {
 
             {error && <div className="account-error">{error}</div>}
             <button className="account-primary" type="submit" disabled={!registerValid}>Lanjut ke verifikasi <Icon name="arrow" /></button>
-            <button className="account-text-button" type="button" onClick={() => setView(profile ? 'login' : 'login')}>Sudah punya akun? <strong>Masuk</strong></button>
+            <button className="account-text-button" type="button" onClick={() => setView('login')}>Sudah punya akun? <strong>Masuk</strong></button>
           </form>
         )}
 
