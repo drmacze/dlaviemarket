@@ -1,0 +1,186 @@
+/* Page navigation + route views for GitHub Pages hash routing. */
+
+/* Replace the old long-scroll nav with one compact page switcher. */
+.nav-links { display: none !important; }
+
+.page-nav-dock {
+  position: fixed;
+  z-index: 126;
+  top: calc(24px + env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--theme-ink);
+}
+.page-nav-trigger {
+  height: 40px;
+  min-width: 126px;
+  padding: 0 13px 0 15px;
+  border: 1px solid var(--theme-line);
+  border-radius: 12px;
+  background: var(--theme-soft);
+  color: var(--theme-ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font: inherit;
+  cursor: pointer;
+  box-shadow: none;
+  transition: border-color .25s ease, background .25s ease, transform .25s ease;
+}
+.page-nav-trigger:hover { border-color: var(--theme-line-strong); background: var(--theme-soft-2); }
+.page-nav-trigger svg { width: 14px; height: 14px; color: var(--theme-muted); transition: transform .25s ease; }
+.page-nav-dock.is-open .page-nav-trigger svg { transform: rotate(180deg); }
+.page-nav-current { font-size: 10px; font-weight: 780; letter-spacing: -.01em; }
+
+.page-nav-menu {
+  position: absolute;
+  top: 49px;
+  left: 50%;
+  width: 310px;
+  transform: translateX(-50%);
+  padding: 13px;
+  border: 1px solid var(--theme-line);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--theme-panel-solid), transparent 4%);
+  backdrop-filter: blur(26px) saturate(115%);
+  -webkit-backdrop-filter: blur(26px) saturate(115%);
+  box-shadow: 0 28px 75px var(--theme-shadow);
+  animation: pageMenuIn .28s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes pageMenuIn { from { opacity:0; transform:translateX(-50%) translateY(-7px) scale(.975); } to { opacity:1; transform:translateX(-50%) translateY(0) scale(1); } }
+.page-nav-head { height: 35px; padding: 0 5px 9px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--theme-line); }
+.page-nav-head span { text-transform:uppercase; letter-spacing:.12em; font-size:8px; font-weight:800; color:var(--theme-muted); }
+.page-nav-head small { font-size:8px; color:var(--theme-muted-2); }
+.page-nav-list { display:grid; gap:5px; padding-top:8px; }
+.page-nav-list button {
+  width:100%;
+  min-height:58px;
+  padding:8px 10px;
+  display:grid;
+  grid-template-columns:27px 1fr 22px;
+  align-items:center;
+  gap:9px;
+  border:1px solid transparent;
+  border-radius:12px;
+  background:transparent;
+  color:var(--theme-ink);
+  text-align:left;
+  cursor:pointer;
+  transition:background .22s ease,border-color .22s ease,transform .22s ease;
+}
+.page-nav-list button:hover { background:var(--theme-soft); transform:translateX(2px); }
+.page-nav-list button.active { background:var(--accent-soft); border-color:var(--accent-mid); }
+.page-nav-index { font-size:8px; color:var(--theme-muted-2); font-weight:800; letter-spacing:.08em; }
+.page-nav-copy { display:flex; flex-direction:column; gap:3px; min-width:0; }
+.page-nav-copy strong { font-size:10px; }
+.page-nav-copy small { font-size:8px; color:var(--theme-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.page-nav-arrow { justify-self:end; color:var(--theme-muted-2); font-size:13px; }
+.page-nav-list button.active .page-nav-index,
+.page-nav-list button.active .page-nav-arrow { color:var(--accent); }
+
+/* One route at a time: no more giant landing page. */
+html[data-page="home"] .catalog-section,
+html[data-page="home"] .experience,
+html[data-page="home"] .security,
+html[data-page="home"] .history-section,
+html[data-page="home"] .final-cta { display:none !important; }
+
+html[data-page="market"] .hero,
+html[data-page="market"] .marquee,
+html[data-page="market"] .experience,
+html[data-page="market"] .security,
+html[data-page="market"] .history-section,
+html[data-page="market"] .final-cta { display:none !important; }
+
+html[data-page="guide"] .hero,
+html[data-page="guide"] .marquee,
+html[data-page="guide"] .catalog-section,
+html[data-page="guide"] .security,
+html[data-page="guide"] .history-section,
+html[data-page="guide"] .final-cta { display:none !important; }
+
+html[data-page="security"] .hero,
+html[data-page="security"] .marquee,
+html[data-page="security"] .catalog-section,
+html[data-page="security"] .experience,
+html[data-page="security"] .history-section,
+html[data-page="security"] .final-cta { display:none !important; }
+
+html[data-page="activity"] .hero,
+html[data-page="activity"] .marquee,
+html[data-page="activity"] .catalog-section,
+html[data-page="activity"] .experience,
+html[data-page="activity"] .security,
+html[data-page="activity"] .final-cta { display:none !important; }
+
+/* Sections that used to rely on scroll-trigger reveal must be immediately readable as standalone pages. */
+html[data-page="market"] .catalog-section [data-reveal],
+html[data-page="guide"] .experience [data-reveal],
+html[data-page="security"] .security [data-reveal],
+html[data-page="activity"] .history-section [data-reveal],
+html[data-page="market"] .service-card { opacity:1 !important; transform:none !important; }
+
+html[data-page]:not([data-page="home"]) main {
+  min-height: calc(100dvh - 110px);
+}
+html[data-page="market"] .catalog-section,
+html[data-page="guide"] .experience,
+html[data-page="security"] .security,
+html[data-page="activity"] .history-section {
+  padding-top: calc(142px + env(safe-area-inset-top)) !important;
+  padding-bottom: calc(88px + env(safe-area-inset-bottom)) !important;
+  min-height: calc(100dvh - 88px);
+}
+html[data-page="guide"] .experience-card,
+html[data-page="activity"] .history-card { margin-top:0; }
+
+/* Home becomes a focused product introduction, around 1–2 screens instead of one endless document. */
+html[data-page="home"] .hero { padding-bottom:76px; }
+html[data-page="home"] .marquee { margin-bottom:0; }
+
+/* Footer remains but becomes compact on route pages. */
+html[data-page]:not([data-page="home"]) .footer { min-height:74px; }
+
+@media (max-width: 820px) {
+  .page-nav-dock { top:calc(18px + env(safe-area-inset-top)); }
+  .page-nav-trigger { height:38px; min-width:104px; padding-inline:11px; }
+  .page-nav-menu { top:46px; width:min(304px, calc(100vw - 28px)); }
+  html[data-page="market"] .catalog-section,
+  html[data-page="guide"] .experience,
+  html[data-page="security"] .security,
+  html[data-page="activity"] .history-section { padding-top:calc(122px + env(safe-area-inset-top)) !important; }
+}
+
+@media (max-width: 560px) {
+  .page-nav-dock { top:calc(17px + env(safe-area-inset-top)); }
+  .page-nav-trigger { height:37px; min-width:86px; max-width:92px; padding:0 9px 0 10px; border-radius:11px; gap:7px; }
+  .page-nav-current { font-size:9px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .page-nav-trigger svg { width:12px; height:12px; flex:0 0 auto; }
+  .page-nav-menu { top:45px; width:min(294px, calc(100vw - 24px)); }
+  .page-nav-list button { min-height:55px; }
+
+  /* Reserve navbar real estate: brand left, page selector center, theme/wallet/profile right. */
+  .brand { max-width:104px; }
+  .site-nav .brand > span:last-child { white-space:nowrap; }
+
+  html[data-page="market"] .catalog-section,
+  html[data-page="guide"] .experience,
+  html[data-page="security"] .security,
+  html[data-page="activity"] .history-section {
+    padding-top:calc(112px + env(safe-area-inset-top)) !important;
+    padding-bottom:calc(112px + env(safe-area-inset-bottom)) !important;
+  }
+  html[data-page="home"] .hero { padding-bottom:60px; }
+}
+
+@media (max-width: 380px) {
+  .page-nav-trigger { min-width:72px; max-width:78px; }
+  .page-nav-current { font-size:8px; }
+  .page-nav-menu { width:calc(100vw - 20px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-nav-menu { animation:none !important; }
+  .page-nav-trigger,.page-nav-list button { transition:none !important; }
+}
