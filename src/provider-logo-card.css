@@ -1,0 +1,129 @@
+/* Fixed provider logo cards.
+   Brand logos keep their official colors while the tile stays white in every user theme. */
+
+.provider-logo,
+.activity-provider-logo {
+  box-sizing: border-box !important;
+  display: grid !important;
+  place-items: center !important;
+  align-items: center !important;
+  justify-items: center !important;
+  overflow: hidden !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, .09) !important;
+  border-radius: 13px !important;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.72) inset,
+    0 7px 18px rgba(0,0,0,.10) !important;
+  isolation: isolate;
+}
+
+.provider-logo img,
+.activity-provider-logo img {
+  position: relative !important;
+  inset: auto !important;
+  z-index: 2 !important;
+  display: block;
+  width: auto !important;
+  height: auto !important;
+  max-width: 82% !important;
+  max-height: 68% !important;
+  margin: auto !important;
+  padding: 0 !important;
+  object-fit: contain !important;
+  object-position: 50% 50% !important;
+  transform: none !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Compact wordmarks get a little more horizontal room, but never touch the tile edge. */
+.market-provider-list .provider-logo {
+  width: 64px !important;
+  height: 52px !important;
+  padding: 7px !important;
+}
+
+.confirm-hero .provider-logo {
+  width: 64px !important;
+  height: 48px !important;
+  padding: 7px !important;
+}
+
+.live-order-provider .provider-logo.small {
+  width: 43px !important;
+  height: 36px !important;
+  padding: 5px !important;
+  border-radius: 10px !important;
+}
+
+.activity-provider-logo {
+  width: 44px !important;
+  height: 36px !important;
+  padding: 5px !important;
+  border-radius: 10px !important;
+}
+
+/* Fallback initials remain centered when a remote brand asset fails. */
+.provider-logo b,
+.activity-provider-logo b {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 1 !important;
+  display: grid !important;
+  place-items: center !important;
+  color: #171717 !important;
+  font-size: 8px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  text-align: center !important;
+}
+
+.provider-logo.small b,
+.activity-provider-logo b {
+  font-size: 6px !important;
+}
+
+/* Keep the white tile physically neutral even in Light/Dark and any custom accent. */
+:root[data-theme="light"] .provider-logo,
+:root[data-theme="dark"] .provider-logo,
+:root[data-theme="light"] .activity-provider-logo,
+:root[data-theme="dark"] .activity-provider-logo,
+:root[data-accent] .provider-logo,
+:root[data-accent] .activity-provider-logo {
+  background-color: #ffffff !important;
+  border-color: rgba(0, 0, 0, .09) !important;
+}
+
+@media (max-width: 620px) {
+  .market-provider-list .provider-logo {
+    width: 54px !important;
+    height: 46px !important;
+    padding: 6px !important;
+    border-radius: 12px !important;
+  }
+
+  .market-provider-list .provider-logo img {
+    max-width: 84% !important;
+    max-height: 66% !important;
+  }
+
+  .live-order-provider .provider-logo.small {
+    width: 40px !important;
+    height: 34px !important;
+  }
+
+  .activity-provider-logo {
+    width: 41px !important;
+    height: 34px !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .market-provider-list .provider-logo {
+    width: 50px !important;
+    height: 44px !important;
+  }
+}
