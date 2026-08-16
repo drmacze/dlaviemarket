@@ -6,6 +6,7 @@ import PageNavigation from './PageNavigation'
 import CopyRefinement from './CopyRefinement'
 import AccountSystem from './AccountSystem'
 import MarketFlow from './MarketFlow'
+import OrderCenter from './OrderCenter'
 import './styles.css'
 import './brand-logos.css'
 import './mobile-polish.css'
@@ -17,6 +18,7 @@ import './account-system.css'
 import './avatar-collection.css'
 import './avatar-effects-v2.css'
 import './market-flow.css'
+import './order-center.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -25,6 +27,7 @@ createRoot(document.getElementById('root')!).render(
     <CopyRefinement />
     <AccountSystem />
     <MarketFlow />
+    <OrderCenter />
     <App />
   </StrictMode>,
 )
