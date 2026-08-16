@@ -7,6 +7,7 @@ import CopyRefinement from './CopyRefinement'
 import AccountSystem from './AccountSystem'
 import MarketFlow from './MarketFlow'
 import OrderCenter from './OrderCenter'
+import StateBridge from './StateBridge'
 import './styles.css'
 import './brand-logos.css'
 import './mobile-polish.css'
@@ -22,6 +23,7 @@ import './order-center.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
+    <StateBridge />
     <ThemeSystem />
     <PageNavigation />
     <CopyRefinement />
