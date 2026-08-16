@@ -1,7 +1,9 @@
 /* Keep the Market route only as tall as its actual content.
-   This overrides legacy viewport-sized route/stage minimums that left a large empty area before the footer. */
+   MarketFlow renders before App. The legacy `.app { min-height: 100vh }` used to reserve
+   one extra viewport after the footer when the old App sections were hidden on Market. */
 
-html[data-page="market"] main {
+html[data-page="market"] main,
+html[data-page="market"] .app {
   min-height: 0 !important;
 }
 
@@ -18,6 +20,12 @@ html[data-page="market"] .market-flow-shell,
 html[data-page="market"] .market-flow-layout,
 html[data-page="market"] .market-step-panel {
   min-height: 0 !important;
+}
+
+/* On Market the App's original main sections are all hidden. Do not let that empty main
+   create any measurable height between the MarketFlow sibling and the footer. */
+html[data-page="market"] .app > main {
+  display: contents !important;
 }
 
 html[data-page="market"] .footer {
