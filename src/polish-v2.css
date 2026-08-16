@@ -1,0 +1,167 @@
+/* Final mobile/theme polish layer — loaded after theme-system.css. */
+
+/* Theme trigger belongs visually inside the navbar, never over the hero CTA. */
+.theme-dock {
+  top: calc(24px + env(safe-area-inset-top)) !important;
+  right: max(122px, calc((100vw - var(--shell)) / 2 + 104px)) !important;
+}
+.theme-trigger {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+  background: var(--theme-soft) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+.theme-panel {
+  top: 48px !important;
+}
+
+/* Remove the remaining hard-coded violet treatment from DLavie-only decorations. */
+.mini-mark {
+  background: var(--accent) !important;
+  border: 1px solid color-mix(in srgb, var(--accent), transparent 62%) !important;
+  box-shadow: 0 0 18px color-mix(in srgb, var(--accent), transparent 82%) !important;
+}
+.coin-icon,
+.success-icon {
+  color: var(--accent) !important;
+  background: var(--accent-soft) !important;
+  border-color: var(--accent-mid) !important;
+}
+.brand-mark::after {
+  color: var(--theme-inverse) !important;
+}
+:root[data-accent="custom"] .brand-mark::after {
+  color: var(--accent-contrast) !important;
+}
+
+/* Give the commerce background a continuous transaction-wave instead of isolated blinks. */
+.commerce-field::after {
+  content: '';
+  position: absolute;
+  width: 58vw;
+  height: 24vh;
+  left: -50vw;
+  top: 6vh;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 0 24%,
+    color-mix(in srgb, var(--accent), transparent 97%) 35%,
+    color-mix(in srgb, var(--accent), transparent 88%) 49%,
+    color-mix(in srgb, var(--accent), transparent 96%) 64%,
+    transparent 76%
+  );
+  filter: blur(18px);
+  transform: rotate(-11deg);
+  opacity: .9;
+  animation: commerceWave 8.5s cubic-bezier(.45,.03,.48,.98) infinite;
+  will-change: transform, left, top;
+}
+.commerce-symbol {
+  transition-duration: .78s !important;
+}
+.commerce-symbol.is-hot {
+  opacity: .29 !important;
+  transform: scale(1.16) rotate(0deg) !important;
+  animation-name: commerceDrift, commerceHotBreath !important;
+  animation-duration: 9s, 1.6s !important;
+  animation-timing-function: ease-in-out, ease-in-out !important;
+  animation-iteration-count: infinite, infinite !important;
+  animation-direction: alternate, alternate !important;
+}
+:root[data-accent="mono"] .commerce-symbol.is-hot {
+  opacity: .19 !important;
+}
+@keyframes commerceWave {
+  0%   { left: -52vw; top: 4vh; transform: rotate(-11deg) translate3d(0,0,0); opacity: 0; }
+  8%   { opacity: .75; }
+  48%  { left: 52vw; top: 42vh; opacity: 1; }
+  88%  { opacity: .65; }
+  100% { left: 112vw; top: 78vh; transform: rotate(-11deg) translate3d(0,0,0); opacity: 0; }
+}
+@keyframes commerceHotBreath {
+  from { filter: drop-shadow(0 0 7px color-mix(in srgb, var(--accent), transparent 68%)); }
+  to   { filter: drop-shadow(0 0 17px color-mix(in srgb, var(--accent), transparent 43%)); }
+}
+
+/* Keep the lower floating deposit note completely inside the mobile hero visual. */
+.float-card-b {
+  left: 8px !important;
+  bottom: 18px !important;
+  transform-origin: left bottom;
+}
+
+/* A little more breathing room around Safari chrome without making the page feel padded. */
+@media (max-width: 820px) {
+  .theme-dock {
+    top: calc(18px + env(safe-area-inset-top)) !important;
+    right: 108px !important;
+  }
+  .theme-trigger {
+    width: 38px !important;
+    height: 38px !important;
+  }
+  .commerce-field::after {
+    width: 84vw;
+    height: 22vh;
+    animation-duration: 7.8s;
+  }
+}
+
+@media (max-width: 560px) {
+  .theme-dock {
+    top: calc(17px + env(safe-area-inset-top)) !important;
+    right: 101px !important;
+  }
+  .theme-trigger {
+    width: 37px !important;
+    height: 37px !important;
+    border-radius: 11px !important;
+  }
+  .theme-trigger-swatch { width: 9px !important; height: 9px !important; }
+  .theme-trigger svg { width: 14px !important; height: 14px !important; }
+  .theme-panel {
+    top: 45px !important;
+    right: -89px !important;
+    width: min(286px, calc(100vw - 24px)) !important;
+  }
+
+  .float-card-b {
+    left: 10px !important;
+    bottom: 20px !important;
+    scale: .88;
+  }
+  .float-card-a {
+    right: 8px !important;
+  }
+
+  .commerce-symbol { opacity: .04 !important; }
+  .commerce-symbol.is-hot { opacity: .25 !important; }
+  :root[data-accent="mono"] .commerce-symbol.is-hot { opacity: .17 !important; }
+  .commerce-field::after {
+    width: 105vw;
+    height: 20vh;
+    left: -95vw;
+    filter: blur(15px);
+    animation-duration: 7.2s;
+  }
+
+  .final-cta {
+    padding-bottom: calc(124px + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+@media (max-width: 370px) {
+  .theme-dock { right: 94px !important; }
+  .theme-trigger { width: 35px !important; height: 35px !important; }
+  .theme-panel { right: -82px !important; }
+  .float-card-b { scale: .82; left: 6px !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .commerce-field::after { animation: none !important; display: none; }
+  .commerce-symbol.is-hot { animation: none !important; }
+}
