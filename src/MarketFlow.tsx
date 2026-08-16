@@ -4,6 +4,7 @@ import { gsap } from 'gsap'
 type CountryCode = 'ID' | 'MY' | 'SG' | 'US' | 'GB'
 type ServiceId = 'whatsapp' | 'telegram' | 'google' | 'discord' | 'instagram' | 'microsoft'
 type Step = 1 | 2 | 3 | 4 | 5
+type OrderStatus = 'waiting' | 'received' | 'cancelled' | 'expired'
 
 type Service = {
   id: ServiceId
@@ -27,6 +28,8 @@ type Carrier = {
   basePrice: number
   stock: number
   speed: string
+  logo: string
+  logoFit?: 'contain' | 'cover'
 }
 
 type Offer = Carrier & {
@@ -34,6 +37,28 @@ type Offer = Carrier & {
   stockNow: number
   badge?: string
 }
+
+type StoredOrder = {
+  id: string
+  serviceId: ServiceId
+  serviceName: string
+  serviceLogo: string
+  countryCode: CountryCode
+  countryName: string
+  flag: string
+  providerId: string
+  providerName: string
+  providerLogo: string
+  price: number
+  phone: string
+  createdAt: number
+  expiresAt: number
+  status: OrderStatus
+  otp?: string
+}
+
+const ORDER_KEY = 'dlavie-orders-v1'
+const STATE_EVENT = 'dlavie:state-changed'
 
 const services: Service[] = [
   { id: 'whatsapp', name: 'WhatsApp', description: 'Verifikasi SMS untuk WhatsApp', logo: 'whatsapp.svg', factor: 1 },
@@ -52,30 +77,59 @@ const countries: Country[] = [
   { code: 'GB', name: 'United Kingdom', flag: '🇬🇧', dial: '+44' },
 ]
 
+const favicon = (domain: string) => `https://www.google.com/s2/favicons?sz=128&domain_url=https://${domain}`
+
 const carriers: Carrier[] = [
-  { id: 'id-telkomsel', name: 'Telkomsel', country: 'ID', basePrice: 1120, stock: 128, speed: '30–90 dtk' },
-  { id: 'id-indosat', name: 'Indosat', country: 'ID', basePrice: 890, stock: 94, speed: '45–120 dtk' },
-  { id: 'id-xl', name: 'XL', country: 'ID', basePrice: 960, stock: 76, speed: '45–120 dtk' },
-  { id: 'id-tri', name: 'Tri', country: 'ID', basePrice: 790, stock: 153, speed: '60–150 dtk' },
-  { id: 'id-smartfren', name: 'Smartfren', country: 'ID', basePrice: 740, stock: 61, speed: '60–180 dtk' },
-  { id: 'my-celcomdigi', name: 'CelcomDigi', country: 'MY', basePrice: 1510, stock: 71, speed: '45–120 dtk' },
-  { id: 'my-maxis', name: 'Maxis', country: 'MY', basePrice: 1660, stock: 48, speed: '30–90 dtk' },
-  { id: 'my-umobile', name: 'U Mobile', country: 'MY', basePrice: 1390, stock: 84, speed: '60–150 dtk' },
-  { id: 'sg-singtel', name: 'Singtel', country: 'SG', basePrice: 2240, stock: 38, speed: '30–90 dtk' },
-  { id: 'sg-starhub', name: 'StarHub', country: 'SG', basePrice: 2050, stock: 46, speed: '45–120 dtk' },
-  { id: 'sg-m1', name: 'M1', country: 'SG', basePrice: 1920, stock: 33, speed: '60–150 dtk' },
-  { id: 'us-tmobile', name: 'T-Mobile', country: 'US', basePrice: 2980, stock: 57, speed: '30–90 dtk' },
-  { id: 'us-att', name: 'AT&T', country: 'US', basePrice: 3190, stock: 42, speed: '45–120 dtk' },
-  { id: 'us-verizon', name: 'Verizon', country: 'US', basePrice: 3350, stock: 35, speed: '45–120 dtk' },
-  { id: 'gb-ee', name: 'EE', country: 'GB', basePrice: 2480, stock: 39, speed: '30–90 dtk' },
-  { id: 'gb-o2', name: 'O2', country: 'GB', basePrice: 2260, stock: 51, speed: '45–120 dtk' },
-  { id: 'gb-vodafone', name: 'Vodafone', country: 'GB', basePrice: 2390, stock: 44, speed: '45–120 dtk' },
-  { id: 'gb-three', name: 'Three', country: 'GB', basePrice: 2110, stock: 62, speed: '60–150 dtk' },
+  { id: 'id-telkomsel', name: 'Telkomsel', country: 'ID', basePrice: 1120, stock: 128, speed: '30–90 dtk', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/04/Telkomsel_%282021%29.svg' },
+  { id: 'id-indosat', name: 'Indosat', country: 'ID', basePrice: 890, stock: 94, speed: '45–120 dtk', logo: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Indosat_Ooredoo_Hutchison.svg' },
+  { id: 'id-xl', name: 'XL', country: 'ID', basePrice: 960, stock: 76, speed: '45–120 dtk', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/27/XL_Axiata_2014.svg' },
+  { id: 'id-tri', name: 'Tri', country: 'ID', basePrice: 790, stock: 153, speed: '60–150 dtk', logo: 'https://upload.wikimedia.org/wikipedia/commons/4/40/Three_logo.svg' },
+  { id: 'id-smartfren', name: 'Smartfren', country: 'ID', basePrice: 740, stock: 61, speed: '60–180 dtk', logo: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Smartfren_logo.svg' },
+  { id: 'my-celcomdigi', name: 'CelcomDigi', country: 'MY', basePrice: 1510, stock: 71, speed: '45–120 dtk', logo: favicon('celcomdigi.com') },
+  { id: 'my-maxis', name: 'Maxis', country: 'MY', basePrice: 1660, stock: 48, speed: '30–90 dtk', logo: favicon('maxis.com.my') },
+  { id: 'my-umobile', name: 'U Mobile', country: 'MY', basePrice: 1390, stock: 84, speed: '60–150 dtk', logo: favicon('u.com.my') },
+  { id: 'sg-singtel', name: 'Singtel', country: 'SG', basePrice: 2240, stock: 38, speed: '30–90 dtk', logo: favicon('singtel.com') },
+  { id: 'sg-starhub', name: 'StarHub', country: 'SG', basePrice: 2050, stock: 46, speed: '45–120 dtk', logo: favicon('starhub.com') },
+  { id: 'sg-m1', name: 'M1', country: 'SG', basePrice: 1920, stock: 33, speed: '60–150 dtk', logo: favicon('m1.com.sg') },
+  { id: 'us-tmobile', name: 'T-Mobile', country: 'US', basePrice: 2980, stock: 57, speed: '30–90 dtk', logo: favicon('t-mobile.com') },
+  { id: 'us-att', name: 'AT&T', country: 'US', basePrice: 3190, stock: 42, speed: '45–120 dtk', logo: favicon('att.com') },
+  { id: 'us-verizon', name: 'Verizon', country: 'US', basePrice: 3350, stock: 35, speed: '45–120 dtk', logo: favicon('verizon.com') },
+  { id: 'gb-ee', name: 'EE', country: 'GB', basePrice: 2480, stock: 39, speed: '30–90 dtk', logo: favicon('ee.co.uk') },
+  { id: 'gb-o2', name: 'O2', country: 'GB', basePrice: 2260, stock: 51, speed: '45–120 dtk', logo: favicon('o2.co.uk') },
+  { id: 'gb-vodafone', name: 'Vodafone', country: 'GB', basePrice: 2390, stock: 44, speed: '45–120 dtk', logo: favicon('vodafone.co.uk') },
+  { id: 'gb-three', name: 'Three', country: 'GB', basePrice: 2110, stock: 62, speed: '60–150 dtk', logo: favicon('three.co.uk') },
 ]
 
 const rupiah = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 })
 const round50 = (value: number) => Math.max(500, Math.round(value / 50) * 50)
 const asset = (path: string) => `${import.meta.env.BASE_URL}${path}`
+
+function readOrders(): StoredOrder[] {
+  try { return JSON.parse(localStorage.getItem(ORDER_KEY) || '[]') as StoredOrder[] } catch { return [] }
+}
+
+function writeOrders(orders: StoredOrder[]) {
+  localStorage.setItem(ORDER_KEY, JSON.stringify(orders.slice(0, 12)))
+  window.dispatchEvent(new CustomEvent(STATE_EVENT))
+}
+
+function broadcastState() {
+  window.dispatchEvent(new CustomEvent(STATE_EVENT))
+}
+
+function randomDigits(length: number) {
+  const bytes = crypto.getRandomValues(new Uint8Array(length))
+  return Array.from(bytes, (byte) => String(byte % 10)).join('')
+}
+
+function makeDemoNumber(country: Country) {
+  const tail = randomDigits(4)
+  if (country.code === 'ID') return `${country.dial} 8•• •••• ${tail}`
+  if (country.code === 'MY') return `${country.dial} 1• •••• ${tail}`
+  if (country.code === 'SG') return `${country.dial} •••• ${tail}`
+  if (country.code === 'US') return `${country.dial} ••• ••• ${tail}`
+  return `${country.dial} 7••• ••• ${tail}`
+}
 
 function Arrow({ back = false }: { back?: boolean }) {
   return <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d={back ? 'M19 12H5' : 'M5 12h14'} /><path d={back ? 'm11 18-6-6 6-6' : 'm13 6 6 6-6 6'} /></svg>
@@ -85,13 +139,30 @@ function Check() {
   return <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m5 12 4 4L19 6" /></svg>
 }
 
-function MarketFlow() {
+function CopyIcon() {
+  return <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>
+}
+
+function ProviderLogo({ offer, small = false }: { offer: Carrier; small?: boolean }) {
+  const initials = offer.name.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase()
+  return (
+    <span className={`provider-logo${small ? ' small' : ''}`} title={offer.name}>
+      <b>{initials}</b>
+      <img src={offer.logo} alt={`${offer.name} logo`} referrerPolicy="no-referrer" onError={(event) => { event.currentTarget.style.display = 'none' }} />
+    </span>
+  )
+}
+
+export default function MarketFlow() {
   const [step, setStep] = useState<Step>(1)
   const [serviceId, setServiceId] = useState<ServiceId | null>(null)
   const [countryCode, setCountryCode] = useState<CountryCode | null>(null)
   const [offerId, setOfferId] = useState<string | null>(null)
   const [query, setQuery] = useState('')
   const [balance, setBalance] = useState(() => Number(localStorage.getItem('dlavie-balance') || 0))
+  const [activeOrder, setActiveOrder] = useState<StoredOrder | null>(null)
+  const [copied, setCopied] = useState<'phone' | 'otp' | null>(null)
+  const [now, setNow] = useState(Date.now())
 
   const selectedService = services.find((item) => item.id === serviceId) ?? null
   const selectedCountry = countries.find((item) => item.code === countryCode) ?? null
@@ -113,14 +184,22 @@ function MarketFlow() {
   const visibleServices = services.filter((item) => !query.trim() || `${item.name} ${item.description}`.toLowerCase().includes(query.trim().toLowerCase()))
 
   useEffect(() => {
-    const syncBalance = () => setBalance(Number(localStorage.getItem('dlavie-balance') || 0))
-    window.addEventListener('focus', syncBalance)
-    window.addEventListener('storage', syncBalance)
+    const syncState = () => setBalance(Number(localStorage.getItem('dlavie-balance') || 0))
+    window.addEventListener('focus', syncState)
+    window.addEventListener('storage', syncState)
+    window.addEventListener(STATE_EVENT, syncState)
     return () => {
-      window.removeEventListener('focus', syncBalance)
-      window.removeEventListener('storage', syncBalance)
+      window.removeEventListener('focus', syncState)
+      window.removeEventListener('storage', syncState)
+      window.removeEventListener(STATE_EVENT, syncState)
     }
   }, [])
+
+  useEffect(() => {
+    if (step !== 5 || !activeOrder || activeOrder.status !== 'waiting') return
+    const timer = window.setInterval(() => setNow(Date.now()), 1000)
+    return () => window.clearInterval(timer)
+  }, [step, activeOrder])
 
   useEffect(() => {
     const target = document.querySelector('.market-flow-stage')
@@ -132,6 +211,7 @@ function MarketFlow() {
     setServiceId(id)
     setCountryCode(null)
     setOfferId(null)
+    setActiveOrder(null)
     setStep(2)
   }
 
@@ -153,9 +233,7 @@ function MarketFlow() {
     if (step === 5) setStep(1)
   }
 
-  const openDeposit = () => {
-    document.querySelector<HTMLButtonElement>('.balance-pill')?.click()
-  }
+  const openDeposit = () => document.querySelector<HTMLButtonElement>('.balance-pill')?.click()
 
   const confirm = () => {
     if (!selectedService || !selectedCountry || !selectedOffer) return
@@ -164,24 +242,71 @@ function MarketFlow() {
       openDeposit()
       return
     }
+
     const next = current - selectedOffer.price
+    const order: StoredOrder = {
+      id: `DLV-${crypto.randomUUID().slice(0, 8).toUpperCase()}`,
+      serviceId: selectedService.id,
+      serviceName: selectedService.name,
+      serviceLogo: selectedService.logo,
+      countryCode: selectedCountry.code,
+      countryName: selectedCountry.name,
+      flag: selectedCountry.flag,
+      providerId: selectedOffer.id,
+      providerName: selectedOffer.name,
+      providerLogo: selectedOffer.logo,
+      price: selectedOffer.price,
+      phone: makeDemoNumber(selectedCountry),
+      createdAt: Date.now(),
+      expiresAt: Date.now() + (20 * 60 * 1000),
+      status: 'waiting',
+    }
+
     localStorage.setItem('dlavie-balance', String(next))
     setBalance(next)
+    writeOrders([order, ...readOrders()])
+
     try {
       const old = JSON.parse(localStorage.getItem('dlavie-history') || '[]') as Array<Record<string, unknown>>
       const nextHistory = [{
-        id: crypto.randomUUID(),
+        id: order.id,
+        orderId: order.id,
         type: 'order',
         label: `${selectedService.name} · ${selectedOffer.name}`,
+        detail: `${selectedCountry.flag} ${selectedCountry.name}`,
         amount: -selectedOffer.price,
         time: 'Baru saja',
-      }, ...old].slice(0, 8)
+      }, ...old].slice(0, 12)
       localStorage.setItem('dlavie-history', JSON.stringify(nextHistory))
-    } catch { /* demo history only */ }
-    const balanceNode = document.querySelector<HTMLElement>('.balance-pill span')
-    if (balanceNode) balanceNode.textContent = rupiah.format(next)
+    } catch { /* local demo only */ }
+
+    broadcastState()
+    setActiveOrder(order)
+    setNow(Date.now())
     setStep(5)
   }
+
+  const updateOrder = (nextOrder: StoredOrder) => {
+    const orders = readOrders().map((order) => order.id === nextOrder.id ? nextOrder : order)
+    writeOrders(orders)
+    setActiveOrder(nextOrder)
+  }
+
+  const simulateOtp = () => {
+    if (!activeOrder || activeOrder.status !== 'waiting') return
+    const nextOrder = { ...activeOrder, status: 'received' as const, otp: randomDigits(6) }
+    updateOrder(nextOrder)
+  }
+
+  const copyText = async (kind: 'phone' | 'otp', value: string) => {
+    await navigator.clipboard?.writeText(value)
+    setCopied(kind)
+    window.setTimeout(() => setCopied(null), 1300)
+  }
+
+  const remaining = activeOrder ? Math.max(0, activeOrder.expiresAt - now) : 0
+  const remainingMinutes = String(Math.floor(remaining / 60000)).padStart(2, '0')
+  const remainingSeconds = String(Math.floor((remaining % 60000) / 1000)).padStart(2, '0')
 
   return (
     <section className="market-flow-page" aria-label="Market DLavie">
@@ -199,10 +324,10 @@ function MarketFlow() {
           </div>
         </header>
 
-        <div className="market-demo-note"><span>●</span><p><strong>Harga & stok masih data demo.</strong> Saat API supplier diaktifkan, daftar provider akan diperbarui otomatis.</p></div>
+        <div className="market-demo-note"><span>●</span><p><strong>Harga, stok, nomor dan OTP masih simulasi.</strong> Flow ini sudah disiapkan untuk data supplier/API production.</p></div>
 
         <nav className="market-stepper" aria-label="Tahapan pembelian">
-          {[['1','Layanan'],['2','Negara'],['3','Provider'],['4','Konfirmasi']].map(([number, label], index) => {
+          {[['1','Layanan'],['2','Negara'],['3','Provider'],['4','Konfirmasi'],['5','OTP']].map(([number, label], index) => {
             const value = (index + 1) as Step
             const done = step > value
             const active = step === value
@@ -214,7 +339,7 @@ function MarketFlow() {
           <div className="market-flow-stage">
             {step === 1 && (
               <div className="market-step-panel">
-                <div className="market-panel-title"><span>Langkah 1 dari 4</span><h2>Pilih layanan</h2><p>Pilih aplikasi yang ingin kamu gunakan.</p></div>
+                <div className="market-panel-title"><span>Langkah 1 dari 5</span><h2>Pilih layanan</h2><p>Pilih aplikasi yang ingin menerima kode verifikasi.</p></div>
                 <label className="market-service-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Cari layanan..." /></label>
                 <div className="market-service-grid">
                   {visibleServices.map((service) => (
@@ -231,14 +356,14 @@ function MarketFlow() {
             {step === 2 && selectedService && (
               <div className="market-step-panel">
                 <button className="market-back" type="button" onClick={back}><Arrow back /> Kembali</button>
-                <div className="market-panel-title"><span>Langkah 2 dari 4</span><h2>Pilih negara</h2><p>Harga dan provider berbeda untuk setiap negara.</p></div>
+                <div className="market-panel-title"><span>Langkah 2 dari 5</span><h2>Pilih negara</h2><p>Harga dan provider berbeda untuk setiap negara.</p></div>
                 <div className="market-selected-inline"><img src={asset(`brands/${selectedService.logo}`)} alt="" /><span><small>Layanan</small><strong>{selectedService.name}</strong></span><button type="button" onClick={() => setStep(1)}>Ubah</button></div>
                 <div className="market-country-grid">
                   {countries.map((item) => {
-                    const count = carriers.filter((carrier) => carrier.country === item.code).length
-                    const firstCarrier = carriers.filter((carrier) => carrier.country === item.code).sort((a,b) => a.basePrice-b.basePrice)[0]
+                    const available = carriers.filter((carrier) => carrier.country === item.code)
+                    const firstCarrier = [...available].sort((a,b) => a.basePrice-b.basePrice)[0]
                     const from = round50(firstCarrier.basePrice * selectedService.factor)
-                    return <button type="button" key={item.code} onClick={() => chooseCountry(item.code)}><span className="country-flag">{item.flag}</span><span><strong>{item.name}</strong><small>{item.dial} · {count} provider</small></span><b>mulai {rupiah.format(from)}</b><Arrow /></button>
+                    return <button type="button" key={item.code} onClick={() => chooseCountry(item.code)}><span className="country-flag">{item.flag}</span><span><strong>{item.name}</strong><small>{item.dial} · {available.length} provider</small></span><b>mulai {rupiah.format(from)}</b><Arrow /></button>
                   })}
                 </div>
               </div>
@@ -247,71 +372,84 @@ function MarketFlow() {
             {step === 3 && selectedService && selectedCountry && (
               <div className="market-step-panel">
                 <button className="market-back" type="button" onClick={back}><Arrow back /> Kembali</button>
-                <div className="market-panel-title"><span>Langkah 3 dari 4</span><h2>Pilih provider</h2><p>Bandingkan harga, stok, dan estimasi penerimaan SMS.</p></div>
+                <div className="market-panel-title"><span>Langkah 3 dari 5</span><h2>Pilih provider</h2><p>Bandingkan harga, stok, dan estimasi penerimaan SMS.</p></div>
                 <div className="market-context-row">
                   <div><img src={asset(`brands/${selectedService.logo}`)} alt="" /><span><small>Layanan</small><strong>{selectedService.name}</strong></span></div>
                   <div><b>{selectedCountry.flag}</b><span><small>Negara</small><strong>{selectedCountry.name}</strong></span></div>
                 </div>
-                <div className="market-offer-list">
+                <div className="market-provider-list">
                   {offers.map((offer) => (
                     <button type="button" key={offer.id} onClick={() => chooseOffer(offer.id)}>
-                      <div className="offer-radio"><i /></div>
-                      <div className="offer-main"><span><strong>{offer.name}</strong>{offer.badge && <em>{offer.badge}</em>}</span><small>SMS OTP · sesi 20 menit · estimasi {offer.speed}</small></div>
-                      <div className="offer-stock"><span className={offer.stockNow > 50 ? 'good' : ''}>●</span>{offer.stockNow} stok</div>
-                      <div className="offer-price"><small>Harga</small><strong>{rupiah.format(offer.price)}</strong></div>
+                      <ProviderLogo offer={offer} />
+                      <span className="provider-main"><span><strong>{offer.name}</strong>{offer.badge && <em>{offer.badge}</em>}</span><small>SMS OTP · sesi 20 menit · estimasi {offer.speed}</small><span className="provider-stock"><i /> {offer.stockNow} stok</span></span>
+                      <span className="provider-price"><small>Harga</small><strong>{rupiah.format(offer.price)}</strong></span>
                       <Arrow />
                     </button>
                   ))}
                 </div>
-                <p className="market-provider-note">Provider di atas adalah contoh tampilan katalog. Availability sebenarnya nanti mengikuti data supplier.</p>
+                <p className="provider-note">Logo provider ditampilkan agar pilihan lebih mudah dikenali. Harga dan availability saat ini tetap data demo.</p>
               </div>
             )}
 
             {step === 4 && selectedService && selectedCountry && selectedOffer && (
-              <div className="market-step-panel">
+              <div className="market-step-panel market-confirm-panel">
                 <button className="market-back" type="button" onClick={back}><Arrow back /> Kembali</button>
-                <div className="market-panel-title"><span>Langkah 4 dari 4</span><h2>Periksa pesanan</h2><p>Pastikan semua pilihan sudah sesuai sebelum membeli.</p></div>
-                <div className="market-review-card">
-                  <div className="review-service"><img src={asset(`brands/${selectedService.logo}`)} alt="" /><span><small>Layanan</small><strong>{selectedService.name}</strong></span></div>
-                  <dl>
-                    <div><dt>Negara</dt><dd>{selectedCountry.flag} {selectedCountry.name} ({selectedCountry.dial})</dd></div>
-                    <div><dt>Provider</dt><dd>{selectedOffer.name}</dd></div>
-                    <div><dt>Tipe</dt><dd>SMS OTP · 20 menit</dd></div>
-                    <div><dt>Estimasi</dt><dd>{selectedOffer.speed}</dd></div>
-                    <div><dt>Stok saat ini</dt><dd>{selectedOffer.stockNow}</dd></div>
-                  </dl>
-                  <div className="review-total"><span><small>Total</small><strong>{rupiah.format(selectedOffer.price)}</strong></span><span><small>Saldo</small><strong>{rupiah.format(balance)}</strong></span></div>
+                <div className="market-panel-title"><span>Langkah 4 dari 5</span><h2>Periksa pesanan</h2><p>Pastikan layanan, negara, dan provider sudah benar sebelum saldo dipotong.</p></div>
+                <div className="confirm-hero">
+                  <img src={asset(`brands/${selectedService.logo}`)} alt="" />
+                  <div><small>Layanan</small><strong>{selectedService.name}</strong><span>{selectedCountry.flag} {selectedCountry.name}</span></div>
+                  <ProviderLogo offer={selectedOffer} />
                 </div>
-                <button className="market-confirm" type="button" onClick={confirm}>{balance >= selectedOffer.price ? <>Beli sekarang <Arrow /></> : <>Saldo tidak cukup · deposit <Arrow /></>}</button>
-                <p className="market-confirm-note">Belum ada nomor sungguhan yang dipesan. Tombol ini hanya menjalankan simulasi sampai backend supplier aktif.</p>
+                <div className="market-confirm-grid">
+                  <div><span>Provider</span><strong>{selectedOffer.name}</strong></div>
+                  <div><span>Estimasi SMS</span><strong>{selectedOffer.speed}</strong></div>
+                  <div><span>Durasi sesi</span><strong>20 menit</strong></div>
+                  <div><span>Stok saat ini</span><strong>{selectedOffer.stockNow} nomor</strong></div>
+                </div>
+                <div className="market-total"><span><small>Total</small><strong>{rupiah.format(selectedOffer.price)}</strong></span><span><small>Saldo setelah order</small><strong>{rupiah.format(Math.max(0, balance - selectedOffer.price))}</strong></span></div>
+                <button className="market-confirm-button" type="button" onClick={confirm}>{balance >= selectedOffer.price ? 'Beli dan aktifkan nomor' : 'Saldo kurang — tambah saldo'} <Arrow /></button>
+                <small className="confirm-footnote">Nomor pada demo tidak dapat digunakan untuk verifikasi nyata. Supplier production nantinya akan mengganti data simulasi ini.</small>
               </div>
             )}
 
-            {step === 5 && selectedService && selectedCountry && selectedOffer && (
-              <div className="market-step-panel market-success-panel">
-                <div className="success-ring"><Check /></div>
-                <span className="market-flow-eyebrow">Pesanan demo dibuat</span>
-                <h2>Pesanan masuk ke aktivitas.</h2>
-                <p>Simulasi untuk {selectedService.name} · {selectedCountry.flag} {selectedCountry.name} · {selectedOffer.name} sudah tercatat.</p>
-                <div className="success-summary"><span><small>Total</small><strong>{rupiah.format(selectedOffer.price)}</strong></span><span><small>Sisa saldo</small><strong>{rupiah.format(balance)}</strong></span></div>
-                <button className="market-confirm" type="button" onClick={() => { setServiceId(null); setCountryCode(null); setOfferId(null); setQuery(''); setStep(1) }}>Cari nomor lain <Arrow /></button>
-                <button className="market-activity-link" type="button" onClick={() => { window.location.hash = '/activity' }}>Lihat aktivitas</button>
+            {step === 5 && activeOrder && (
+              <div className="market-step-panel market-otp-panel">
+                <div className="market-panel-title"><span>Langkah 5 dari 5</span><h2>{activeOrder.status === 'received' ? 'Kode OTP diterima.' : 'Nomor aktif. Menunggu SMS.'}</h2><p>Pesanan juga tersimpan di halaman Aktivitas, jadi kamu bisa kembali kapan saja selama sesi masih aktif.</p></div>
+                <div className="live-order-card">
+                  <div className="live-order-head">
+                    <div className="live-order-brand"><img src={asset(`brands/${activeOrder.serviceLogo}`)} alt=""/><span><small>{activeOrder.flag} {activeOrder.countryName}</small><strong>{activeOrder.serviceName}</strong></span></div>
+                    <span className={`order-status ${activeOrder.status}`}><i />{activeOrder.status === 'received' ? 'OTP diterima' : 'Menunggu SMS'}</span>
+                  </div>
+                  <div className="live-order-provider"><ProviderLogo offer={{ id: activeOrder.providerId, name: activeOrder.providerName, country: activeOrder.countryCode, basePrice: activeOrder.price, stock: 0, speed: '', logo: activeOrder.providerLogo }} small /><span><small>Provider</small><strong>{activeOrder.providerName}</strong></span><b>{remainingMinutes}:{remainingSeconds}</b></div>
+                  <div className="live-number-row"><span><small>Nomor aktif · demo</small><strong>{activeOrder.phone}</strong></span><button type="button" onClick={() => copyText('phone', activeOrder.phone)}><CopyIcon />{copied === 'phone' ? 'Tersalin' : 'Salin'}</button></div>
+
+                  {activeOrder.status === 'waiting' ? (
+                    <div className="otp-waiting-box"><span className="otp-radar"><i/><i/><b>SMS</b></span><div><strong>Menunggu kode dari {activeOrder.serviceName}</strong><small>Di production, kode akan muncul otomatis setelah supplier mengirim callback SMS.</small></div></div>
+                  ) : (
+                    <div className="otp-code-box"><span><small>Kode OTP</small><strong>{activeOrder.otp}</strong></span><button type="button" onClick={() => activeOrder.otp && copyText('otp', activeOrder.otp)}><CopyIcon />{copied === 'otp' ? 'Tersalin' : 'Salin kode'}</button></div>
+                  )}
+
+                  <div className="live-order-actions">
+                    {activeOrder.status === 'waiting' && <button className="simulate-otp" type="button" onClick={simulateOtp}>Simulasikan OTP masuk</button>}
+                    <button type="button" onClick={() => { window.location.hash = '/activity' }}>Buka Aktivitas <Arrow /></button>
+                  </div>
+                </div>
+                <div className="otp-demo-note"><b>Mode demo</b><span>Tombol simulasi hanya untuk menguji UI. Saat supplier aktif, OTP akan datang dari API/callback, bukan dibuat browser.</span></div>
               </div>
             )}
           </div>
 
-          <aside className="market-selection-summary">
-            <div className="summary-head"><span>Ringkasan pilihan</span><small>{step === 5 ? 'Selesai' : `${Math.min(step,4)} / 4`}</small></div>
-            <div className={selectedService ? 'filled' : ''}><i>1</i><span><small>Layanan</small><strong>{selectedService?.name ?? 'Belum dipilih'}</strong></span>{selectedService && step < 5 && <button type="button" onClick={() => setStep(1)}>Ubah</button>}</div>
-            <div className={selectedCountry ? 'filled' : ''}><i>2</i><span><small>Negara</small><strong>{selectedCountry ? `${selectedCountry.flag} ${selectedCountry.name}` : 'Belum dipilih'}</strong></span>{selectedCountry && step < 5 && <button type="button" onClick={() => setStep(2)}>Ubah</button>}</div>
-            <div className={selectedOffer ? 'filled' : ''}><i>3</i><span><small>Provider</small><strong>{selectedOffer?.name ?? 'Belum dipilih'}</strong></span>{selectedOffer && step < 5 && <button type="button" onClick={() => setStep(3)}>Ubah</button>}</div>
-            <div className={selectedOffer ? 'filled price' : ''}><i>4</i><span><small>Harga</small><strong>{selectedOffer ? rupiah.format(selectedOffer.price) : '—'}</strong></span></div>
-            <div className="summary-help"><span>?</span><p><strong>Bingung pilih provider?</strong><small>Mulai dari opsi “Termurah”, lalu periksa stok dan estimasi SMS.</small></p></div>
+          <aside className="market-flow-summary">
+            <span className="summary-title">Ringkasan pilihan</span>
+            <div className={selectedService ? 'filled' : ''}><small>01 · Layanan</small>{selectedService ? <span><img src={asset(`brands/${selectedService.logo}`)} alt=""/><strong>{selectedService.name}</strong></span> : <em>Belum dipilih</em>}</div>
+            <div className={selectedCountry ? 'filled' : ''}><small>02 · Negara</small>{selectedCountry ? <strong>{selectedCountry.flag} {selectedCountry.name}</strong> : <em>Belum dipilih</em>}</div>
+            <div className={selectedOffer ? 'filled' : ''}><small>03 · Provider</small>{selectedOffer ? <span><ProviderLogo offer={selectedOffer} small/><strong>{selectedOffer.name}</strong></span> : <em>Belum dipilih</em>}</div>
+            <div className={selectedOffer ? 'filled summary-price' : ''}><small>Harga</small>{selectedOffer ? <strong>{rupiah.format(selectedOffer.price)}</strong> : <em>—</em>}</div>
+            {step < 5 && <p>Pilih satu per satu. Kamu masih bisa kembali dan mengubah pilihan sebelum membeli.</p>}
+            {step === 5 && activeOrder && <p>Order <strong>{activeOrder.id}</strong> sudah tersimpan dan dapat dipantau dari Aktivitas.</p>}
           </aside>
         </div>
       </div>
     </section>
   )
 }
-
-export default MarketFlow
