@@ -83,15 +83,22 @@ export default function NavUtilityMenu() {
         node.className = 'nav-brand-greeting'
         brandText.appendChild(node)
       }
-      node.textContent = greeting
+      // Important: never rewrite an identical text node. The old implementation
+      // observed the whole document while writing this on every observer callback,
+      // which created a MutationObserver feedback loop on Safari/iOS.
+      if (node.textContent !== greeting) node.textContent = greeting
     }
-    installGreeting()
-    const observer = new MutationObserver(installGreeting)
-    observer.observe(document.body, { childList: true, subtree: true })
-    window.addEventListener('hashchange', installGreeting)
+
+    let frame = window.requestAnimationFrame(installGreeting)
+    const onRouteChange = () => {
+      window.cancelAnimationFrame(frame)
+      frame = window.requestAnimationFrame(installGreeting)
+    }
+
+    window.addEventListener('hashchange', onRouteChange)
     return () => {
-      observer.disconnect()
-      window.removeEventListener('hashchange', installGreeting)
+      window.cancelAnimationFrame(frame)
+      window.removeEventListener('hashchange', onRouteChange)
     }
   }, [greeting])
 
