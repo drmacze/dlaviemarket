@@ -1,0 +1,132 @@
+/* Friendly collectible avatar effects — loaded after the original avatar styles. */
+[data-avatar="neon-ape"] { --avatar-c1:#ff8752; --avatar-c2:#ffd36f; --avatar-c3:#fff0d7; }
+[data-avatar="void-bot"] { --avatar-c1:#9278ff; --avatar-c2:#6de5ff; --avatar-c3:#e5ddff; }
+[data-avatar="mint-fox"] { --avatar-c1:#48d69d; --avatar-c2:#b8f778; --avatar-c3:#dbfff0; }
+[data-avatar="crimson-oni"] { --avatar-c1:#ff668d; --avatar-c2:#ffb4cf; --avatar-c3:#ffe3ed; }
+[data-avatar="solar-cat"] { --avatar-c1:#ffb52f; --avatar-c2:#ffe66e; --avatar-c3:#fff2b4; }
+[data-avatar="ice-orbit"] { --avatar-c1:#53cfff; --avatar-c2:#9aefff; --avatar-c3:#e0faff; }
+[data-avatar="pixel-raven"] { --avatar-c1:#748cff; --avatar-c2:#dd9cff; --avatar-c3:#c7f3ff; }
+
+.nft-avatar {
+  position: relative !important;
+  isolation: isolate;
+  overflow: visible !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+.nft-avatar::before {
+  content: '';
+  position: absolute;
+  z-index: -2;
+  inset: -16%;
+  border-radius: 35%;
+  background:
+    radial-gradient(circle at 25% 30%, color-mix(in srgb, var(--avatar-c2), transparent 15%) 0 9%, transparent 28%),
+    radial-gradient(circle at 72% 66%, color-mix(in srgb, var(--avatar-c1), transparent 22%) 0 12%, transparent 34%),
+    radial-gradient(circle at 52% 48%, color-mix(in srgb, var(--avatar-c1), transparent 52%), transparent 65%);
+  filter: blur(9px);
+  opacity: .72;
+  transform: scale(.94) rotate(-4deg);
+  animation: avatarAura 4.6s ease-in-out infinite alternate;
+}
+.nft-avatar::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -7%;
+  border-radius: 33%;
+  border: 1px solid color-mix(in srgb, var(--avatar-c1), transparent 44%);
+  border-right-color: color-mix(in srgb, var(--avatar-c2), transparent 82%);
+  border-bottom-color: transparent;
+  opacity: .65;
+  animation: avatarOrbit 7s linear infinite;
+}
+.nft-avatar img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: color-mix(in srgb, var(--avatar-c3), var(--theme-panel-solid) 74%);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, white, transparent 72%),
+    0 8px 28px color-mix(in srgb, var(--avatar-c1), transparent 76%);
+}
+
+/* Each collectible has a slightly different motion signature. */
+.nft-avatar[data-avatar="neon-ape"]::after { border-radius: 42%; animation-duration: 8.5s; }
+.nft-avatar[data-avatar="void-bot"]::after { border-style: dashed; animation-duration: 5.4s; }
+.nft-avatar[data-avatar="mint-fox"]::before { animation-name: avatarLeafPulse; animation-duration: 3.8s; }
+.nft-avatar[data-avatar="crimson-oni"]::before { border-radius: 50%; animation-duration: 3.2s; }
+.nft-avatar[data-avatar="solar-cat"]::after { border-width: 2px; animation-duration: 10s; box-shadow: 0 0 16px color-mix(in srgb, var(--avatar-c2), transparent 62%); }
+.nft-avatar[data-avatar="ice-orbit"]::after { inset: -12%; border-radius: 50%; transform: rotate(-18deg) scaleY(.74); animation-name: avatarIceOrbit; animation-duration: 6.2s; }
+.nft-avatar[data-avatar="pixel-raven"]::before { filter: blur(6px); animation-name: avatarPixelGlow; animation-duration: 2.8s; steps: 5; }
+
+@keyframes avatarAura {
+  from { opacity: .46; transform: scale(.91) rotate(-5deg) translate3d(-2px, 1px, 0); }
+  to { opacity: .82; transform: scale(1.07) rotate(5deg) translate3d(3px, -2px, 0); }
+}
+@keyframes avatarOrbit { to { transform: rotate(360deg); } }
+@keyframes avatarLeafPulse {
+  0% { opacity:.42; transform: scale(.91) rotate(-7deg); }
+  55% { opacity:.86; transform: scale(1.08) rotate(3deg); }
+  100% { opacity:.58; transform: scale(.98) rotate(8deg); }
+}
+@keyframes avatarIceOrbit {
+  from { transform: rotate(-18deg) scaleY(.74); }
+  to { transform: rotate(342deg) scaleY(.74); }
+}
+@keyframes avatarPixelGlow {
+  0% { opacity:.42; transform:translate(-2px,2px) scale(.96); }
+  50% { opacity:.82; transform:translate(2px,-2px) scale(1.07); }
+  100% { opacity:.56; transform:translate(-1px,-1px) scale(1); }
+}
+
+/* Real <img> in the navbar: more reliable than CSS background-image on mobile Safari. */
+.avatar-button.account-ready {
+  position: relative !important;
+  overflow: hidden !important;
+  isolation: isolate;
+  background: color-mix(in srgb, var(--theme-soft), var(--avatar-c1) 8%) !important;
+  border-color: color-mix(in srgb, var(--avatar-c1), var(--theme-line-strong) 64%) !important;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, white, transparent 90%),
+    0 0 18px color-mix(in srgb, var(--avatar-c1), transparent 78%) !important;
+}
+.avatar-button.account-ready svg,
+.avatar-button.account-ready::after { display:none !important; }
+.navbar-avatar-image {
+  position: absolute;
+  z-index: 4;
+  inset: 3px;
+  width: calc(100% - 6px);
+  height: calc(100% - 6px);
+  display: block;
+  object-fit: cover;
+  border-radius: calc(var(--radius, 13px) - 3px);
+  background: color-mix(in srgb, var(--avatar-c3), var(--theme-panel-solid) 70%);
+  pointer-events: none;
+}
+
+/* Picker previews inherit each avatar's own color identity. */
+.avatar-grid button[data-avatar] {
+  --preview-glow: color-mix(in srgb, var(--avatar-c1), transparent 82%);
+}
+.avatar-grid button[data-avatar] img {
+  background: color-mix(in srgb, var(--avatar-c3), var(--theme-panel-solid) 72%);
+  box-shadow: 0 8px 20px var(--preview-glow);
+}
+.avatar-grid button[data-avatar].active img {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--avatar-c1), transparent 32%), 0 10px 28px color-mix(in srgb, var(--avatar-c1), transparent 66%);
+}
+
+@media (max-width:560px) {
+  .nft-avatar::before { inset:-12%; filter:blur(7px); }
+  .nft-avatar::after { inset:-5%; }
+  .profile-head .nft-avatar::before { opacity:.66; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nft-avatar::before,
+  .nft-avatar::after { animation:none !important; }
+}
