@@ -1,11 +1,24 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react'
 import { gsap } from 'gsap'
 
+const AVATARS = [
+  { id: 'neon-ape', name: 'Neon Ape' },
+  { id: 'void-bot', name: 'Void Bot' },
+  { id: 'mint-fox', name: 'Mint Fox' },
+  { id: 'crimson-oni', name: 'Crimson Oni' },
+  { id: 'solar-cat', name: 'Solar Cat' },
+  { id: 'ice-orbit', name: 'Ice Orbit' },
+  { id: 'pixel-raven', name: 'Pixel Raven' },
+] as const
+
+type AvatarId = typeof AVATARS[number]['id']
+
 type AccountProfile = {
   id: string
   username: string
   email: string
   createdAt: string
+  avatarId: AvatarId
 }
 
 type StoredCredential = {
@@ -20,6 +33,28 @@ const PROFILE_KEY = 'dlavie-account-profile-v1'
 const CREDENTIAL_KEY = 'dlavie-account-credential-v1'
 const SESSION_KEY = 'dlavie-account-session-v1'
 const ITERATIONS = 210_000
+
+function avatarUrl(id: AvatarId) {
+  return `${import.meta.env.BASE_URL}avatars/${id}.svg`
+}
+
+function isAvatarId(value: unknown): value is AvatarId {
+  return AVATARS.some((avatar) => avatar.id === value)
+}
+
+function randomAvatarId(): AvatarId {
+  const value = crypto.getRandomValues(new Uint32Array(1))[0]
+  return AVATARS[value % AVATARS.length].id
+}
+
+function Avatar({ id, className = '', alt }: { id: AvatarId; className?: string; alt?: string }) {
+  const avatar = AVATARS.find((item) => item.id === id)
+  return (
+    <span className={`profile-avatar nft-avatar ${className}`.trim()}>
+      <img src={avatarUrl(id)} alt={alt ?? avatar?.name ?? 'Avatar'} draggable={false} />
+    </span>
+  )
+}
 
 function bytesToBase64(bytes: Uint8Array) {
   let binary = ''
@@ -59,15 +94,21 @@ function secureEqual(a: string, b: string) {
 function loadProfile(): AccountProfile | null {
   try {
     const raw = localStorage.getItem(PROFILE_KEY)
-    return raw ? JSON.parse(raw) as AccountProfile : null
+    if (!raw) return null
+    const parsed = JSON.parse(raw) as Partial<AccountProfile> & { avatarId?: string }
+    if (!parsed.id || !parsed.username || !parsed.email || !parsed.createdAt) return null
+    const profile: AccountProfile = {
+      id: parsed.id,
+      username: parsed.username,
+      email: parsed.email,
+      createdAt: parsed.createdAt,
+      avatarId: isAvatarId(parsed.avatarId) ? parsed.avatarId : randomAvatarId(),
+    }
+    if (parsed.avatarId !== profile.avatarId) localStorage.setItem(PROFILE_KEY, JSON.stringify(profile))
+    return profile
   } catch {
     return null
   }
-}
-
-function initials(username: string) {
-  const clean = username.replace(/[^a-z0-9]/gi, '')
-  return (clean.slice(0, 2) || 'DL').toUpperCase()
 }
 
 function makeUserId() {
@@ -85,7 +126,7 @@ function passwordChecks(password: string) {
   }
 }
 
-function Icon({ name }: { name: 'user' | 'mail' | 'lock' | 'eye' | 'eyeOff' | 'shield' | 'check' | 'arrow' | 'logout' | 'copy' }) {
+function Icon({ name }: { name: 'user' | 'mail' | 'lock' | 'eye' | 'eyeOff' | 'shield' | 'check' | 'arrow' | 'logout' | 'copy' | 'edit' }) {
   const paths = {
     user: <><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></>,
     mail: <><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></>,
@@ -97,6 +138,7 @@ function Icon({ name }: { name: 'user' | 'mail' | 'lock' | 'eye' | 'eyeOff' | 's
     arrow: <><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></>,
     logout: <><path d="M10 5H5v14h5"/><path d="M13 8l4 4-4 4M8 12h9"/></>,
     copy: <><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></>,
+    edit: <><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></>,
   }
   return <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{paths[name]}</svg>
 }
@@ -119,6 +161,8 @@ export default function AccountSystem() {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [copied, setCopied] = useState(false)
+  const [avatarEditing, setAvatarEditing] = useState(false)
+  const [avatarSaved, setAvatarSaved] = useState(false)
 
   const checks = useMemo(() => passwordChecks(password), [password])
   const passwordStrong = Object.values(checks).every(Boolean)
@@ -126,25 +170,20 @@ export default function AccountSystem() {
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
   const registerValid = usernameValid && emailValid && passwordStrong && password === confirmPassword
 
-  const syncAvatar = () => {
+  useEffect(() => {
     const button = document.querySelector<HTMLButtonElement>('.avatar-button')
     if (!button) return
     if (signedIn && profile) {
       button.classList.add('account-ready')
-      button.dataset.initials = initials(profile.username)
+      button.dataset.avatar = profile.avatarId
+      button.style.backgroundImage = `url("${avatarUrl(profile.avatarId)}")`
       button.setAttribute('aria-label', `Akun ${profile.username}`)
     } else {
       button.classList.remove('account-ready')
-      delete button.dataset.initials
+      delete button.dataset.avatar
+      button.style.removeProperty('background-image')
       button.setAttribute('aria-label', 'Masuk atau buat akun')
     }
-  }
-
-  useEffect(() => {
-    syncAvatar()
-    const observer = new MutationObserver(syncAvatar)
-    observer.observe(document.body, { childList: true, subtree: true })
-    return () => observer.disconnect()
   }, [profile, signedIn])
 
   useEffect(() => {
@@ -155,6 +194,7 @@ export default function AccountSystem() {
       event.stopPropagation()
       event.stopImmediatePropagation()
       setError('')
+      setAvatarEditing(false)
       setView(signedIn && profile ? 'profile' : profile ? 'login' : 'register')
       setOpen(true)
     }
@@ -212,6 +252,7 @@ export default function AccountSystem() {
         username: username.trim(),
         email: email.trim().toLowerCase(),
         createdAt: new Date().toISOString(),
+        avatarId: randomAvatarId(),
       }
       localStorage.setItem(PROFILE_KEY, JSON.stringify(nextProfile))
       localStorage.setItem(CREDENTIAL_KEY, JSON.stringify(credential))
@@ -262,10 +303,23 @@ export default function AccountSystem() {
     }
   }
 
+  const selectAvatar = (avatarId: AvatarId) => {
+    if (!profile) return
+    const nextProfile = { ...profile, avatarId }
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(nextProfile))
+    setProfile(nextProfile)
+    setAvatarSaved(true)
+    requestAnimationFrame(() => {
+      gsap.fromTo('.profile-head .nft-avatar', { scale: .88, rotate: -4 }, { scale: 1, rotate: 0, duration: .48, ease: 'back.out(1.8)' })
+    })
+    window.setTimeout(() => setAvatarSaved(false), 1400)
+  }
+
   const logout = () => {
     sessionStorage.removeItem(SESSION_KEY)
     setSignedIn(false)
     setLoginIdentity(profile?.email || '')
+    setAvatarEditing(false)
     setView('login')
   }
 
@@ -279,6 +333,7 @@ export default function AccountSystem() {
     setEmail('')
     setHumanVerified(false)
     setLoginIdentity('')
+    setAvatarEditing(false)
     setView('register')
   }
 
@@ -371,16 +426,17 @@ export default function AccountSystem() {
         {view === 'welcome' && profile && (
           <div className="account-view account-welcome">
             <div className="welcome-confetti" aria-hidden="true"><i /><i /><i /><i /><i /></div>
-            <div className="profile-avatar large">{initials(profile.username)}</div>
+            <Avatar id={profile.avatarId} className="large" alt={`Avatar ${profile.username}`} />
             <span className="account-eyebrow">Akun berhasil dibuat</span>
             <h2>Selamat datang, {profile.username}.</h2>
             <p>Senang kamu bergabung. Semoga layanan yang tersedia sesuai dengan kebutuhanmu.</p>
 
             <div className="welcome-profile-card">
-              <div className="welcome-user"><div className="profile-avatar">{initials(profile.username)}</div><span><strong>{profile.username}</strong><small>{profile.email}</small></span></div>
+              <div className="welcome-user"><Avatar id={profile.avatarId} alt="Avatar akun" /><span><strong>{profile.username}</strong><small>{profile.email}</small></span></div>
               <div className="welcome-id"><span>ID Pengguna</span><button type="button" onClick={copyId}>{profile.id}<Icon name="copy" /></button></div>
             </div>
 
+            <div className="avatar-random-note"><span>Avatar koleksi</span><strong>{AVATARS.find((item) => item.id === profile.avatarId)?.name}</strong><small>Dipilih secara acak. Kamu bisa menggantinya kapan saja dari profil.</small></div>
             <div className="welcome-security"><span><Icon name="shield" /></span><p><strong>Keamanan akun aktif</strong><small>Password terlindungi dan verifikasi keamanan sudah selesai.</small></p></div>
             <button className="account-primary" type="button" onClick={() => { setOpen(false); window.location.hash = '/market' }}>Lanjut ke Market <Icon name="arrow" /></button>
           </div>
@@ -404,12 +460,34 @@ export default function AccountSystem() {
 
         {view === 'profile' && profile && (
           <div className="account-view account-profile">
-            <div className="profile-head"><div className="profile-avatar large">{initials(profile.username)}</div><div><span className="account-eyebrow">Akun saya</span><h2>{profile.username}</h2><p>{profile.email}</p></div></div>
+            <div className="profile-head">
+              <div className="profile-avatar-wrap">
+                <Avatar id={profile.avatarId} className="large" alt={`Avatar ${profile.username}`} />
+                <button className="avatar-edit-mini" type="button" onClick={() => setAvatarEditing((value) => !value)} aria-label="Ubah avatar"><Icon name="edit" /></button>
+              </div>
+              <div><span className="account-eyebrow">Akun saya</span><h2>{profile.username}</h2><p>{profile.email}</p><button className="change-avatar-link" type="button" onClick={() => setAvatarEditing((value) => !value)}>{avatarEditing ? 'Tutup pilihan avatar' : 'Ubah avatar'}</button></div>
+            </div>
+
+            {avatarEditing && (
+              <section className="avatar-picker-panel">
+                <div className="avatar-picker-head"><div><strong>Pilih avatar</strong><small>7 avatar koleksi DLavie</small></div><span>{avatarSaved ? 'Tersimpan ✓' : 'Perubahan tersimpan otomatis'}</span></div>
+                <div className="avatar-grid">
+                  {AVATARS.map((avatar) => (
+                    <button key={avatar.id} type="button" className={profile.avatarId === avatar.id ? 'active' : ''} onClick={() => selectAvatar(avatar.id)} aria-label={`Pilih ${avatar.name}`}>
+                      <img src={avatarUrl(avatar.id)} alt="" draggable={false} />
+                      <span>{avatar.name}</span>
+                      {profile.avatarId === avatar.id && <i><Icon name="check" /></i>}
+                    </button>
+                  ))}
+                </div>
+              </section>
+            )}
+
             <div className="profile-info-grid">
               <div><span>ID Pengguna</span><button type="button" onClick={copyId}><strong>{profile.id}</strong><Icon name="copy" /></button><small>{copied ? 'ID disalin' : 'ID unik akunmu'}</small></div>
               <div><span>Status</span><strong className="verified-status"><i /> Aktif</strong><small>Session terverifikasi</small></div>
               <div><span>Bergabung</span><strong>{new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(profile.createdAt))}</strong><small>DLavie Market</small></div>
-              <div><span>Keamanan</span><strong>PBKDF2</strong><small>Password terenkripsi lokal</small></div>
+              <div><span>Avatar</span><strong>{AVATARS.find((item) => item.id === profile.avatarId)?.name}</strong><small>Koleksi DLavie</small></div>
             </div>
             <div className="profile-security-row"><span><Icon name="shield" /></span><p><strong>Perlindungan akun</strong><small>Untuk production, autentikasi akan dipindahkan ke server dengan verifikasi email, CAPTCHA asli, rate-limit, dan session token aman.</small></p></div>
             <button className="account-primary" type="button" onClick={() => setOpen(false)}>Lanjut <Icon name="arrow" /></button>
