@@ -2,13 +2,13 @@ import { FormEvent, useEffect, useMemo, useState } from 'react'
 import { gsap } from 'gsap'
 
 const AVATARS = [
-  { id: 'neon-ape', name: 'Neon Ape' },
-  { id: 'void-bot', name: 'Void Bot' },
+  { id: 'neon-ape', name: 'Peach Bear' },
+  { id: 'void-bot', name: 'Lumi Bot' },
   { id: 'mint-fox', name: 'Mint Fox' },
-  { id: 'crimson-oni', name: 'Crimson Oni' },
-  { id: 'solar-cat', name: 'Solar Cat' },
-  { id: 'ice-orbit', name: 'Ice Orbit' },
-  { id: 'pixel-raven', name: 'Pixel Raven' },
+  { id: 'crimson-oni', name: 'Berry Panda' },
+  { id: 'solar-cat', name: 'Sunny Cat' },
+  { id: 'ice-orbit', name: 'Aqua Bunny' },
+  { id: 'pixel-raven', name: 'Pixel Pup' },
 ] as const
 
 type AvatarId = typeof AVATARS[number]['id']
@@ -50,7 +50,7 @@ function randomAvatarId(): AvatarId {
 function Avatar({ id, className = '', alt }: { id: AvatarId; className?: string; alt?: string }) {
   const avatar = AVATARS.find((item) => item.id === id)
   return (
-    <span className={`profile-avatar nft-avatar ${className}`.trim()}>
+    <span className={`profile-avatar nft-avatar ${className}`.trim()} data-avatar={id}>
       <img src={avatarUrl(id)} alt={alt ?? avatar?.name ?? 'Avatar'} draggable={false} />
     </span>
   )
@@ -171,18 +171,38 @@ export default function AccountSystem() {
   const registerValid = usernameValid && emailValid && passwordStrong && password === confirmPassword
 
   useEffect(() => {
-    const button = document.querySelector<HTMLButtonElement>('.avatar-button')
-    if (!button) return
-    if (signedIn && profile) {
-      button.classList.add('account-ready')
-      button.dataset.avatar = profile.avatarId
-      button.style.backgroundImage = `url("${avatarUrl(profile.avatarId)}")`
-      button.setAttribute('aria-label', `Akun ${profile.username}`)
-    } else {
-      button.classList.remove('account-ready')
-      delete button.dataset.avatar
-      button.style.removeProperty('background-image')
-      button.setAttribute('aria-label', 'Masuk atau buat akun')
+    const syncNavbarAvatar = () => {
+      const button = document.querySelector<HTMLButtonElement>('.avatar-button')
+      if (!button) return
+      const oldImage = button.querySelector<HTMLImageElement>('.navbar-avatar-image')
+
+      if (signedIn && profile) {
+        button.classList.add('account-ready')
+        button.dataset.avatar = profile.avatarId
+        button.style.removeProperty('background-image')
+        button.setAttribute('aria-label', `Akun ${profile.username}`)
+        const image = oldImage ?? document.createElement('img')
+        image.className = 'navbar-avatar-image'
+        image.alt = ''
+        image.draggable = false
+        image.src = avatarUrl(profile.avatarId)
+        if (!oldImage) button.appendChild(image)
+      } else {
+        button.classList.remove('account-ready')
+        delete button.dataset.avatar
+        button.style.removeProperty('background-image')
+        oldImage?.remove()
+        button.setAttribute('aria-label', 'Masuk atau buat akun')
+      }
+    }
+
+    syncNavbarAvatar()
+    const observer = new MutationObserver(syncNavbarAvatar)
+    observer.observe(document.body, { childList: true, subtree: true })
+    window.addEventListener('hashchange', syncNavbarAvatar)
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('hashchange', syncNavbarAvatar)
     }
   }, [profile, signedIn])
 
@@ -473,7 +493,7 @@ export default function AccountSystem() {
                 <div className="avatar-picker-head"><div><strong>Pilih avatar</strong><small>7 avatar koleksi DLavie</small></div><span>{avatarSaved ? 'Tersimpan ✓' : 'Perubahan tersimpan otomatis'}</span></div>
                 <div className="avatar-grid">
                   {AVATARS.map((avatar) => (
-                    <button key={avatar.id} type="button" className={profile.avatarId === avatar.id ? 'active' : ''} onClick={() => selectAvatar(avatar.id)} aria-label={`Pilih ${avatar.name}`}>
+                    <button key={avatar.id} type="button" data-avatar={avatar.id} className={profile.avatarId === avatar.id ? 'active' : ''} onClick={() => selectAvatar(avatar.id)} aria-label={`Pilih ${avatar.name}`}>
                       <img src={avatarUrl(avatar.id)} alt="" draggable={false} />
                       <span>{avatar.name}</span>
                       {profile.avatarId === avatar.id && <i><Icon name="check" /></i>}
