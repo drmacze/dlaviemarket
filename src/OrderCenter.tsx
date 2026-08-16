@@ -106,7 +106,8 @@ export default function OrderCenter() {
       const nextOrders = currentOrders.map((order) => {
         if (!expired.some((item) => item.id === order.id)) return order
         nextBalance += order.price
-        nextHistory = [{ id: crypto.randomUUID(), type: 'refund' as const, label: `Refund · ${order.serviceName}`, detail: `${order.providerName} · sesi berakhir`, amount: order.price, time: 'Baru saja' }, ...nextHistory]
+        const refundItem: HistoryItem = { id: crypto.randomUUID(), type: 'refund', label: `Refund · ${order.serviceName}`, detail: `${order.providerName} · sesi berakhir`, amount: order.price, time: 'Baru saja' }
+        nextHistory = [refundItem, ...nextHistory]
         return { ...order, status: 'expired' as const }
       })
       localStorage.setItem(ORDER_KEY, JSON.stringify(nextOrders))
@@ -136,7 +137,8 @@ export default function OrderCenter() {
     if (order.status !== 'waiting') return
     const currentBalance = Number(localStorage.getItem(BALANCE_KEY) || 0)
     const nextBalance = currentBalance + order.price
-    const nextHistory: HistoryItem[] = [{ id: crypto.randomUUID(), type: 'refund', label: `Refund · ${order.serviceName}`, detail: `${order.providerName} · dibatalkan`, amount: order.price, time: 'Baru saja' }, ...readHistory()].slice(0, 20)
+    const refundItem: HistoryItem = { id: crypto.randomUUID(), type: 'refund', label: `Refund · ${order.serviceName}`, detail: `${order.providerName} · dibatalkan`, amount: order.price, time: 'Baru saja' }
+    const nextHistory: HistoryItem[] = [refundItem, ...readHistory()].slice(0, 20)
     localStorage.setItem(BALANCE_KEY, String(nextBalance))
     localStorage.setItem(HISTORY_KEY, JSON.stringify(nextHistory))
     updateOrder(order.id, (current) => ({ ...current, status: 'cancelled' }))
