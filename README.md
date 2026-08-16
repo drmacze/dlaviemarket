@@ -1,17 +1,30 @@
-# Dlaviemarket
+# DLavie Market
 
-Frontend marketplace nomor virtual yang dioptimalkan untuk GitHub Pages.
+Modern virtual-number marketplace frontend deployed to GitHub Pages.
 
-## URL GitHub Pages
+## Stack
 
-Setelah Pages diaktifkan dengan **Settings → Pages → Source: GitHub Actions**, website akan dipublish di:
+- React 19 + TypeScript
+- Vite 8
+- GSAP + ScrollTrigger
+- Lenis smooth scrolling
+- CSS design system with mobile-first responsive layout
+
+## Local development
+
+```bash
+npm install
+npm run dev
+```
+
+## Production build
+
+```bash
+npm run build
+```
+
+GitHub Actions publishes the generated `dist/` directory to GitHub Pages at:
 
 `https://drmacze.github.io/dlaviemarket/`
 
-Setiap push ke branch `main` akan menjalankan workflow `.github/workflows/pages.yml`.
-
-## Status
-
-Versi saat ini adalah frontend demo. Saldo, login, deposit, dan order disimpan/disimulasikan di browser. Untuk production, payment gateway, database, autentikasi, supplier API, callback pembayaran, OTP, dan refund harus dijalankan melalui backend aman agar credential/secret tidak terekspos ke browser.
-
-Minimum deposit pada UI sudah diset **Rp1.000**.
+> The current wallet, deposit, authentication, and ordering flows are frontend demos. Production payments, supplier credentials, user balances, and callbacks must be implemented in a secure backend and never exposed in browser code.
