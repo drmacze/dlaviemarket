@@ -13,6 +13,7 @@ import './polish-v2.css'
 import './page-navigation.css'
 import './nav-copy-fix.css'
 import './account-system.css'
+import './avatar-collection.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
