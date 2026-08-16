@@ -1,0 +1,41 @@
+/* Microsoft OTP uses the four brand colors instead of a blue-only treatment. */
+.live-order-card:has(.live-order-brand img[src*="microsoft.svg"]) .otp-code-box,
+.activity-order-card:has(.activity-service img[src*="microsoft.svg"]) .activity-otp-code {
+  border-color: rgba(255,255,255,.26) !important;
+  background:
+    radial-gradient(circle at 12% 14%, rgba(242,80,34,.95) 0 13%, transparent 34%),
+    radial-gradient(circle at 84% 16%, rgba(127,186,0,.92) 0 12%, transparent 36%),
+    radial-gradient(circle at 18% 88%, rgba(0,164,239,.96) 0 14%, transparent 38%),
+    radial-gradient(circle at 86% 86%, rgba(255,185,0,.96) 0 14%, transparent 39%),
+    linear-gradient(135deg, #b63820 0%, #697b13 34%, #0079bb 67%, #be8500 100%) !important;
+  box-shadow:
+    0 20px 46px rgba(0,164,239,.18),
+    -10px -8px 34px rgba(242,80,34,.13),
+    12px 9px 34px rgba(255,185,0,.12),
+    inset 0 1px 0 rgba(255,255,255,.22) !important;
+}
+
+.live-order-card:has(.live-order-brand img[src*="microsoft.svg"]) .otp-code-box::before,
+.activity-order-card:has(.activity-service img[src*="microsoft.svg"]) .activity-otp-code::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.08), transparent 26% 74%, rgba(255,255,255,.06)),
+    radial-gradient(circle at 50% 50%, transparent 0 28%, rgba(0,0,0,.13) 100%);
+  pointer-events: none;
+}
+
+.live-order-card:has(.live-order-brand img[src*="microsoft.svg"]) .order-status.received,
+.activity-order-card:has(.activity-service img[src*="microsoft.svg"]) .activity-status.received {
+  border-color: rgba(255,185,0,.32) !important;
+  background: linear-gradient(90deg, rgba(242,80,34,.10), rgba(127,186,0,.09), rgba(0,164,239,.10), rgba(255,185,0,.10)) !important;
+  color: var(--theme-ink) !important;
+}
+
+.live-order-card:has(.live-order-brand img[src*="microsoft.svg"]) .order-status.received i,
+.activity-order-card:has(.activity-service img[src*="microsoft.svg"]) .activity-status.received i {
+  background: conic-gradient(#f25022 0 25%, #7fba00 0 50%, #00a4ef 0 75%, #ffb900 0) !important;
+  box-shadow: 0 0 10px rgba(0,164,239,.28) !important;
+}
