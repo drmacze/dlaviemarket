@@ -9,6 +9,7 @@ import MarketFlow from './MarketFlow'
 import OrderCenter from './OrderCenter'
 import StateBridge from './StateBridge'
 import DLavieRadio from './DLavieRadio'
+import ActivityViewEnhancer from './ActivityViewEnhancer'
 import './styles.css'
 import './brand-logos.css'
 import './mobile-polish.css'
@@ -27,6 +28,7 @@ import './microsoft-otp-polish.css'
 import './ambient-player.css'
 import './ambient-mobile-safe.css'
 import './market-route-compact.css'
+import './activity-view-polish.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -37,6 +39,7 @@ createRoot(document.getElementById('root')!).render(
     <AccountSystem />
     <MarketFlow />
     <OrderCenter />
+    <ActivityViewEnhancer />
     <DLavieRadio />
     <App />
   </StrictMode>,
