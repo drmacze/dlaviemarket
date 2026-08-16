@@ -25,6 +25,7 @@ import './service-brand-polish.css'
 import './provider-logo-card.css'
 import './microsoft-otp-polish.css'
 import './ambient-player.css'
+import './ambient-mobile-safe.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
