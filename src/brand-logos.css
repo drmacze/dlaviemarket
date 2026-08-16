@@ -1,0 +1,52 @@
+/* Official-style brand marks bundled locally with the GitHub Pages build. */
+.service-logo,
+.window-logo,
+.modal-icon[style*="--service-tint"] {
+  font-size: 0 !important;
+}
+
+.service-logo[style*="25D366" i],
+.window-logo[style*="25D366" i],
+.modal-icon[style*="25D366" i] { --brand-logo: url('/dlaviemarket/brands/whatsapp.svg'); }
+
+.service-logo[style*="2AABEE" i],
+.window-logo[style*="2AABEE" i],
+.modal-icon[style*="2AABEE" i] { --brand-logo: url('/dlaviemarket/brands/telegram.svg'); }
+
+.service-logo[style*="4285F4" i],
+.window-logo[style*="4285F4" i],
+.modal-icon[style*="4285F4" i] { --brand-logo: url('/dlaviemarket/brands/google.svg'); }
+
+.service-logo[style*="5865F2" i],
+.window-logo[style*="5865F2" i],
+.modal-icon[style*="5865F2" i] { --brand-logo: url('/dlaviemarket/brands/discord.svg'); }
+
+.service-logo[style*="E1306C" i],
+.window-logo[style*="E1306C" i],
+.modal-icon[style*="E1306C" i] { --brand-logo: url('/dlaviemarket/brands/instagram.svg'); }
+
+.service-logo[style*="00A4EF" i],
+.window-logo[style*="00A4EF" i],
+.modal-icon[style*="00A4EF" i] { --brand-logo: url('/dlaviemarket/brands/microsoft.svg'); }
+
+.service-logo::after,
+.window-logo::after,
+.modal-icon[style*="--service-tint"]::after {
+  content: '';
+  width: 58%;
+  aspect-ratio: 1;
+  display: block;
+  background-image: var(--brand-logo);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .18));
+  transform: translateZ(1px);
+}
+
+.modal-icon[style*="--service-tint"]::after { width: 56%; }
+
+@media (max-width: 560px) {
+  .service-logo::after,
+  .window-logo::after { width: 60%; }
+}
