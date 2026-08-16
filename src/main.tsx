@@ -14,6 +14,7 @@ import './page-navigation.css'
 import './nav-copy-fix.css'
 import './account-system.css'
 import './avatar-collection.css'
+import './avatar-effects-v2.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
