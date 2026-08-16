@@ -3,7 +3,9 @@ import { createRoot } from 'react-dom/client'
 import App from './App'
 import ThemeSystem from './ThemeSystem'
 import PageNavigation from './PageNavigation'
-import CopyRefinement from './CopyRefinement'
+import CopyRefinement from './CopyRefinementV2'
+import LanguageSystem from './LanguageSystem'
+import NavUtilityMenu from './NavUtilityMenu'
 import AccountSystem from './AccountSystem'
 import MarketFlow from './MarketFlow'
 import OrderCenter from './OrderCenter'
@@ -29,6 +31,7 @@ import './ambient-player.css'
 import './ambient-mobile-safe.css'
 import './market-route-compact.css'
 import './activity-view-polish.css'
+import './nav-utility.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -36,6 +39,8 @@ createRoot(document.getElementById('root')!).render(
     <ThemeSystem />
     <PageNavigation />
     <CopyRefinement />
+    <LanguageSystem />
+    <NavUtilityMenu />
     <AccountSystem />
     <MarketFlow />
     <OrderCenter />
