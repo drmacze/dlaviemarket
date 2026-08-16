@@ -8,6 +8,7 @@ import AccountSystem from './AccountSystem'
 import MarketFlow from './MarketFlow'
 import OrderCenter from './OrderCenter'
 import StateBridge from './StateBridge'
+import AmbientPlayer from './AmbientPlayer'
 import './styles.css'
 import './brand-logos.css'
 import './mobile-polish.css'
@@ -22,6 +23,8 @@ import './market-flow.css'
 import './order-center.css'
 import './service-brand-polish.css'
 import './provider-logo-card.css'
+import './microsoft-otp-polish.css'
+import './ambient-player.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -32,6 +35,7 @@ createRoot(document.getElementById('root')!).render(
     <AccountSystem />
     <MarketFlow />
     <OrderCenter />
+    <AmbientPlayer />
     <App />
   </StrictMode>,
 )
