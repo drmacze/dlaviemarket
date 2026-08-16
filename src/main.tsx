@@ -6,6 +6,7 @@ import './styles.css'
 import './brand-logos.css'
 import './mobile-polish.css'
 import './theme-system.css'
+import './polish-v2.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
