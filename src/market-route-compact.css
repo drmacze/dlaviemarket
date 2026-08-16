@@ -1,0 +1,35 @@
+/* Keep the Market route only as tall as its actual content.
+   This overrides legacy viewport-sized route/stage minimums that left a large empty area before the footer. */
+
+html[data-page="market"] main {
+  min-height: 0 !important;
+}
+
+html[data-page="market"] .market-flow-page {
+  min-height: 0 !important;
+  padding-bottom: calc(42px + env(safe-area-inset-bottom)) !important;
+}
+
+html[data-page="market"] .market-flow-stage {
+  min-height: 0 !important;
+}
+
+html[data-page="market"] .market-flow-shell,
+html[data-page="market"] .market-flow-layout,
+html[data-page="market"] .market-step-panel {
+  min-height: 0 !important;
+}
+
+html[data-page="market"] .footer {
+  margin-top: 0 !important;
+}
+
+@media (max-width: 560px) {
+  html[data-page="market"] .market-flow-page {
+    padding-bottom: calc(30px + env(safe-area-inset-bottom)) !important;
+  }
+
+  html[data-page="market"] .market-flow-stage {
+    padding-bottom: 18px !important;
+  }
+}
