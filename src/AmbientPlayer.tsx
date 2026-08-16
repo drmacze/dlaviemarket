@@ -1,91 +1,115 @@
 import { useEffect, useRef, useState } from 'react'
 
+type StepNote = number | null
+
 type Soundscape = {
   id: string
   title: string
   subtitle: string
+  genre: string
+  bpm: number
+  swing: number
   chords: number[][]
   waveform: OscillatorType
-  chordSeconds: number
-  filterHz: number
-  noise: number
-  noiseFilterHz: number
-  detune: number
-  padLevel: number
+  chordLevel: number
   bassLevel: number
+  leadLevel: number
+  filterHz: number
   reverb: number
-  movement: number
-  sparkleNotes?: number[]
-  sparkleEvery?: number
-  sparkleLevel?: number
+  bassPattern: StepNote[]
+  arpPattern: StepNote[]
+  kick: number[]
+  snare: number[]
+  hat: number[]
+  openHat?: number[]
 }
 
 const SOUNDS: Soundscape[] = [
   {
-    id: 'midnight-terminal',
-    title: 'Midnight Terminal',
-    subtitle: 'Deep ambient · clean & cinematic',
-    chords: [[50, 57, 60, 64], [46, 53, 57, 62], [53, 60, 64, 69], [48, 55, 62, 64]],
-    waveform: 'sine', chordSeconds: 10.5, filterHz: 1120, noise: .006, noiseFilterHz: 620, detune: 5,
-    padLevel: .026, bassLevel: .022, reverb: .34, movement: 150,
-    sparkleNotes: [74, 77, 81, 84], sparkleEvery: 7600, sparkleLevel: .009,
+    id: 'neon-pop',
+    title: 'Neon Pop',
+    subtitle: 'Synth-pop cerah · catchy & modern',
+    genre: 'SYNTH POP',
+    bpm: 116,
+    swing: .035,
+    chords: [[60, 64, 67, 71], [57, 60, 64, 69], [53, 57, 60, 64], [55, 59, 62, 67]],
+    waveform: 'sawtooth', chordLevel: .026, bassLevel: .055, leadLevel: .018, filterHz: 2100, reverb: .22,
+    bassPattern: [0, null, null, 0, 7, null, 0, null, 0, null, 12, null, 7, null, 0, null],
+    arpPattern: [0, null, 7, null, 12, null, 7, null, 4, null, 12, null, 7, null, 16, null],
+    kick: [0, 4, 8, 11, 12], snare: [4, 12], hat: [0, 2, 4, 6, 8, 10, 12, 14], openHat: [7, 15],
   },
   {
-    id: 'soft-neon',
-    title: 'Soft Neon',
-    subtitle: 'Airy synth · warm city glow',
-    chords: [[52, 59, 63, 66], [48, 55, 59, 64], [50, 57, 61, 64], [55, 62, 66, 71]],
-    waveform: 'triangle', chordSeconds: 9, filterHz: 1750, noise: .004, noiseFilterHz: 1100, detune: 6,
-    padLevel: .022, bassLevel: .014, reverb: .39, movement: 230,
-    sparkleNotes: [76, 78, 83, 85], sparkleEvery: 6200, sparkleLevel: .008,
+    id: 'checkout-bounce',
+    title: 'Checkout Bounce',
+    subtitle: 'Chill pop · bounce ringan & groovy',
+    genre: 'CHILL POP',
+    bpm: 104,
+    swing: .095,
+    chords: [[57, 61, 64, 69], [52, 57, 60, 64], [54, 57, 61, 66], [55, 59, 62, 67]],
+    waveform: 'triangle', chordLevel: .028, bassLevel: .062, leadLevel: .015, filterHz: 1750, reverb: .18,
+    bassPattern: [0, null, 0, null, 7, null, null, 5, 0, null, 12, null, 7, null, 5, null],
+    arpPattern: [null, 7, null, 12, null, 16, null, 12, null, 7, null, 14, null, 12, null, 7],
+    kick: [0, 3, 8, 10, 14], snare: [4, 12], hat: [0, 2, 4, 6, 8, 10, 12, 14], openHat: [6, 14],
   },
   {
-    id: 'quiet-checkout',
-    title: 'Quiet Checkout',
-    subtitle: 'Soft pulse · minimal & focused',
-    chords: [[48, 55, 59, 64], [45, 52, 57, 60], [50, 57, 60, 65], [43, 50, 55, 59]],
-    waveform: 'triangle', chordSeconds: 7.2, filterHz: 1380, noise: .009, noiseFilterHz: 820, detune: 4,
-    padLevel: .021, bassLevel: .019, reverb: .27, movement: 110,
-    sparkleNotes: [72, 76, 79, 83], sparkleEvery: 5700, sparkleLevel: .0065,
+    id: 'city-lights',
+    title: 'City Lights',
+    subtitle: 'City-pop electronic · bright night drive',
+    genre: 'CITY POP',
+    bpm: 120,
+    swing: .055,
+    chords: [[59, 63, 66, 71], [64, 68, 71, 76], [61, 64, 68, 73], [62, 66, 69, 74]],
+    waveform: 'sawtooth', chordLevel: .023, bassLevel: .053, leadLevel: .021, filterHz: 2450, reverb: .25,
+    bassPattern: [0, null, 7, null, 12, null, 7, 9, 0, null, 7, null, 12, null, 9, null],
+    arpPattern: [12, null, 16, 19, null, 16, 12, null, 7, null, 12, 16, null, 19, 16, null],
+    kick: [0, 4, 8, 12], snare: [4, 12], hat: [0, 2, 4, 6, 8, 10, 12, 14], openHat: [7, 15],
   },
   {
-    id: 'after-hours',
-    title: 'After Hours',
-    subtitle: 'Slow drift · dark and spacious',
-    chords: [[45, 52, 57, 60], [41, 48, 52, 57], [43, 50, 55, 59], [47, 54, 59, 62]],
-    waveform: 'sine', chordSeconds: 12, filterHz: 790, noise: .012, noiseFilterHz: 480, detune: 3,
-    padLevel: .029, bassLevel: .027, reverb: .43, movement: 90,
+    id: 'digital-funk',
+    title: 'Digital Funk',
+    subtitle: 'Future funk · bassy, glossy & fun',
+    genre: 'FUTURE FUNK',
+    bpm: 112,
+    swing: .12,
+    chords: [[55, 59, 62, 67], [60, 64, 67, 71], [57, 60, 64, 69], [62, 65, 69, 72]],
+    waveform: 'square', chordLevel: .019, bassLevel: .072, leadLevel: .018, filterHz: 1950, reverb: .16,
+    bassPattern: [0, null, 0, 7, null, 5, null, 7, 0, 12, null, 7, null, 5, 7, null],
+    arpPattern: [null, 12, 7, null, 16, null, 12, 7, null, 19, null, 16, 12, null, 7, 12],
+    kick: [0, 3, 6, 8, 11, 14], snare: [4, 12], hat: [0, 1, 2, 4, 6, 8, 9, 10, 12, 14], openHat: [7, 15],
   },
   {
-    id: 'glass-signal',
-    title: 'Glass Signal',
-    subtitle: 'Crystal tones · light & futuristic',
-    chords: [[60, 64, 67, 71], [57, 60, 64, 69], [62, 65, 69, 72], [55, 59, 62, 67]],
-    waveform: 'sine', chordSeconds: 9.5, filterHz: 2350, noise: .0035, noiseFilterHz: 1700, detune: 4,
-    padLevel: .016, bassLevel: .007, reverb: .49, movement: 280,
-    sparkleNotes: [79, 83, 86, 88, 91], sparkleEvery: 3600, sparkleLevel: .014,
+    id: 'late-shift',
+    title: 'Late Shift',
+    subtitle: 'Indie electronic · santai tapi tetap jalan',
+    genre: 'INDIE ELECTRONIC',
+    bpm: 98,
+    swing: .07,
+    chords: [[52, 55, 59, 64], [48, 52, 55, 60], [50, 54, 57, 62], [55, 59, 62, 67]],
+    waveform: 'triangle', chordLevel: .031, bassLevel: .05, leadLevel: .012, filterHz: 1550, reverb: .3,
+    bassPattern: [0, null, null, 7, 0, null, 5, null, 0, null, 12, null, 7, null, 5, null],
+    arpPattern: [null, 7, null, 12, null, 7, 4, null, null, 12, null, 16, null, 12, 7, null],
+    kick: [0, 5, 8, 13], snare: [4, 12], hat: [0, 2, 4, 6, 8, 10, 12, 14], openHat: [15],
   },
 ]
 
 const TRACK_KEY = 'dlavie-ambient-track'
 const VOLUME_KEY = 'dlavie-ambient-volume'
-
 const midiToHz = (midi: number) => 440 * Math.pow(2, (midi - 69) / 12)
 
-class AmbientEngine {
+class RadioEngine {
   private context: AudioContext | null = null
   private output: GainNode | null = null
-  private dryBus: GainNode | null = null
+  private dry: GainNode | null = null
+  private wet: GainNode | null = null
   private reverb: ConvolverNode | null = null
-  private wetBus: GainNode | null = null
   private compressor: DynamicsCompressorNode | null = null
-  private chordTimer: number | null = null
-  private sparkleTimer: number | null = null
-  private chordSources: AudioScheduledSourceNode[] = []
-  private bedSources: AudioScheduledSourceNode[] = []
-  private chordGains: GainNode[] = []
+  private scheduler: number | null = null
+  private current: Soundscape | null = null
+  private nextStepTime = 0
+  private step = 0
   private chordIndex = 0
   private running = false
+  private noiseBuffer: AudioBuffer | null = null
 
   private ensureContext() {
     if (this.context) return this.context
@@ -95,47 +119,53 @@ class AmbientEngine {
     this.context = new Ctx()
     const ctx = this.context
     this.output = ctx.createGain()
-    this.dryBus = ctx.createGain()
+    this.dry = ctx.createGain()
+    this.wet = ctx.createGain()
     this.reverb = ctx.createConvolver()
-    this.wetBus = ctx.createGain()
     this.compressor = ctx.createDynamicsCompressor()
 
-    this.reverb.buffer = this.createImpulse(ctx, 3.2, 2.8)
-    this.dryBus.gain.value = .92
-    this.wetBus.gain.value = .34
     this.output.gain.value = .0001
+    this.dry.gain.value = .92
+    this.wet.gain.value = .22
+    this.reverb.buffer = this.createImpulse(ctx, 2.25, 2.5)
+    this.noiseBuffer = this.createNoiseBuffer(ctx)
 
-    this.compressor.threshold.value = -26
-    this.compressor.knee.value = 20
-    this.compressor.ratio.value = 2.5
-    this.compressor.attack.value = .018
-    this.compressor.release.value = .42
+    this.compressor.threshold.value = -21
+    this.compressor.knee.value = 18
+    this.compressor.ratio.value = 3.2
+    this.compressor.attack.value = .008
+    this.compressor.release.value = .23
 
-    this.dryBus.connect(this.output)
-    this.reverb.connect(this.wetBus)
-    this.wetBus.connect(this.output)
+    this.dry.connect(this.output)
+    this.reverb.connect(this.wet)
+    this.wet.connect(this.output)
     this.output.connect(this.compressor)
     this.compressor.connect(ctx.destination)
-
     return ctx
   }
 
   private createImpulse(ctx: AudioContext, seconds: number, decay: number) {
     const length = Math.floor(ctx.sampleRate * seconds)
-    const impulse = ctx.createBuffer(2, length, ctx.sampleRate)
+    const buffer = ctx.createBuffer(2, length, ctx.sampleRate)
     for (let channel = 0; channel < 2; channel += 1) {
-      const data = impulse.getChannelData(channel)
+      const data = buffer.getChannelData(channel)
       for (let i = 0; i < length; i += 1) {
-        const envelope = Math.pow(1 - i / length, decay)
-        data[i] = (Math.random() * 2 - 1) * envelope * (channel === 0 ? .82 : .76)
+        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, decay) * .72
       }
     }
-    return impulse
+    return buffer
   }
 
-  private route(node: AudioNode, wetAmount: number) {
-    if (!this.context || !this.dryBus || !this.reverb) return
-    node.connect(this.dryBus)
+  private createNoiseBuffer(ctx: AudioContext) {
+    const buffer = ctx.createBuffer(1, Math.floor(ctx.sampleRate * .5), ctx.sampleRate)
+    const data = buffer.getChannelData(0)
+    for (let i = 0; i < data.length; i += 1) data[i] = Math.random() * 2 - 1
+    return buffer
+  }
+
+  private route(node: AudioNode, wetAmount = .2) {
+    if (!this.context || !this.dry || !this.reverb) return
+    node.connect(this.dry)
     const send = this.context.createGain()
     send.gain.value = wetAmount
     node.connect(send)
@@ -145,38 +175,33 @@ class AmbientEngine {
   async start(sound: Soundscape, volume: number) {
     const ctx = this.ensureContext()
     if (ctx.state === 'suspended') await ctx.resume()
-
-    this.stopVoices()
+    this.stop(false)
+    this.current = sound
     this.running = true
+    this.step = 0
     this.chordIndex = 0
-    if (this.wetBus) this.wetBus.gain.setTargetAtTime(sound.reverb, ctx.currentTime, .22)
+    this.nextStepTime = ctx.currentTime + .055
+    if (this.wet) this.wet.gain.setTargetAtTime(sound.reverb, ctx.currentTime, .08)
     this.setVolume(volume)
-    this.createAir(sound)
-    this.playChord(sound)
-    this.chordTimer = window.setInterval(() => this.playChord(sound), sound.chordSeconds * 1000)
-
-    if (sound.sparkleNotes?.length && sound.sparkleEvery) {
-      this.sparkleTimer = window.setInterval(() => this.playSparkle(sound), sound.sparkleEvery)
-      window.setTimeout(() => {
-        if (this.running) this.playSparkle(sound)
-      }, Math.min(3200, sound.sparkleEvery * .55))
-    }
+    this.scheduler = window.setInterval(() => this.scheduleAhead(), 24)
+    this.scheduleAhead()
   }
 
   setVolume(volume: number) {
     if (!this.context || !this.output) return
     const safe = Math.max(0, Math.min(1, volume))
     this.output.gain.cancelScheduledValues(this.context.currentTime)
-    this.output.gain.setTargetAtTime(Math.max(.0001, safe * .43), this.context.currentTime, .14)
+    this.output.gain.setTargetAtTime(Math.max(.0001, safe * .52), this.context.currentTime, .08)
   }
 
-  stop() {
+  stop(fade = true) {
     this.running = false
-    if (this.context && this.output) {
+    if (this.scheduler !== null) window.clearInterval(this.scheduler)
+    this.scheduler = null
+    if (fade && this.context && this.output) {
       this.output.gain.cancelScheduledValues(this.context.currentTime)
-      this.output.gain.setTargetAtTime(.0001, this.context.currentTime, .08)
+      this.output.gain.setTargetAtTime(.0001, this.context.currentTime, .05)
     }
-    this.stopVoices()
   }
 
   destroy() {
@@ -184,201 +209,192 @@ class AmbientEngine {
     void this.context?.close()
     this.context = null
     this.output = null
-    this.dryBus = null
+    this.dry = null
+    this.wet = null
     this.reverb = null
-    this.wetBus = null
     this.compressor = null
   }
 
-  private stopVoices() {
-    if (this.chordTimer !== null) window.clearInterval(this.chordTimer)
-    if (this.sparkleTimer !== null) window.clearInterval(this.sparkleTimer)
-    this.chordTimer = null
-    this.sparkleTimer = null
-
-    const now = this.context?.currentTime ?? 0
-    this.chordGains.forEach((gain) => {
-      try {
-        gain.gain.cancelScheduledValues(now)
-        gain.gain.setTargetAtTime(.0001, now, .06)
-      } catch { /* no-op */ }
-    })
-    ;[...this.chordSources, ...this.bedSources].forEach((source) => {
-      try { source.stop(now + .22) } catch { /* source already stopped */ }
-    })
-
-    this.chordSources = []
-    this.bedSources = []
-    this.chordGains = []
+  private scheduleAhead() {
+    if (!this.running || !this.context || !this.current) return
+    const ctx = this.context
+    while (this.nextStepTime < ctx.currentTime + .14) {
+      this.scheduleStep(this.current, this.step, this.nextStepTime)
+      const base = 60 / this.current.bpm / 4
+      const swing = this.current.swing * base
+      this.nextStepTime += base + (this.step % 2 ? swing : -swing)
+      this.step = (this.step + 1) % 16
+    }
   }
 
-  private playChord(sound: Soundscape) {
-    if (!this.running || !this.context || !this.output) return
-    const ctx = this.context
-    const now = ctx.currentTime
-    const oldSources = [...this.chordSources]
-    const oldGains = [...this.chordGains]
-
-    oldGains.forEach((gain) => {
-      gain.gain.cancelScheduledValues(now)
-      gain.gain.setTargetAtTime(.0001, now, 1.25)
-    })
-    oldSources.forEach((source) => {
-      try { source.stop(now + 4.4) } catch { /* already stopped */ }
-    })
-
-    this.chordSources = []
-    this.chordGains = []
+  private scheduleStep(sound: Soundscape, step: number, time: number) {
     const chord = sound.chords[this.chordIndex % sound.chords.length]
-    this.chordIndex += 1
-
-    chord.forEach((midi, noteIndex) => {
-      const filter = ctx.createBiquadFilter()
-      const panner = ctx.createStereoPanner()
-      const gain = ctx.createGain()
-      filter.type = 'lowpass'
-      filter.frequency.value = sound.filterHz + noteIndex * 95
-      filter.Q.value = .48
-      panner.pan.value = Math.max(-.62, Math.min(.62, (noteIndex - (chord.length - 1) / 2) * .36))
-      gain.gain.setValueAtTime(.0001, now)
-      gain.gain.exponentialRampToValueAtTime(sound.padLevel / Math.max(1, chord.length / 3.5), now + 2.6 + noteIndex * .09)
-
-      gain.connect(filter)
-      filter.connect(panner)
-      this.route(panner, sound.reverb * .72)
-      this.chordGains.push(gain)
-
-      ;[-sound.detune, sound.detune].forEach((detune, layer) => {
-        const osc = ctx.createOscillator()
-        osc.type = layer === 0 ? sound.waveform : 'sine'
-        osc.frequency.value = midiToHz(midi)
-        osc.detune.value = detune + (noteIndex - 1.5) * .8
-        osc.connect(gain)
-        osc.start(now + noteIndex * .04)
-        this.chordSources.push(osc)
-      })
-
-      if (sound.movement > 0) {
-        const lfo = ctx.createOscillator()
-        const lfoDepth = ctx.createGain()
-        lfo.type = 'sine'
-        lfo.frequency.value = .045 + noteIndex * .008
-        lfoDepth.gain.value = sound.movement
-        lfo.connect(lfoDepth)
-        lfoDepth.connect(filter.frequency)
-        lfo.start(now)
-        this.chordSources.push(lfo)
-      }
-    })
-
-    if (sound.bassLevel > 0) {
-      const root = chord[0] - 12
-      const bass = ctx.createOscillator()
-      const bassGain = ctx.createGain()
-      const bassFilter = ctx.createBiquadFilter()
-      bass.type = 'sine'
-      bass.frequency.value = midiToHz(root)
-      bassFilter.type = 'lowpass'
-      bassFilter.frequency.value = 240
-      bassFilter.Q.value = .35
-      bassGain.gain.setValueAtTime(.0001, now)
-      bassGain.gain.exponentialRampToValueAtTime(sound.bassLevel, now + 2.2)
-      bass.connect(bassGain)
-      bassGain.connect(bassFilter)
-      this.route(bassFilter, sound.reverb * .18)
-      bass.start(now)
-      this.chordSources.push(bass)
-      this.chordGains.push(bassGain)
+    if (step === 0) {
+      this.scheduleChord(sound, chord, time)
+      this.chordIndex = (this.chordIndex + 1) % sound.chords.length
     }
+
+    if (sound.kick.includes(step)) this.scheduleKick(time, sound.id === 'digital-funk' ? .12 : .105)
+    if (sound.snare.includes(step)) this.scheduleSnare(time, sound.id === 'city-lights' ? .075 : .065)
+    if (sound.hat.includes(step)) this.scheduleHat(time, false, sound.id === 'digital-funk' ? .032 : .026)
+    if (sound.openHat?.includes(step)) this.scheduleHat(time, true, .026)
+
+    const bassOffset = sound.bassPattern[step]
+    if (bassOffset !== null) this.scheduleBass(chord[0] - 12 + bassOffset, time, sound)
+
+    const arpOffset = sound.arpPattern[step]
+    if (arpOffset !== null) this.scheduleLead(chord[0] + 12 + arpOffset, time, sound)
   }
 
-  private createAir(sound: Soundscape) {
-    if (!this.context || !this.dryBus || sound.noise <= 0) return
+  private scheduleKick(time: number, level: number) {
+    if (!this.context) return
     const ctx = this.context
-    const length = Math.floor(ctx.sampleRate * 4)
-    const buffer = ctx.createBuffer(1, length, ctx.sampleRate)
-    const data = buffer.getChannelData(0)
-    let brown = 0
+    const osc = ctx.createOscillator()
+    const gain = ctx.createGain()
+    osc.type = 'sine'
+    osc.frequency.setValueAtTime(145, time)
+    osc.frequency.exponentialRampToValueAtTime(47, time + .12)
+    gain.gain.setValueAtTime(.0001, time)
+    gain.gain.exponentialRampToValueAtTime(level, time + .006)
+    gain.gain.exponentialRampToValueAtTime(.0001, time + .2)
+    osc.connect(gain)
+    this.route(gain, .025)
+    osc.start(time)
+    osc.stop(time + .22)
+  }
 
-    for (let i = 0; i < length; i += 1) {
-      const white = Math.random() * 2 - 1
-      brown = brown * .987 + white * .013
-      data[i] = brown * 1.7 + white * .045
-    }
+  private scheduleSnare(time: number, level: number) {
+    if (!this.context || !this.noiseBuffer) return
+    const ctx = this.context
+    const noise = ctx.createBufferSource()
+    const noiseFilter = ctx.createBiquadFilter()
+    const noiseGain = ctx.createGain()
+    noise.buffer = this.noiseBuffer
+    noiseFilter.type = 'highpass'
+    noiseFilter.frequency.value = 1450
+    noiseGain.gain.setValueAtTime(level, time)
+    noiseGain.gain.exponentialRampToValueAtTime(.0001, time + .13)
+    noise.connect(noiseFilter)
+    noiseFilter.connect(noiseGain)
+    this.route(noiseGain, .18)
+    noise.start(time)
+    noise.stop(time + .15)
 
-    const source = ctx.createBufferSource()
+    const tone = ctx.createOscillator()
+    const toneGain = ctx.createGain()
+    tone.type = 'triangle'
+    tone.frequency.value = 185
+    toneGain.gain.setValueAtTime(level * .34, time)
+    toneGain.gain.exponentialRampToValueAtTime(.0001, time + .09)
+    tone.connect(toneGain)
+    this.route(toneGain, .08)
+    tone.start(time)
+    tone.stop(time + .11)
+  }
+
+  private scheduleHat(time: number, open: boolean, level: number) {
+    if (!this.context || !this.noiseBuffer) return
+    const ctx = this.context
+    const noise = ctx.createBufferSource()
     const filter = ctx.createBiquadFilter()
     const gain = ctx.createGain()
-    const panner = ctx.createStereoPanner()
-    source.buffer = buffer
-    source.loop = true
-    filter.type = 'lowpass'
-    filter.frequency.value = sound.noiseFilterHz
-    filter.Q.value = .3
-    gain.gain.value = sound.noise
-    panner.pan.value = -.08
-    source.connect(filter)
+    noise.buffer = this.noiseBuffer
+    filter.type = 'highpass'
+    filter.frequency.value = open ? 6200 : 7600
+    gain.gain.setValueAtTime(level, time)
+    gain.gain.exponentialRampToValueAtTime(.0001, time + (open ? .22 : .045))
+    noise.connect(filter)
     filter.connect(gain)
-    gain.connect(panner)
-    this.route(panner, sound.reverb * .48)
-
-    const lfo = ctx.createOscillator()
-    const lfoGain = ctx.createGain()
-    lfo.type = 'sine'
-    lfo.frequency.value = .07
-    lfoGain.gain.value = sound.noise * .35
-    lfo.connect(lfoGain)
-    lfoGain.connect(gain.gain)
-
-    source.start()
-    lfo.start()
-    this.bedSources.push(source, lfo)
+    this.route(gain, open ? .11 : .025)
+    noise.start(time)
+    noise.stop(time + (open ? .24 : .06))
   }
 
-  private playSparkle(sound: Soundscape) {
-    if (!this.running || !this.context || !sound.sparkleNotes?.length || !sound.sparkleLevel) return
+  private scheduleBass(midi: number, time: number, sound: Soundscape) {
+    if (!this.context) return
     const ctx = this.context
-    const now = ctx.currentTime
-    const note = sound.sparkleNotes[Math.floor(Math.random() * sound.sparkleNotes.length)]
-    const base = ctx.createOscillator()
-    const overtone = ctx.createOscillator()
-    const gain = ctx.createGain()
+    const osc = ctx.createOscillator()
+    const sub = ctx.createOscillator()
     const filter = ctx.createBiquadFilter()
-    const panner = ctx.createStereoPanner()
-
-    base.type = 'sine'
-    overtone.type = sound.id === 'glass-signal' ? 'sine' : 'triangle'
-    base.frequency.value = midiToHz(note)
-    overtone.frequency.value = midiToHz(note) * (sound.id === 'glass-signal' ? 2.004 : 1.997)
+    const gain = ctx.createGain()
+    osc.type = sound.id === 'digital-funk' ? 'square' : 'sawtooth'
+    sub.type = 'sine'
+    osc.frequency.value = midiToHz(midi)
+    sub.frequency.value = midiToHz(midi - 12)
     filter.type = 'lowpass'
-    filter.frequency.value = sound.id === 'glass-signal' ? 5200 : 3200
-    filter.Q.value = .4
-    panner.pan.value = Math.random() * 1.1 - .55
-
-    gain.gain.setValueAtTime(.0001, now)
-    gain.gain.exponentialRampToValueAtTime(sound.sparkleLevel, now + .055)
-    gain.gain.exponentialRampToValueAtTime(.0001, now + (sound.id === 'glass-signal' ? 4.2 : 3.2))
-
-    base.connect(gain)
-    overtone.connect(gain)
+    filter.frequency.setValueAtTime(sound.id === 'digital-funk' ? 620 : 520, time)
+    filter.frequency.exponentialRampToValueAtTime(240, time + .22)
+    filter.Q.value = 1.2
+    gain.gain.setValueAtTime(.0001, time)
+    gain.gain.exponentialRampToValueAtTime(sound.bassLevel, time + .012)
+    gain.gain.exponentialRampToValueAtTime(.0001, time + .28)
+    osc.connect(gain)
+    sub.connect(gain)
     gain.connect(filter)
-    filter.connect(panner)
-    this.route(panner, Math.min(.72, sound.reverb + .18))
+    this.route(filter, .035)
+    osc.start(time)
+    sub.start(time)
+    osc.stop(time + .31)
+    sub.stop(time + .31)
+  }
 
-    base.start(now)
-    overtone.start(now)
-    base.stop(now + 4.5)
-    overtone.stop(now + 4.5)
-    this.chordSources.push(base, overtone)
+  private scheduleLead(midi: number, time: number, sound: Soundscape) {
+    if (!this.context) return
+    const ctx = this.context
+    const osc = ctx.createOscillator()
+    const filter = ctx.createBiquadFilter()
+    const gain = ctx.createGain()
+    const pan = ctx.createStereoPanner()
+    osc.type = sound.id === 'city-lights' ? 'sawtooth' : 'triangle'
+    osc.frequency.value = midiToHz(midi)
+    filter.type = 'lowpass'
+    filter.frequency.value = sound.filterHz + 900
+    filter.Q.value = .65
+    pan.pan.value = ((midi % 5) - 2) * .16
+    gain.gain.setValueAtTime(.0001, time)
+    gain.gain.exponentialRampToValueAtTime(sound.leadLevel, time + .014)
+    gain.gain.exponentialRampToValueAtTime(.0001, time + .18)
+    osc.connect(gain)
+    gain.connect(filter)
+    filter.connect(pan)
+    this.route(pan, Math.min(.5, sound.reverb + .12))
+    osc.start(time)
+    osc.stop(time + .22)
+  }
+
+  private scheduleChord(sound: Soundscape, chord: number[], time: number) {
+    if (!this.context) return
+    const ctx = this.context
+    const measure = 60 / sound.bpm * 4
+
+    chord.forEach((midi, index) => {
+      const osc = ctx.createOscillator()
+      const filter = ctx.createBiquadFilter()
+      const gain = ctx.createGain()
+      const pan = ctx.createStereoPanner()
+      osc.type = sound.waveform
+      osc.frequency.value = midiToHz(midi)
+      osc.detune.value = (index - 1.5) * 3.5
+      filter.type = 'lowpass'
+      filter.frequency.value = sound.filterHz
+      filter.Q.value = .65
+      pan.pan.value = (index - 1.5) * .22
+      gain.gain.setValueAtTime(.0001, time)
+      gain.gain.exponentialRampToValueAtTime(sound.chordLevel / chord.length * 3.4, time + .055)
+      gain.gain.setTargetAtTime(sound.chordLevel / chord.length * 1.25, time + .17, .16)
+      gain.gain.exponentialRampToValueAtTime(.0001, time + Math.max(.48, measure - .08))
+      osc.connect(gain)
+      gain.connect(filter)
+      filter.connect(pan)
+      this.route(pan, sound.reverb)
+      osc.start(time)
+      osc.stop(time + measure)
+    })
   }
 }
 
 function MusicIcon({ playing }: { playing: boolean }) {
-  return (
-    <span className={`ambient-eq${playing ? ' playing' : ''}`} aria-hidden="true">
-      <i /><i /><i />
-    </span>
-  )
+  return <span className={`ambient-eq${playing ? ' playing' : ''}`} aria-hidden="true"><i /><i /><i /></span>
 }
 
 function PlayIcon({ playing }: { playing: boolean }) {
@@ -388,7 +404,7 @@ function PlayIcon({ playing }: { playing: boolean }) {
 }
 
 export default function AmbientPlayer() {
-  const engine = useRef<AmbientEngine | null>(null)
+  const engine = useRef<RadioEngine | null>(null)
   const [open, setOpen] = useState(false)
   const [playing, setPlaying] = useState(false)
   const [trackIndex, setTrackIndex] = useState(() => {
@@ -398,14 +414,13 @@ export default function AmbientPlayer() {
   })
   const [volume, setVolume] = useState(() => {
     const saved = Number(localStorage.getItem(VOLUME_KEY))
-    return Number.isFinite(saved) && saved >= 0 && saved <= 1 ? saved : .3
+    return Number.isFinite(saved) && saved >= 0 && saved <= 1 ? saved : .28
   })
   const [error, setError] = useState('')
-
   const sound = SOUNDS[trackIndex]
 
   useEffect(() => {
-    engine.current = new AmbientEngine()
+    engine.current = new RadioEngine()
     return () => engine.current?.destroy()
   }, [])
 
@@ -430,9 +445,9 @@ export default function AmbientPlayer() {
     if (playing) {
       engine.current?.stop()
       setPlaying(false)
-      return
+    } else {
+      void start()
     }
-    void start()
   }
 
   const chooseTrack = (index: number) => {
@@ -441,27 +456,30 @@ export default function AmbientPlayer() {
   }
 
   const shiftTrack = (direction: number) => {
-    const index = (trackIndex + direction + SOUNDS.length) % SOUNDS.length
-    chooseTrack(index)
+    chooseTrack((trackIndex + direction + SOUNDS.length) % SOUNDS.length)
   }
 
   return (
     <div className={`ambient-player${open ? ' open' : ''}`}>
-      <button className="ambient-trigger" type="button" onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-label="Buka pemutar musik">
+      <button className="ambient-trigger" type="button" onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-label="Buka DLavie Radio">
         <MusicIcon playing={playing} />
-        <span><small>Ambient</small><strong>{sound.title}</strong></span>
+        <span><small>DLavie Radio</small><strong>{sound.title}</strong></span>
       </button>
 
       {open && (
-        <section className="ambient-panel" aria-label="Background music">
+        <section className="ambient-panel" aria-label="DLavie Radio">
           <header>
-            <div><small>Background sound</small><strong>Suasana santai</strong></div>
+            <div><small>DLavie Radio</small><strong>Musik buat nemenin browsing</strong></div>
             <button type="button" onClick={() => setOpen(false)} aria-label="Tutup pemutar">×</button>
           </header>
 
           <div className="ambient-now">
             <MusicIcon playing={playing} />
-            <div><small>{playing ? 'Sedang diputar' : 'Siap diputar'}</small><strong>{sound.title}</strong><span>{sound.subtitle}</span></div>
+            <div>
+              <small>{playing ? `${sound.genre} · ${sound.bpm} BPM` : 'Siap diputar'}</small>
+              <strong>{sound.title}</strong>
+              <span>{sound.subtitle}</span>
+            </div>
           </div>
 
           <div className="ambient-controls">
@@ -474,7 +492,7 @@ export default function AmbientPlayer() {
             {SOUNDS.map((item, index) => (
               <button className={index === trackIndex ? 'active' : ''} type="button" key={item.id} onClick={() => chooseTrack(index)}>
                 <i>{String(index + 1).padStart(2, '0')}</i>
-                <span><strong>{item.title}</strong><small>{item.subtitle}</small></span>
+                <span><strong>{item.title}</strong><small>{item.genre} · {item.bpm} BPM</small></span>
                 {index === trackIndex && <b>{playing ? 'PLAY' : 'SELECTED'}</b>}
               </button>
             ))}
@@ -485,7 +503,7 @@ export default function AmbientPlayer() {
             <input type="range" min="0" max="1" step="0.01" value={volume} onChange={(event) => setVolume(Number(event.target.value))} />
           </label>
 
-          <p className="ambient-note">Musik dimulai setelah kamu menekan Play. Soundtrack dibuat langsung di browser dengan synth, stereo ambience, dan reverb ringan.</p>
+          <p className="ambient-note">Semua track dibuat original di browser. Musik baru mulai setelah kamu menekan Play.</p>
           {error && <p className="ambient-error">{error}</p>}
         </section>
       )}
