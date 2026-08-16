@@ -241,7 +241,7 @@ function App() {
       return
     }
     setBalance((current) => current - selected.price)
-    setHistory((items) => [{ id: crypto.randomUUID(), type: 'order', label: `${selected.name} · ${selected.flag}`, amount: -selected.price, time: 'Baru saja' }, ...items].slice(0, 8))
+    setHistory((items) => [{ id: crypto.randomUUID(), type: 'order' as const, label: `${selected.name} · ${selected.flag}`, amount: -selected.price, time: 'Baru saja' }, ...items].slice(0, 8))
     setModal(null)
   }
 
@@ -250,7 +250,7 @@ function App() {
     const amount = Number(deposit.replace(/\D/g, ''))
     if (!Number.isFinite(amount) || amount < 1000) return
     setBalance((current) => current + amount)
-    setHistory((items) => [{ id: crypto.randomUUID(), type: 'deposit', label: 'Deposit saldo', amount, time: 'Baru saja' }, ...items].slice(0, 8))
+    setHistory((items) => [{ id: crypto.randomUUID(), type: 'deposit' as const, label: 'Deposit saldo', amount, time: 'Baru saja' }, ...items].slice(0, 8))
     setModal(null)
   }
 
