@@ -1,0 +1,141 @@
+/* DLavie navbar utility menu: profile + wallet + language behind one hamburger. */
+.site-nav .nav-actions { display:none !important; }
+
+.utility-dock {
+  position:fixed;
+  z-index:132;
+  top:calc(26px + env(safe-area-inset-top));
+  right:max(20px, calc((100vw - var(--shell)) / 2));
+  color:var(--theme-ink);
+}
+.utility-trigger {
+  width:40px;
+  height:40px;
+  padding:0;
+  display:grid;
+  place-items:center;
+  border:1px solid var(--theme-line);
+  border-radius:12px;
+  background:var(--theme-soft);
+  color:var(--theme-ink);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  cursor:pointer;
+  transition:background .22s ease,border-color .22s ease,transform .22s ease;
+}
+.utility-trigger:hover { background:var(--theme-soft-2); border-color:var(--theme-line-strong); transform:translateY(-1px); }
+.utility-trigger svg { width:17px; height:17px; }
+.utility-dock.is-open .utility-trigger { background:var(--accent-soft); border-color:var(--accent-mid); }
+
+.utility-menu {
+  position:absolute;
+  top:49px;
+  right:0;
+  width:286px;
+  padding:12px;
+  border:1px solid var(--theme-line);
+  border-radius:20px;
+  background:color-mix(in srgb,var(--theme-panel-solid),transparent 4%);
+  color:var(--theme-ink);
+  backdrop-filter:blur(28px) saturate(118%);
+  -webkit-backdrop-filter:blur(28px) saturate(118%);
+  box-shadow:0 28px 78px var(--theme-shadow);
+  transform-origin:92% 0;
+  animation:utilityMenuIn .26s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes utilityMenuIn { from{opacity:0;transform:translateY(-7px) scale(.975)} to{opacity:1;transform:none} }
+.utility-menu-head { padding:4px 5px 12px; border-bottom:1px solid var(--theme-line); display:flex; flex-direction:column; gap:3px; }
+.utility-menu-head span { font-size:10px; font-weight:850; letter-spacing:-.02em; }
+.utility-menu-head small { color:var(--theme-muted); font-size:7.5px; }
+
+.utility-row {
+  width:100%;
+  min-height:58px;
+  padding:9px 8px;
+  display:grid;
+  grid-template-columns:38px minmax(0,1fr) 15px;
+  align-items:center;
+  gap:9px;
+  border:0;
+  border-bottom:1px solid var(--theme-line);
+  background:transparent;
+  color:var(--theme-ink);
+  text-align:left;
+  cursor:pointer;
+}
+.utility-row:hover { background:var(--theme-soft); }
+.utility-row > svg { width:14px; height:14px; color:var(--theme-muted-2); }
+.utility-row-icon { width:36px; height:36px; display:grid; place-items:center; border:1px solid var(--theme-line); border-radius:11px; background:var(--theme-soft); color:var(--theme-ink); }
+.utility-row-icon svg { width:16px; height:16px; }
+.utility-row-copy { min-width:0; display:flex; flex-direction:column; gap:3px; }
+.utility-row-copy strong { font-size:9px; }
+.utility-row-copy small { color:var(--theme-muted); font-size:7px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+
+.utility-language { padding:11px 4px 3px; }
+.utility-language-head { display:grid; grid-template-columns:38px 1fr; align-items:center; gap:9px; margin-bottom:10px; }
+.utility-language-head > span:last-child { display:flex; flex-direction:column; gap:3px; }
+.utility-language-head strong { font-size:9px; }
+.utility-language-head small { color:var(--theme-muted); font-size:7px; }
+.utility-language-toggle { display:grid; grid-template-columns:1fr 1fr; gap:6px; padding:4px; border:1px solid var(--theme-line); border-radius:13px; background:var(--theme-soft); }
+.utility-language-toggle button { min-height:44px; padding:6px 8px; display:grid; grid-template-columns:24px 1fr; align-items:center; gap:6px; border:1px solid transparent; border-radius:9px; background:transparent; color:var(--theme-muted); font:inherit; text-align:left; cursor:pointer; }
+.utility-language-toggle button.active { color:var(--theme-ink); background:var(--theme-panel-solid); border-color:var(--theme-line); box-shadow:0 4px 14px var(--theme-shadow); }
+.utility-language-toggle b { font-size:7px; letter-spacing:.06em; }
+.utility-language-toggle button > span { display:flex; flex-direction:column; gap:1px; font-size:7.5px; font-weight:750; }
+.utility-language-toggle button > span small { color:var(--theme-muted); font-size:6px; font-weight:600; }
+
+/* Compact two-line brand lockup with a time-aware greeting. */
+.site-nav .brand .nav-brand-copy {
+  display:flex !important;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+  gap:1px;
+  min-width:0;
+  line-height:1;
+}
+.site-nav .brand .nav-brand-copy > span { display:none !important; }
+.site-nav .brand .nav-brand-greeting {
+  display:block;
+  max-width:132px;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  color:var(--theme-muted) !important;
+  font-size:6.4px;
+  font-weight:650;
+  letter-spacing:0;
+  line-height:1.2;
+}
+
+@media (max-width:820px) {
+  .utility-dock { top:calc(20px + env(safe-area-inset-top)); right:18px; }
+  .utility-trigger { width:37px; height:37px; border-radius:11px; }
+  /* Wallet/profile are gone, so theme can sit neatly beside the hamburger. */
+  .theme-dock { right:65px !important; }
+  .site-nav .brand { max-width:128px !important; }
+}
+
+@media (max-width:560px) {
+  .utility-dock { top:calc(17.5px + env(safe-area-inset-top)); right:20px; }
+  .utility-trigger { width:35px; height:35px; border-radius:10px; }
+  .utility-trigger svg { width:15px; height:15px; }
+  .utility-menu { top:44px; width:min(286px,calc(100vw - 28px)); }
+  .theme-dock { right:63px !important; }
+  .theme-panel { right:-43px !important; }
+  .site-nav { padding-right:13px !important; }
+  .site-nav .brand { max-width:132px !important; }
+  .site-nav .brand .nav-brand-greeting { max-width:112px; font-size:6px; }
+}
+
+@media (max-width:390px) {
+  .utility-dock { right:17px; }
+  .theme-dock { right:58px !important; }
+  .utility-menu { right:-2px; width:calc(100vw - 22px); }
+  .site-nav .brand { max-width:112px !important; }
+  .site-nav .brand .nav-brand-greeting { max-width:92px; font-size:5.7px; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .utility-menu { animation:none !important; }
+  .utility-trigger { transition:none !important; }
+}
