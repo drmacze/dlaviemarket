@@ -1,0 +1,160 @@
+/* Mobile/product polish layer — loaded after the core styles and brand logos. */
+
+/* Fixed navbar anchors should never land underneath the glass header. */
+#catalog,
+#how,
+#security {
+  scroll-margin-top: calc(92px + env(safe-area-inset-top));
+}
+
+/* Cleaner DLavie monogram. */
+.brand-mark {
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+}
+.brand-mark i { display: none; }
+.brand-mark::after {
+  content: "D";
+  color: #111114;
+  font-size: 15px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: -.08em;
+  transform: translateX(-.5px);
+}
+.footer .brand-mark::after { font-size: 12px; }
+
+/* Brand marks should read as the real logo first, not as a tinted app tile. */
+.service-logo,
+.window-logo,
+.modal-icon[style*="--service-tint"] {
+  background: rgba(255,255,255,.045) !important;
+  border-color: rgba(255,255,255,.10) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.035);
+}
+.service-logo::after,
+.window-logo::after,
+.modal-icon[style*="--service-tint"]::after {
+  filter: drop-shadow(0 3px 8px rgba(0,0,0,.22));
+}
+
+/* The country label already contains the flag in countries[]. Hide the duplicate service.flag. */
+.service-country > span:first-child { display: none; }
+.service-country { gap: 0; }
+
+/* Slightly calmer hierarchy on all compact cards. */
+.service-card {
+  min-height: 242px;
+}
+.service-copy span {
+  color: #7d7d88;
+  letter-spacing: .09em;
+}
+.service-bottom {
+  border-top-color: rgba(255,255,255,.045);
+}
+.stock {
+  letter-spacing: .065em;
+  color: #85858f;
+}
+
+@media (max-width: 560px) {
+  /* More marketplace-like density: ~190px instead of a tall landing-page card. */
+  .catalog-section { padding-top: 82px; }
+  .service-grid {
+    gap: 10px;
+    padding-bottom: calc(28px + env(safe-area-inset-bottom));
+  }
+  .service-card {
+    min-height: 0;
+    padding: 16px;
+    border-radius: 18px;
+    background: linear-gradient(155deg, rgba(255,255,255,.04), rgba(255,255,255,.014));
+  }
+  .service-top { min-height: 42px; }
+  .service-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+  }
+  .service-logo::after { width: 62%; }
+  .stock {
+    gap: 6px;
+    font-size: 7.5px;
+    letter-spacing: .055em;
+  }
+  .stock span {
+    width: 5px;
+    height: 5px;
+    box-shadow: 0 0 8px rgba(52,211,153,.42);
+  }
+  .service-copy { margin-top: 14px; }
+  .service-copy span {
+    font-size: 7.5px;
+    letter-spacing: .085em;
+    color: #81818b;
+  }
+  .service-copy h3 {
+    margin-top: 4px;
+    font-size: 19px;
+    line-height: 1.05;
+  }
+  .service-country {
+    margin-top: 7px;
+    font-size: 9px;
+    color: #96969f;
+  }
+  .service-bottom {
+    margin-top: 15px;
+    padding-top: 13px;
+  }
+  .service-bottom > div { gap: 3px; }
+  .service-bottom small {
+    font-size: 7.5px;
+    color: #6d6d77;
+  }
+  .service-bottom strong {
+    font-size: 13px;
+    letter-spacing: -.025em;
+  }
+
+  /* Clearer CTA on touchscreens than an anonymous square arrow. */
+  .buy-icon {
+    width: auto;
+    min-width: 66px;
+    height: 34px;
+    padding: 0 11px;
+    border-radius: 10px;
+    display: inline-flex;
+    gap: 7px;
+    font-size: 9px;
+    font-weight: 780;
+  }
+  .buy-icon::before { content: "Beli"; }
+  .buy-icon svg { width: 13px; }
+  .service-card:hover .buy-icon,
+  .buy-icon:active {
+    color: #111;
+    background: #f4f4f5;
+    transform: none;
+  }
+
+  /* Keep interactive sections clear of the iPhone browser chrome. */
+  .history-section { padding-bottom: 58px; }
+  .final-cta { padding-bottom: calc(108px + env(safe-area-inset-bottom)); }
+  .footer { padding-bottom: calc(18px + env(safe-area-inset-bottom)); }
+
+  /* Tighter mobile nav without reducing the tap targets. */
+  .site-nav {
+    box-shadow: 0 14px 38px rgba(0,0,0,.30);
+  }
+  .brand { gap: 9px; }
+  .brand-mark::after { font-size: 14px; }
+}
+
+@media (max-width: 380px) {
+  .service-card { padding: 14px; }
+  .service-copy h3 { font-size: 18px; }
+  .buy-icon { min-width: 62px; padding-inline: 10px; }
+}
