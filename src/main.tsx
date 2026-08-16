@@ -21,6 +21,7 @@ import './avatar-effects-v2.css'
 import './market-flow.css'
 import './order-center.css'
 import './service-brand-polish.css'
+import './provider-logo-card.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
