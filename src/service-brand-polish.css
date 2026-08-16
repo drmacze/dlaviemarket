@@ -1,0 +1,198 @@
+/* Provider + service-aware OTP visual polish.
+   Loaded last so it can safely refine MarketFlow and OrderCenter without changing flow logic. */
+
+/* Provider marks should read like real brand marks, not app icons on white tiles. */
+.provider-logo,
+.activity-provider-logo {
+  background: transparent !important;
+  border-color: transparent !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+  box-shadow: none !important;
+}
+.provider-logo img,
+.activity-provider-logo img {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  padding: 0 !important;
+  object-fit: contain !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.provider-logo b,
+.activity-provider-logo b {
+  opacity: 0;
+  color: var(--theme-ink) !important;
+}
+.provider-logo:has(img[style*="display: none"]) b,
+.activity-provider-logo:has(img[style*="display: none"]) b {
+  opacity: 1;
+}
+
+/* Give wordmarks enough breathing room without reintroducing a tile. */
+.market-provider-list .provider-logo { width: 64px; height: 42px; }
+.confirm-hero .provider-logo { width: 64px; height: 40px; }
+.live-order-provider .provider-logo.small { width: 42px; height: 28px; }
+.activity-provider-logo { width: 44px; height: 30px; }
+
+/* Default OTP palette. Each service below overrides this automatically. */
+.live-order-card,
+.activity-order-card {
+  --otp-a: #252525;
+  --otp-b: #555555;
+  --otp-glow: rgba(255,255,255,.16);
+  --otp-ink: #ffffff;
+}
+
+/* WhatsApp */
+.live-order-card:has(.live-order-brand img[src*="whatsapp.svg"]),
+.activity-order-card:has(.activity-service img[src*="whatsapp.svg"]) {
+  --otp-a: #075e54;
+  --otp-b: #25d366;
+  --otp-glow: rgba(37,211,102,.42);
+}
+/* Telegram */
+.live-order-card:has(.live-order-brand img[src*="telegram.svg"]),
+.activity-order-card:has(.activity-service img[src*="telegram.svg"]) {
+  --otp-a: #1478a8;
+  --otp-b: #2aabee;
+  --otp-glow: rgba(42,171,238,.42);
+}
+/* Google */
+.live-order-card:has(.live-order-brand img[src*="google.svg"]),
+.activity-order-card:has(.activity-service img[src*="google.svg"]) {
+  --otp-a: #185abc;
+  --otp-b: #4285f4;
+  --otp-glow: rgba(66,133,244,.42);
+}
+/* Discord */
+.live-order-card:has(.live-order-brand img[src*="discord.svg"]),
+.activity-order-card:has(.activity-service img[src*="discord.svg"]) {
+  --otp-a: #404eed;
+  --otp-b: #5865f2;
+  --otp-glow: rgba(88,101,242,.44);
+}
+/* Instagram */
+.live-order-card:has(.live-order-brand img[src*="instagram.svg"]),
+.activity-order-card:has(.activity-service img[src*="instagram.svg"]) {
+  --otp-a: #833ab4;
+  --otp-b: #e1306c;
+  --otp-glow: rgba(225,48,108,.42);
+}
+/* Microsoft */
+.live-order-card:has(.live-order-brand img[src*="microsoft.svg"]),
+.activity-order-card:has(.activity-service img[src*="microsoft.svg"]) {
+  --otp-a: #0067b8;
+  --otp-b: #00a4ef;
+  --otp-glow: rgba(0,164,239,.42);
+}
+
+/* Waiting state also inherits the selected service identity, but stays subdued. */
+.live-order-card .otp-waiting-box,
+.activity-order-card .activity-otp-wait {
+  border-color: color-mix(in srgb, var(--otp-b), transparent 58%) !important;
+  background:
+    radial-gradient(circle at 14% 42%, color-mix(in srgb, var(--otp-b), transparent 82%), transparent 42%),
+    color-mix(in srgb, var(--otp-a), var(--theme-panel-solid) 88%) !important;
+}
+.live-order-card .otp-radar i,
+.activity-order-card .activity-radar i {
+  border-color: color-mix(in srgb, var(--otp-b), white 14%) !important;
+  box-shadow: 0 0 14px color-mix(in srgb, var(--otp-b), transparent 62%);
+}
+.live-order-card .otp-radar b,
+.activity-order-card .activity-radar b {
+  color: color-mix(in srgb, var(--otp-b), white 22%);
+}
+
+/* Received state: strong service-specific color, high-contrast copy. */
+.live-order-card .otp-code-box,
+.activity-order-card .activity-otp-code {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--otp-b), white 16%) !important;
+  background:
+    radial-gradient(circle at 88% 8%, rgba(255,255,255,.23), transparent 28%),
+    radial-gradient(circle at 8% 92%, rgba(255,255,255,.10), transparent 34%),
+    linear-gradient(135deg, var(--otp-a), var(--otp-b)) !important;
+  color: var(--otp-ink) !important;
+  box-shadow:
+    0 18px 42px color-mix(in srgb, var(--otp-a), transparent 72%),
+    0 0 34px var(--otp-glow),
+    inset 0 1px 0 rgba(255,255,255,.18) !important;
+}
+.live-order-card .otp-code-box::after,
+.activity-order-card .activity-otp-code::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  width: 150px;
+  height: 150px;
+  right: -58px;
+  bottom: -86px;
+  border: 1px solid rgba(255,255,255,.20);
+  border-radius: 50%;
+  box-shadow: 0 0 0 22px rgba(255,255,255,.035), 0 0 0 46px rgba(255,255,255,.022);
+}
+.live-order-card .otp-code-box small,
+.activity-order-card .activity-otp-code small {
+  color: rgba(255,255,255,.72) !important;
+  font-weight: 750;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.live-order-card .otp-code-box strong,
+.activity-order-card .activity-otp-code strong {
+  color: #fff !important;
+  text-shadow: 0 2px 16px rgba(0,0,0,.18);
+}
+.live-order-card .otp-code-box button,
+.activity-order-card .activity-otp-code button {
+  border-color: rgba(255,255,255,.26) !important;
+  background: rgba(0,0,0,.12) !important;
+  color: #fff !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.live-order-card .otp-code-box button:hover,
+.activity-order-card .activity-otp-code button:hover {
+  background: rgba(0,0,0,.20) !important;
+}
+
+/* Received status follows the service too instead of always being green. */
+.live-order-card .order-status.received,
+.activity-order-card .activity-status.received {
+  color: color-mix(in srgb, var(--otp-b), white 18%) !important;
+  border-color: color-mix(in srgb, var(--otp-b), transparent 52%) !important;
+  background: color-mix(in srgb, var(--otp-b), transparent 90%) !important;
+}
+.live-order-card .order-status.received i,
+.activity-order-card .activity-status.received i {
+  background: var(--otp-b) !important;
+  box-shadow: 0 0 10px var(--otp-glow);
+}
+
+/* A subtle service glow ties the result panel together without recoloring the whole site. */
+.live-order-card:has(.otp-code-box),
+.activity-order-card:has(.activity-otp-code) {
+  border-color: color-mix(in srgb, var(--otp-b), var(--theme-line) 72%) !important;
+  box-shadow: 0 22px 64px var(--theme-shadow), 0 0 34px color-mix(in srgb, var(--otp-b), transparent 92%) !important;
+}
+
+@media (max-width: 620px) {
+  .market-provider-list .provider-logo { width: 52px; height: 36px; }
+  .live-order-provider .provider-logo.small { width: 38px; height: 26px; }
+  .activity-provider-logo { width: 40px; height: 28px; }
+  .live-order-card .otp-code-box,
+  .activity-order-card .activity-otp-code { padding: 15px !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-order-card .otp-code-box,
+  .activity-order-card .activity-otp-code { transition: none !important; }
+}
