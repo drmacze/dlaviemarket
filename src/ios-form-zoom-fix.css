@@ -1,0 +1,20 @@
+/* iOS Safari form focus polish: keep controls at a native-safe 16px without disabling pinch zoom. */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+button,a,[role="button"],input,textarea,select{touch-action:manipulation}
+
+@supports (-webkit-touch-callout:none){
+  @media (max-width:900px){
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+    textarea,
+    select,
+    [contenteditable="true"]{
+      font-size:16px!important;
+      line-height:1.35!important;
+    }
+    input::placeholder,textarea::placeholder{font-size:16px!important}
+    .dlv-assistant-composer textarea,
+    .dlv-assistant-intake input,
+    .dlv-assistant-intake select,
+    .dlv-assistant-intake textarea{font-size:16px!important}
+  }
+}
