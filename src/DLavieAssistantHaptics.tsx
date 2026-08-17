@@ -28,10 +28,14 @@ function pulse(kind: HapticKind) {
 
 export default function DLavieAssistantHaptics() {
   useEffect(() => {
+    const root = document.querySelector<HTMLElement>('.dlv-assistant')
+    if (!root) return
+
     const handledMessages = new WeakSet<Element>()
     const handledErrors = new WeakSet<Element>()
     const handledStates = new WeakSet<Element>()
     let lastPulseAt = 0
+    let scanFrame = 0
 
     const safePulse = (kind: HapticKind, minimumGap = 110) => {
       const now = Date.now()
@@ -41,7 +45,7 @@ export default function DLavieAssistantHaptics() {
     }
 
     const scan = () => {
-      document.querySelectorAll('.dlv-assistant-message.is-assistant:not(.is-typing)').forEach((node) => {
+      root.querySelectorAll('.dlv-assistant-message.is-assistant:not(.is-typing)').forEach((node) => {
         if (handledMessages.has(node)) return
         handledMessages.add(node)
         const kind = node.getAttribute('data-kind')
@@ -50,22 +54,30 @@ export default function DLavieAssistantHaptics() {
         else safePulse('reply', 220)
       })
 
-      document.querySelectorAll('.dlv-assistant-error,.dlv-assistant-composer-error').forEach((node) => {
+      root.querySelectorAll('.dlv-assistant-error,.dlv-assistant-composer-error').forEach((node) => {
         if (handledErrors.has(node)) return
         handledErrors.add(node)
         safePulse('error', 240)
       })
 
-      document.querySelectorAll('.dlv-assistant-quick,.dlv-assistant-receipt').forEach((node) => {
+      root.querySelectorAll('.dlv-assistant-quick,.dlv-assistant-receipt').forEach((node) => {
         if (handledStates.has(node)) return
         handledStates.add(node)
         safePulse('success', 260)
       })
     }
 
+    const scheduleScan = () => {
+      if (scanFrame) return
+      scanFrame = requestAnimationFrame(() => {
+        scanFrame = 0
+        scan()
+      })
+    }
+
     const onPointerDown = (event: PointerEvent) => {
       const target = event.target as HTMLElement | null
-      if (!target?.closest('.dlv-assistant')) return
+      if (!target) return
       if (target.closest('.dlv-assistant-composer button[type="submit"],.dlv-assistant-intake button[type="submit"]')) safePulse('send')
       else if (target.closest('.dlv-assistant-end')) safePulse('warning')
       else if (target.closest('button')) safePulse('tap')
@@ -73,16 +85,17 @@ export default function DLavieAssistantHaptics() {
 
     const observer = new MutationObserver((mutations) => {
       if (!mutations.some((mutation) => mutation.type === 'childList' || (mutation.type === 'attributes' && mutation.attributeName === 'class'))) return
-      scan()
+      scheduleScan()
     })
 
-    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] })
-    document.addEventListener('pointerdown', onPointerDown, true)
+    observer.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] })
+    root.addEventListener('pointerdown', onPointerDown, true)
     scan()
 
     return () => {
       observer.disconnect()
-      document.removeEventListener('pointerdown', onPointerDown, true)
+      if (scanFrame) cancelAnimationFrame(scanFrame)
+      root.removeEventListener('pointerdown', onPointerDown, true)
     }
   }, [])
 
