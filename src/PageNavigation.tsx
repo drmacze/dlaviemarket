@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 
-type PageId = 'home' | 'market' | 'guide' | 'security' | 'activity'
+type PageId = 'home' | 'market' | 'guide' | 'security' | 'activity' | 'help' | 'legal'
 
 type PageItem = {
   id: PageId
@@ -16,6 +16,8 @@ const pages: PageItem[] = [
   { id: 'guide', label: 'Cara kerja', eyebrow: '03', description: 'Pembayaran, order sampai OTP' },
   { id: 'security', label: 'Keamanan', eyebrow: '04', description: 'Proteksi data & status backend' },
   { id: 'activity', label: 'Aktivitas', eyebrow: '05', description: 'Order, OTP, deposit & refund' },
+  { id: 'help', label: 'Bantuan', eyebrow: '06', description: 'FAQ, reference ID & dukungan' },
+  { id: 'legal', label: 'Legal', eyebrow: '07', description: 'Terms, privasi, refund & kebijakan' },
 ]
 
 function normalizePage(hash = window.location.hash): PageId {
@@ -24,6 +26,8 @@ function normalizePage(hash = window.location.hash): PageId {
   if (value === 'guide' || value === 'cara-kerja') return 'guide'
   if (value === 'security' || value === 'keamanan') return 'security'
   if (value === 'activity' || value === 'aktivitas') return 'activity'
+  if (value === 'help' || value === 'faq' || value === 'bantuan') return 'help'
+  if (value === 'legal' || value === 'terms' || value === 'privacy' || value === 'kebijakan') return 'legal'
   return 'home'
 }
 
@@ -32,7 +36,9 @@ function pageSelector(page: PageId) {
   if (page === 'market') return '.catalog-section'
   if (page === 'guide') return '.experience'
   if (page === 'security') return '.security'
-  return '.history-section'
+  if (page === 'activity') return '.history-section'
+  if (page === 'help') return '.help-center-page'
+  return '.legal-center-page'
 }
 
 export default function PageNavigation() {
@@ -128,7 +134,7 @@ export default function PageNavigation() {
         <section className="page-nav-menu" aria-label="Navigasi halaman">
           <div className="page-nav-head">
             <span>Navigasi</span>
-            <small>{active.eyebrow} / 05</small>
+            <small>{active.eyebrow} / 07</small>
           </div>
           <div className="page-nav-list">
             {pages.map((item) => (
