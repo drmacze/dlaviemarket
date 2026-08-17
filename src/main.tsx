@@ -21,6 +21,7 @@ import AccessExperience from './AccessExperience'
 import LoginRedirectEnhancer from './LoginRedirectEnhancer'
 import DLavieAssistant from './DLavieAssistant'
 import DLavieAssistantHaptics from './DLavieAssistantHaptics'
+import DLavieAssistantKnowledgeLinks from './DLavieAssistantKnowledgeLinks'
 import DLavieAdminSupport from './DLavieAdminSupport'
 import './styles.css'
 import './brand-logos.css'
@@ -53,8 +54,10 @@ import './access-experience.css'
 import './dlavie-assistant.css'
 import './dlavie-assistant-motion.css'
 import './dlavie-assistant-hybrid.css'
+import './dlavie-assistant-knowledge.css'
 import './dlavie-admin-support.css'
 import './ios-form-zoom-fix.css'
+import './route-height-fix-v2.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -77,6 +80,7 @@ createRoot(document.getElementById('root')!).render(
     <AccessExperience />
     <DLavieAssistant />
     <DLavieAssistantHaptics />
+    <DLavieAssistantKnowledgeLinks />
     <DLavieAdminSupport />
     <DLavieRadio />
     <App />
