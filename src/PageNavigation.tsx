@@ -11,11 +11,11 @@ type PageItem = {
 }
 
 const pages: PageItem[] = [
-  { id: 'home', label: 'Beranda', eyebrow: '01', description: 'Overview DLavie Market' },
-  { id: 'market', label: 'Market', eyebrow: '02', description: 'Cari & pilih nomor' },
-  { id: 'guide', label: 'Cara kerja', eyebrow: '03', description: 'Alur pembelian sederhana' },
-  { id: 'security', label: 'Keamanan', eyebrow: '04', description: 'Arsitektur & proteksi' },
-  { id: 'activity', label: 'Aktivitas', eyebrow: '05', description: 'Saldo & riwayat transaksi' },
+  { id: 'home', label: 'Beranda', eyebrow: '01', description: 'Ringkasan akun, wallet & layanan' },
+  { id: 'market', label: 'Market', eyebrow: '02', description: 'Layanan, provider, harga & sesi' },
+  { id: 'guide', label: 'Cara kerja', eyebrow: '03', description: 'Pembayaran, order sampai OTP' },
+  { id: 'security', label: 'Keamanan', eyebrow: '04', description: 'Proteksi data & status backend' },
+  { id: 'activity', label: 'Aktivitas', eyebrow: '05', description: 'Order, OTP, deposit & refund' },
 ]
 
 function normalizePage(hash = window.location.hash): PageId {
