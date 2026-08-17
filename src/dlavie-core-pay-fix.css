@@ -1,0 +1,43 @@
+/* DLavie Pay final alignment fixes */
+.dlv-brand-logo{
+  position:relative;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0!important;
+}
+.dlv-brand-logo b{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  padding:0 4px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+  line-height:1!important;
+  transform:translateY(1px);
+  box-sizing:border-box;
+}
+.dlv-brand-logo::after{
+  pointer-events:none;
+}
+.dlv-selection-summary .dlv-brand-logo,
+.dlv-method-row .dlv-brand-logo{
+  align-self:center!important;
+  justify-self:center!important;
+}
+.dlv-method-row{
+  align-items:center!important;
+}
+.dlv-method-copy{
+  align-self:center!important;
+}
+.dlv-core-error{
+  display:flex;
+  align-items:flex-start;
+  min-height:0;
+  padding:10px 12px;
+  border-radius:11px;
+}
