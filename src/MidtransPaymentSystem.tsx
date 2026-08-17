@@ -43,10 +43,31 @@ function language() {
   return localStorage.getItem('dlavie-language') === 'en' ? 'en' : 'id'
 }
 
+function createWalletToken() {
+  const bytes = crypto.getRandomValues(new Uint8Array(32))
+  let binary = ''
+  bytes.forEach((byte) => { binary += String.fromCharCode(byte) })
+  return `dlv_${btoa(binary).replaceAll('+', '-').replaceAll('/', '_').replaceAll('=', '')}`
+}
+
+function getLocalWalletToken() {
+  let token = localStorage.getItem(TOKEN_KEY)
+  if (!token) {
+    token = createWalletToken()
+    localStorage.setItem(TOKEN_KEY, token)
+  }
+  return token
+}
+
+function localBalance() {
+  const value = Number(localStorage.getItem('dlavie-balance') || 0)
+  return Number.isFinite(value) ? value : 0
+}
+
 export default function MidtransPaymentSystem() {
   const [open, setOpen] = useState(false)
   const [amount, setAmount] = useState('10000')
-  const [balance, setBalance] = useState<number | null>(null)
+  const [balance, setBalance] = useState<number | null>(() => localBalance())
   const [deposits, setDeposits] = useState<Deposit[]>([])
   const [busy, setBusy] = useState(false)
   const [syncing, setSyncing] = useState(false)
@@ -59,7 +80,7 @@ export default function MidtransPaymentSystem() {
     body: 'Test payments through Midtrans Sandbox. Your wallet is credited only after the payment is verified by the server.',
     amount: 'Deposit amount',
     pay: 'Continue to Midtrans Sandbox',
-    processing: 'Creating test payment…',
+    processing: 'Opening Midtrans Sandbox…',
     current: 'Server balance',
     refresh: 'Refresh status',
     recent: 'Recent deposits',
@@ -68,7 +89,7 @@ export default function MidtransPaymentSystem() {
     invalid: 'Minimum deposit is Rp1,000.',
     failed: 'Could not create the Midtrans Sandbox payment. Try again in a moment.',
     failedCode: 'Payment request failed',
-    connection: 'Could not reach the payment server. Check your connection and try again.',
+    walletSync: 'Balance sync is temporarily unavailable. You can still continue with the Sandbox payment.',
     syncing: 'Checking…',
     pending: 'Pending', paid: 'Paid', expired: 'Expired', cancelled: 'Cancelled', failedStatus: 'Failed', denied: 'Denied', created: 'Created',
   } : {
@@ -77,7 +98,7 @@ export default function MidtransPaymentSystem() {
     body: 'Pembayaran percobaan melalui Midtrans Sandbox. Saldo hanya ditambahkan setelah pembayaran diverifikasi oleh server.',
     amount: 'Nominal deposit',
     pay: 'Lanjut ke Midtrans Sandbox',
-    processing: 'Membuat pembayaran uji…',
+    processing: 'Membuka Midtrans Sandbox…',
     current: 'Saldo server',
     refresh: 'Perbarui status',
     recent: 'Deposit terbaru',
@@ -86,7 +107,7 @@ export default function MidtransPaymentSystem() {
     invalid: 'Minimum deposit adalah Rp1.000.',
     failed: 'Pembayaran Midtrans Sandbox belum bisa dibuat. Coba lagi sebentar.',
     failedCode: 'Permintaan pembayaran gagal',
-    connection: 'Server pembayaran tidak dapat dijangkau. Periksa koneksi lalu coba lagi.',
+    walletSync: 'Sinkronisasi saldo sedang tidak tersedia. Pembayaran Sandbox tetap bisa dilanjutkan.',
     syncing: 'Memeriksa…',
     pending: 'Menunggu', paid: 'Berhasil', expired: 'Kedaluwarsa', cancelled: 'Dibatalkan', failedStatus: 'Gagal', denied: 'Ditolak', created: 'Dibuat',
   }, [lang])
@@ -103,47 +124,31 @@ export default function MidtransPaymentSystem() {
     setDeposits(Array.isArray(data.deposits) ? data.deposits : [])
   }, [])
 
-  const walletRequest = useCallback(async (action: 'ensure' | 'status', token?: string | null) => {
-    const response = await fetch(`${API_BASE}/dlavie-wallet`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token ? { 'x-dlavie-wallet-token': token } : {}),
-      },
-      body: JSON.stringify({ action }),
-    })
+  const walletRequest = useCallback(async (action: 'ensure' | 'status', token: string) => {
+    const body = new URLSearchParams({ action, wallet_token: token })
+    const response = await fetch(`${API_BASE}/dlavie-wallet`, { method: 'POST', body })
     const data = await response.json().catch(() => ({})) as WalletResponse
     return { response, data }
   }, [])
 
   const ensureWallet = useCallback(async () => {
-    let token = localStorage.getItem(TOKEN_KEY)
-    let result = await walletRequest('ensure', token)
-    if (result.response.status === 401 && token) {
-      localStorage.removeItem(TOKEN_KEY)
-      token = null
-      result = await walletRequest('ensure', null)
-    }
+    let token = getLocalWalletToken()
+    const result = await walletRequest('ensure', token)
     if (!result.response.ok || !result.data.ok) throw new Error(result.data.error || 'wallet_error')
     if (result.data.wallet_token) {
       token = result.data.wallet_token
       localStorage.setItem(TOKEN_KEY, token)
     }
-    if (!token) throw new Error('wallet_token_missing')
     applyWallet(result.data)
     return token
   }, [applyWallet, walletRequest])
 
   const syncWallet = useCallback(async () => {
-    const token = localStorage.getItem(TOKEN_KEY)
-    if (!token) return ensureWallet()
+    const token = getLocalWalletToken()
     setSyncing(true)
     try {
       const result = await walletRequest('status', token)
-      if (result.response.status === 401) {
-        localStorage.removeItem(TOKEN_KEY)
-        return await ensureWallet()
-      }
+      if (result.response.status === 401) return await ensureWallet()
       if (!result.response.ok || !result.data.ok) throw new Error(result.data.error || 'wallet_status_error')
       applyWallet(result.data)
       return token
@@ -153,13 +158,39 @@ export default function MidtransPaymentSystem() {
   }, [applyWallet, ensureWallet, walletRequest])
 
   const paymentRequest = useCallback(async (token: string, numeric: number, profile: Profile | null) => {
-    const response = await fetch(`${API_BASE}/dlavie-create-payment`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-dlavie-wallet-token': token },
-      body: JSON.stringify({ amount: numeric, customer: { name: profile?.username, email: profile?.email } }),
+    const body = new URLSearchParams({
+      amount: String(numeric),
+      wallet_token: token,
+      customer_name: profile?.username || '',
+      customer_email: profile?.email || '',
     })
+    const response = await fetch(`${API_BASE}/dlavie-create-payment`, { method: 'POST', body })
     const data = await response.json().catch(() => ({})) as PaymentResponse
     return { response, data }
+  }, [])
+
+  const directPaymentFallback = useCallback((token: string, numeric: number, profile: Profile | null) => {
+    const form = document.createElement('form')
+    form.method = 'POST'
+    form.action = `${API_BASE}/dlavie-create-payment`
+    form.style.display = 'none'
+
+    const fields: Record<string, string> = {
+      amount: String(numeric),
+      wallet_token: token,
+      customer_name: profile?.username || '',
+      customer_email: profile?.email || '',
+      direct_redirect: '1',
+    }
+    Object.entries(fields).forEach(([name, value]) => {
+      const input = document.createElement('input')
+      input.type = 'hidden'
+      input.name = name
+      input.value = value
+      form.appendChild(input)
+    })
+    document.body.appendChild(form)
+    form.submit()
   }, [])
 
   useEffect(() => {
@@ -174,26 +205,33 @@ export default function MidtransPaymentSystem() {
       setLang(language())
       setError('')
       setOpen(true)
-      void syncWallet().catch(() => setError(copy.failed))
+      void syncWallet().catch(() => setError(copy.walletSync))
     }
     document.addEventListener('click', intercept, true)
     return () => document.removeEventListener('click', intercept, true)
-  }, [copy.failed, syncWallet])
+  }, [copy.walletSync, syncWallet])
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
-    if (params.get('midtrans') !== 'return') return
+    const midtrans = params.get('midtrans')
+    if (midtrans === 'error') {
+      setOpen(true)
+      setError(copy.failed)
+      history.replaceState(null, '', `${window.location.pathname}#/home`)
+      return
+    }
+    if (midtrans !== 'return') return
     setOpen(true)
     history.replaceState(null, '', `${window.location.pathname}#/activity`)
     const timers = [0, 2200, 6000, 12000].map((delay) => window.setTimeout(() => {
       void syncWallet().catch(() => undefined)
     }, delay))
     return () => timers.forEach(window.clearTimeout)
-  }, [syncWallet])
+  }, [copy.failed, syncWallet])
 
   useEffect(() => {
     const onFocus = () => {
-      if (localStorage.getItem(TOKEN_KEY)) void syncWallet().catch(() => undefined)
+      void syncWallet().catch(() => undefined)
     }
     window.addEventListener('focus', onFocus)
     return () => window.removeEventListener('focus', onFocus)
@@ -220,32 +258,22 @@ export default function MidtransPaymentSystem() {
 
     setBusy(true)
     setError('')
+    const profile = readProfile()
+    const token = getLocalWalletToken()
+
     try {
-      const profile = readProfile()
-      let token = localStorage.getItem(TOKEN_KEY)
-      if (!token) token = await ensureWallet()
-
-      let result = await paymentRequest(token, numeric, profile)
-
-      if (result.response.status === 401) {
-        localStorage.removeItem(TOKEN_KEY)
-        token = await ensureWallet()
-        result = await paymentRequest(token, numeric, profile)
-      }
-
+      const result = await paymentRequest(token, numeric, profile)
       if (!result.response.ok || !result.data.ok || !result.data.redirect_url) {
         const suffix = result.data.error ? ` · ${result.data.error}` : ` · HTTP ${result.response.status}`
         setError(`${copy.failedCode}${suffix}`)
         setBusy(false)
         return
       }
-
       if (result.data.order_id) localStorage.setItem('dlavie-last-midtrans-order', result.data.order_id)
-      window.location.href = result.data.redirect_url
+      window.location.assign(result.data.redirect_url)
     } catch (cause) {
-      console.error('Midtrans payment', cause)
-      setError(copy.connection)
-      setBusy(false)
+      console.warn('Midtrans fetch blocked, using direct navigation fallback', cause)
+      directPaymentFallback(token, numeric, profile)
     }
   }
 
@@ -274,8 +302,8 @@ export default function MidtransPaymentSystem() {
 
         <div className="midtrans-balance">
           <span>{copy.current}</span>
-          <strong>{balance === null ? '—' : rupiah.format(balance)}</strong>
-          <button type="button" onClick={() => void syncWallet().catch(() => setError(copy.failed))}>{syncing ? copy.syncing : copy.refresh}</button>
+          <strong>{balance === null ? rupiah.format(0) : rupiah.format(balance)}</strong>
+          <button type="button" onClick={() => void syncWallet().catch(() => setError(copy.walletSync))}>{syncing ? copy.syncing : copy.refresh}</button>
         </div>
 
         <form onSubmit={submit}>
