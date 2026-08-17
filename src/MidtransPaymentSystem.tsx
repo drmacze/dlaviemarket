@@ -23,17 +23,65 @@ type PaymentResponse = {
   ok?: boolean
   environment?: string
   redirect_url?: string
+  snap_token?: string
   order_id?: string
   error?: string
   status?: number
 }
 
 type Profile = { username?: string; email?: string }
+type SnapResult = Record<string, unknown>
+type SnapPayOptions = {
+  onSuccess?: (result: SnapResult) => void
+  onPending?: (result: SnapResult) => void
+  onError?: (result: SnapResult) => void
+  onClose?: () => void
+}
+
+declare global {
+  interface Window {
+    snap?: { pay: (token: string, options?: SnapPayOptions) => void }
+  }
+}
 
 const API_BASE = 'https://ydaeukhqwishlrjyfktk.supabase.co/functions/v1'
 const TOKEN_KEY = 'dlavie-wallet-token-v1'
 const STATE_EVENT = 'dlavie:state-changed'
+const SNAP_SCRIPT = 'https://app.sandbox.midtrans.com/snap/snap.js'
+const MIDTRANS_CLIENT_KEY = 'Mid-client-kW0GkT3Ovm0oHKOn'
 const rupiah = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 })
+let snapPromise: Promise<void> | null = null
+
+function loadSnap() {
+  if (window.snap?.pay) return Promise.resolve()
+  if (snapPromise) return snapPromise
+
+  snapPromise = new Promise<void>((resolve, reject) => {
+    const existing = document.querySelector<HTMLScriptElement>('script[data-dlavie-midtrans-snap="true"]')
+    if (existing) {
+      if (window.snap?.pay) resolve()
+      else {
+        existing.addEventListener('load', () => resolve(), { once: true })
+        existing.addEventListener('error', () => reject(new Error('snap_script_failed')), { once: true })
+      }
+      return
+    }
+
+    const script = document.createElement('script')
+    script.src = SNAP_SCRIPT
+    script.async = true
+    script.setAttribute('data-client-key', MIDTRANS_CLIENT_KEY)
+    script.setAttribute('data-dlavie-midtrans-snap', 'true')
+    script.onload = () => window.snap?.pay ? resolve() : reject(new Error('snap_unavailable'))
+    script.onerror = () => reject(new Error('snap_script_failed'))
+    document.body.appendChild(script)
+  }).catch((error) => {
+    snapPromise = null
+    throw error
+  })
+
+  return snapPromise
+}
 
 function readProfile(): Profile | null {
   try { return JSON.parse(localStorage.getItem('dlavie-account-profile-v1') || 'null') as Profile | null } catch { return null }
@@ -77,10 +125,10 @@ export default function MidtransPaymentSystem() {
   const copy = useMemo(() => lang === 'en' ? {
     title: 'Add wallet balance',
     eyebrow: 'MIDTRANS · SANDBOX',
-    body: 'Test payments through Midtrans Sandbox. Your wallet is credited only after the payment is verified by the server.',
+    body: 'Choose the amount here. Midtrans payment methods will open directly over DLavie without leaving this page.',
     amount: 'Deposit amount',
-    pay: 'Continue to Midtrans Sandbox',
-    processing: 'Opening Midtrans Sandbox…',
+    pay: 'Choose payment method',
+    processing: 'Preparing payment…',
     current: 'Server balance',
     refresh: 'Refresh status',
     recent: 'Recent deposits',
@@ -89,16 +137,18 @@ export default function MidtransPaymentSystem() {
     invalid: 'Minimum deposit is Rp1,000.',
     failed: 'Could not create the Midtrans Sandbox payment. Try again in a moment.',
     failedCode: 'Payment request failed',
+    popupError: 'The in-site payment window could not be opened. Redirecting to Midtrans Sandbox instead.',
+    paymentError: 'Payment was not completed. You can try another payment method.',
     walletSync: 'Balance sync is temporarily unavailable. You can still continue with the Sandbox payment.',
     syncing: 'Checking…',
     pending: 'Pending', paid: 'Paid', expired: 'Expired', cancelled: 'Cancelled', failedStatus: 'Failed', denied: 'Denied', created: 'Created',
   } : {
     title: 'Isi saldo wallet',
     eyebrow: 'MIDTRANS · SANDBOX',
-    body: 'Pembayaran percobaan melalui Midtrans Sandbox. Saldo hanya ditambahkan setelah pembayaran diverifikasi oleh server.',
+    body: 'Pilih nominal di sini. Metode pembayaran Midtrans akan terbuka langsung di atas DLavie tanpa meninggalkan halaman.',
     amount: 'Nominal deposit',
-    pay: 'Lanjut ke Midtrans Sandbox',
-    processing: 'Membuka Midtrans Sandbox…',
+    pay: 'Pilih metode pembayaran',
+    processing: 'Menyiapkan pembayaran…',
     current: 'Saldo server',
     refresh: 'Perbarui status',
     recent: 'Deposit terbaru',
@@ -107,6 +157,8 @@ export default function MidtransPaymentSystem() {
     invalid: 'Minimum deposit adalah Rp1.000.',
     failed: 'Pembayaran Midtrans Sandbox belum bisa dibuat. Coba lagi sebentar.',
     failedCode: 'Permintaan pembayaran gagal',
+    popupError: 'Jendela pembayaran di dalam website gagal dibuka. Mengalihkan ke Midtrans Sandbox sebagai cadangan.',
+    paymentError: 'Pembayaran belum selesai. Kamu bisa mencoba metode pembayaran lain.',
     walletSync: 'Sinkronisasi saldo sedang tidak tersedia. Pembayaran Sandbox tetap bisa dilanjutkan.',
     syncing: 'Memeriksa…',
     pending: 'Menunggu', paid: 'Berhasil', expired: 'Kedaluwarsa', cancelled: 'Dibatalkan', failedStatus: 'Gagal', denied: 'Ditolak', created: 'Dibuat',
@@ -194,6 +246,10 @@ export default function MidtransPaymentSystem() {
   }, [])
 
   useEffect(() => {
+    void loadSnap().catch(() => undefined)
+  }, [])
+
+  useEffect(() => {
     const intercept = (event: MouseEvent) => {
       const target = event.target as HTMLElement | null
       if (!target) return
@@ -269,8 +325,44 @@ export default function MidtransPaymentSystem() {
         setBusy(false)
         return
       }
+
       if (result.data.order_id) localStorage.setItem('dlavie-last-midtrans-order', result.data.order_id)
-      window.location.assign(result.data.redirect_url)
+
+      if (!result.data.snap_token) {
+        window.location.assign(result.data.redirect_url)
+        return
+      }
+
+      try {
+        await loadSnap()
+        if (!window.snap?.pay) throw new Error('snap_unavailable')
+        setBusy(false)
+        setOpen(false)
+        window.snap.pay(result.data.snap_token, {
+          onSuccess: () => {
+            window.location.hash = '#/activity'
+            window.setTimeout(() => void syncWallet().catch(() => undefined), 600)
+            window.setTimeout(() => void syncWallet().catch(() => undefined), 2500)
+          },
+          onPending: () => {
+            window.location.hash = '#/activity'
+            window.setTimeout(() => void syncWallet().catch(() => undefined), 600)
+          },
+          onError: () => {
+            setOpen(true)
+            setError(copy.paymentError)
+            void syncWallet().catch(() => undefined)
+          },
+          onClose: () => {
+            setOpen(true)
+            void syncWallet().catch(() => undefined)
+          },
+        })
+      } catch (snapError) {
+        console.warn('Snap popup unavailable, using redirect fallback', snapError)
+        setError(copy.popupError)
+        window.location.assign(result.data.redirect_url)
+      }
     } catch (cause) {
       console.warn('Midtrans fetch blocked, using direct navigation fallback', cause)
       directPaymentFallback(token, numeric, profile)
