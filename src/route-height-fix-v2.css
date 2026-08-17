@@ -1,0 +1,42 @@
+/* Route height cleanup v2 — standalone page siblings should not inherit an empty App viewport. */
+html[data-page]:not([data-page="home"]) .app{min-height:0!important}
+html[data-page]:not([data-page="home"]) .app>main{min-height:0!important}
+
+/* These routes render their real page outside App. Keep only App's fixed nav + footer. */
+html[data-page="market"] .app>main,
+html[data-page="activity"] .app>main,
+html[data-page="help"] .app>main,
+html[data-page="legal"] .app>main{display:none!important}
+
+html[data-page="market"] .market-flow-page,
+html[data-page="activity"] .order-center-page,
+html[data-page="help"] .market-info-page,
+html[data-page="legal"] .market-info-page{min-height:0!important}
+
+html[data-page="activity"] .order-center-page{padding-bottom:calc(48px + env(safe-area-inset-bottom))!important}
+html[data-page="help"] .market-info-page,
+html[data-page="legal"] .market-info-page{padding-bottom:calc(58px + env(safe-area-inset-bottom))!important}
+
+/* Legacy in-App routes should grow only from their actual content. */
+html[data-page="guide"] main,
+html[data-page="security"] main,
+html[data-page="guide"] .experience,
+html[data-page="security"] .security{min-height:0!important}
+html[data-page="guide"] .experience,
+html[data-page="security"] .security{padding-bottom:calc(58px + env(safe-area-inset-bottom))!important}
+
+html[data-page]:not([data-page="home"]) .footer{margin-top:0!important;min-height:0!important;padding-top:22px!important;padding-bottom:calc(26px + env(safe-area-inset-bottom))!important}
+
+/* Prevent hidden route shells or portals from reserving height. */
+.market-flow-page:not(:where(html[data-page="market"] *)),
+.order-center-page:not(:where(html[data-page="activity"] *)),
+.market-info-page:not(:where(html[data-page="help"] *,html[data-page="legal"] *)){min-height:0!important}
+
+@media(max-width:620px){
+ html[data-page="activity"] .order-center-page{padding-bottom:calc(34px + env(safe-area-inset-bottom))!important}
+ html[data-page="help"] .market-info-page,
+ html[data-page="legal"] .market-info-page{padding-bottom:calc(42px + env(safe-area-inset-bottom))!important}
+ html[data-page="guide"] .experience,
+ html[data-page="security"] .security{padding-bottom:calc(44px + env(safe-area-inset-bottom))!important}
+ html[data-page]:not([data-page="home"]) .footer{padding-bottom:calc(22px + env(safe-area-inset-bottom))!important}
+}
