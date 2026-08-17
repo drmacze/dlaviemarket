@@ -16,6 +16,7 @@ import ActivityMetadataEnhancer from './ActivityMetadataEnhancer'
 import MidtransPaymentSystem from './MidtransPaymentSystem'
 import WalletHistoryEnhancer from './WalletHistoryEnhancer'
 import SiteDetailSystem from './SiteDetailSystem'
+import MarketPolicies from './MarketPolicies'
 import './styles.css'
 import './brand-logos.css'
 import './mobile-polish.css'
@@ -42,6 +43,8 @@ import './dlavie-core-pay-fix.css'
 import './wallet-history-enhancer.css'
 import './activity-metadata.css'
 import './site-detail-system.css'
+import './market-policies.css'
+import './market-policies-route.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -59,6 +62,7 @@ createRoot(document.getElementById('root')!).render(
     <MidtransPaymentSystem />
     <WalletHistoryEnhancer />
     <SiteDetailSystem />
+    <MarketPolicies />
     <DLavieRadio />
     <App />
   </StrictMode>,
