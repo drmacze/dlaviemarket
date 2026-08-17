@@ -27,15 +27,15 @@ function linkifyParagraph(p:HTMLElement){
  p.replaceChildren(fragment)
 }
 
-function patchEngineVersion(){
- document.querySelectorAll<HTMLElement>('.dlv-assistant-ready-meta strong').forEach(node=>{
+function patchEngineVersion(root:ParentNode){
+ root.querySelectorAll<HTMLElement>('.dlv-assistant-ready-meta strong').forEach(node=>{
   if(/^DLavie v\d+/i.test(node.textContent||''))node.textContent='DLavie v3'
  })
 }
 
-function applyLinks(){
- document.querySelectorAll<HTMLElement>('.dlv-assistant-message.is-assistant:not(.is-typing) p').forEach(linkifyParagraph)
- patchEngineVersion()
+function applyLinks(root:ParentNode){
+ root.querySelectorAll<HTMLElement>('.dlv-assistant-message.is-assistant:not(.is-typing) p').forEach(linkifyParagraph)
+ patchEngineVersion(root)
 }
 
 function setReactInputValue(input:HTMLInputElement,value:string){
@@ -67,21 +67,28 @@ function applyHelpDeepLink(){
 
 export default function DLavieAssistantKnowledgeLinks(){
  useEffect(()=>{
+  const root=document.querySelector<HTMLElement>('.dlv-assistant')
+  if(!root)return
+  let frame=0
+  const schedule=()=>{
+   if(frame)return
+   frame=requestAnimationFrame(()=>{frame=0;applyLinks(root)})
+  }
   const observer=new MutationObserver(mutations=>{
-   if(mutations.some(m=>m.type==='childList'||(m.type==='attributes'&&m.attributeName==='class')))applyLinks()
+   if(mutations.some(m=>m.type==='childList'||(m.type==='attributes'&&m.attributeName==='class')))schedule()
   })
-  observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class']})
+  observer.observe(root,{childList:true,subtree:true,attributes:true,attributeFilter:['class']})
   const click=(event:MouseEvent)=>{
    const target=event.target as HTMLElement|null
    const link=target?.closest<HTMLAnchorElement>('.dlv-assistant-doc-link')
    if(!link)return
-   document.querySelector<HTMLButtonElement>('.dlv-assistant-close')?.click()
+   root.querySelector<HTMLButtonElement>('.dlv-assistant-close')?.click()
   }
-  const route=()=>{applyHelpDeepLink();window.setTimeout(applyLinks,0)}
-  document.addEventListener('click',click,true)
+  const route=()=>{applyHelpDeepLink();schedule()}
+  root.addEventListener('click',click,true)
   window.addEventListener('hashchange',route)
-  applyLinks();applyHelpDeepLink()
-  return()=>{observer.disconnect();document.removeEventListener('click',click,true);window.removeEventListener('hashchange',route)}
+  applyLinks(root);applyHelpDeepLink()
+  return()=>{observer.disconnect();if(frame)cancelAnimationFrame(frame);root.removeEventListener('click',click,true);window.removeEventListener('hashchange',route)}
  },[])
  return null
 }
