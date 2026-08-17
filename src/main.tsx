@@ -17,6 +17,7 @@ import MidtransPaymentSystem from './MidtransPaymentSystem'
 import WalletHistoryEnhancer from './WalletHistoryEnhancer'
 import SiteDetailSystem from './SiteDetailSystem'
 import MarketPolicies from './MarketPolicies'
+import AccessExperience from './AccessExperience'
 import './styles.css'
 import './brand-logos.css'
 import './mobile-polish.css'
@@ -44,7 +45,7 @@ import './wallet-history-enhancer.css'
 import './activity-metadata.css'
 import './site-detail-system.css'
 import './market-policies.css'
-import './market-policies-route.css'
+import './access-experience.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -63,6 +64,7 @@ createRoot(document.getElementById('root')!).render(
     <WalletHistoryEnhancer />
     <SiteDetailSystem />
     <MarketPolicies />
+    <AccessExperience />
     <DLavieRadio />
     <App />
   </StrictMode>,
