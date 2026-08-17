@@ -1,4 +1,4 @@
-import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { FormEvent, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 type Profile = { id: string; username: string; email: string; avatarId?: string }
 type Order = { id: string; serviceName?: string; providerName?: string; price?: number; createdAt?: number; expiresAt?: number; status?: string }
@@ -109,6 +109,15 @@ function profanity(text: string) {
 function toClientMessage(message: ServerMessage): Message {
   return { id: `srv-${message.id}`, role: message.role, content: message.content, createdAt: new Date(message.created_at).getTime(), kind: message.metadata?.kind || 'chat' }
 }
+function sameMessages(current: Message[], next: Message[]) {
+  return current.length === next.length && current.every((item, index) => {
+    const other = next[index]
+    return !!other && item.id === other.id && item.role === other.role && item.content === other.content && item.kind === other.kind && item.createdAt === other.createdAt
+  })
+}
+function nextAnimationFrame() {
+  return new Promise<number>((resolve) => requestAnimationFrame(resolve))
+}
 
 function AssistantAvatar({ phase = 'idle', small = false }: { phase?: Phase; small?: boolean }) {
   return (
@@ -127,6 +136,16 @@ function AssistantAvatar({ phase = 'idle', small = false }: { phase?: Phase; sma
     </span>
   )
 }
+
+const AssistantMessage = memo(function AssistantMessage({ message, formatter }: { message: Message; formatter: Intl.DateTimeFormat }) {
+  return (
+    <article className={`dlv-assistant-message is-${message.role}${message.typing ? ' is-typing' : ''}`} data-kind={message.kind || 'chat'}>
+      {message.role === 'assistant' && <AssistantAvatar small phase={message.typing ? 'typing' : 'idle'} />}
+      {message.role === 'admin' && <span className="dlv-admin-avatar">D</span>}
+      <div>{message.role === 'admin' && <em>DLavie Admin</em>}<p>{message.content}{message.typing && <i className="dlv-type-caret" />}</p><small>{formatter.format(message.createdAt)}</small></div>
+    </article>
+  )
+})
 
 export default function DLavieAssistant() {
   const restored = useMemo(() => readActive(), [])
@@ -164,6 +183,7 @@ export default function DLavieAssistant() {
   const syncBusyRef = useRef(false)
 
   const lang = language()
+  const messageTimeFormatter = useMemo(() => new Intl.DateTimeFormat(lang === 'en' ? 'en-US' : 'id-ID', { hour: '2-digit', minute: '2-digit' }), [lang])
   const copy = useMemo(() => lang === 'en' ? {
     title: 'DLavie Assistant', subtitle: 'DLavie Engine · account-aware', online: 'Available', guest: 'Sign in to use live support.', guestBody: 'Public documentation and policies remain available without an account. Live support can access only the signed-in user context.', signIn: 'Sign in / create account',
     readyEyebrow: 'PRIVATE SUPPORT SESSION', readyTitle: 'Need help with DLavie?', readyBody: 'Start a session to ask about payments, wallet, order references, OTP sessions, policies, or a technical issue.', start: 'Start session', session: 'Session', elapsed: 'Elapsed', end: 'End',
@@ -196,13 +216,24 @@ export default function DLavieAssistant() {
   }, [syncAuth])
 
   useEffect(() => {
+    if (!open) return
+    const tick = () => setNow(Date.now())
+    tick()
+    const timer = window.setInterval(tick, 1000)
+    return () => window.clearInterval(timer)
+  }, [open])
+
+  useEffect(() => {
+    const initial = Math.max(0, cooldownUntil - Date.now())
+    setCooldownLeft(initial)
+    if (!open || initial <= 0) return
     const timer = window.setInterval(() => {
-      const tick = Date.now()
-      setNow(tick)
-      setCooldownLeft(Math.max(0, cooldownUntil - tick))
+      const left = Math.max(0, cooldownUntil - Date.now())
+      setCooldownLeft(left)
+      if (left <= 0) window.clearInterval(timer)
     }, 250)
     return () => window.clearInterval(timer)
-  }, [cooldownUntil])
+  }, [cooldownUntil, open])
 
   useEffect(() => {
     if (!toast) return
@@ -252,13 +283,21 @@ export default function DLavieAssistant() {
     const abortId = ++typingAbortRef.current
     setPhase('typing')
     setMessages((list) => [...list, { id, role: 'assistant', content: '', createdAt: Date.now(), kind, typing: true }])
-    const step = text.length > 700 ? 5 : text.length > 350 ? 3 : 2
-    for (let index = 0; index < text.length; index += step) {
+
+    const rate = text.length > 700 ? 5 / 7 : text.length > 350 ? 3 / 11 : 2 / 11
+    const started = performance.now()
+    let visibleLength = 0
+    while (visibleLength < text.length) {
       if (typingAbortRef.current !== abortId) return
-      const chunk = text.slice(0, Math.min(text.length, index + step))
+      const frame = await nextAnimationFrame()
+      if (typingAbortRef.current !== abortId) return
+      const nextLength = Math.min(text.length, Math.max(1, Math.floor((frame - started) * rate)))
+      if (nextLength === visibleLength) continue
+      visibleLength = nextLength
+      const chunk = text.slice(0, visibleLength)
       setMessages((list) => list.map((item) => item.id === id ? { ...item, content: chunk } : item))
-      await new Promise((resolve) => window.setTimeout(resolve, text.length > 700 ? 7 : 11))
     }
+
     setMessages((list) => list.map((item) => item.id === id ? { ...item, content: text, typing: false } : item))
     setPhase('idle')
     if (!open) {
@@ -289,7 +328,8 @@ export default function DLavieAssistant() {
       if (data.messages) {
         const incoming = data.messages.filter((item) => !seenServerIdsRef.current.has(item.id))
         data.messages.forEach((item) => seenServerIdsRef.current.add(item.id))
-        setMessages(data.messages.map(toClientMessage))
+        const nextMessages = data.messages.map(toClientMessage)
+        setMessages((current) => sameMessages(current, nextMessages) ? current : nextMessages)
         const important = incoming.filter((item) => item.role === 'admin' || item.metadata?.kind === 'admin_joined' || item.metadata?.kind === 'admin_resolved')
         const newest = important.at(-1)
         if (newest && !open) {
@@ -426,7 +466,10 @@ export default function DLavieAssistant() {
   const cooldownPercent = cooldownLeft > 0 ? Math.max(0, Math.min(100, (cooldownLeft / cooldownBase) * 100)) : 0
   const phaseLabel = phase === 'understanding' ? (lang === 'en' ? 'Understanding your request…' : 'Memahami masalah…') : phase === 'searching' ? (lang === 'en' ? 'Checking account information…' : 'Memeriksa informasi akun…') : phase === 'thinking' ? (lang === 'en' ? 'Preparing the clearest answer…' : 'Menyiapkan jawaban…') : phase === 'typing' ? (lang === 'en' ? 'DLavie Assistant is typing…' : 'DLavie Assistant sedang mengetik…') : ''
   const statusText = supportMode === 'admin' ? `${copy.adminOnline}${assignedAdmin ? ` · ${assignedAdmin}` : ''}` : supportMode === 'admin_pending' ? copy.waitingAdmin : copy.aiMode
-  const openPanel = () => { setOpen(true); setUnread(0); setToast(null); syncAuth(); touch(); if (supportMode !== 'ai') void syncHumanThread(true) }
+  const openPanel = () => {
+    setOpen(true); setUnread(0); setToast(null); touch()
+    requestAnimationFrame(() => { syncAuth(); if (supportMode !== 'ai') void syncHumanThread(true) })
+  }
 
   return (
     <div className={`dlv-assistant${open ? ' is-open' : ''} mode-${supportMode}`} onPointerDown={touch} onKeyDown={touch}>
@@ -470,20 +513,14 @@ export default function DLavieAssistant() {
                 {stage === 'ready' && (
                   <div className="dlv-assistant-ready">
                     <span>{copy.readyEyebrow}</span><h3>{copy.readyTitle}</h3><p>{copy.readyBody}</p>
-                    <div className="dlv-assistant-ready-meta"><div><small>ENGINE</small><strong>DLavie v2</strong></div><div><small>FALLBACK</small><strong>Human admin</strong></div><div><small>PRIVACY</small><strong>User-scoped</strong></div></div>
+                    <div className="dlv-assistant-ready-meta"><div><small>ENGINE</small><strong>DLavie v3</strong></div><div><small>FALLBACK</small><strong>Human admin</strong></div><div><small>PRIVACY</small><strong>User-scoped</strong></div></div>
                     {error && <div className="dlv-assistant-error">{error}</div>}
                     <button type="button" className="dlv-assistant-start" onClick={() => void startSession()} disabled={busy}><span>{busy ? (lang === 'en' ? 'Starting…' : 'Menyiapkan sesi…') : copy.start}</span><b>→</b></button>
                   </div>
                 )}
 
                 {stage !== 'ready' && <div className="dlv-assistant-thread">
-                  {messages.map((message) => (
-                    <article key={message.id} className={`dlv-assistant-message is-${message.role}${message.typing ? ' is-typing' : ''}`} data-kind={message.kind || 'chat'}>
-                      {message.role === 'assistant' && <AssistantAvatar small phase={message.typing ? 'typing' : 'idle'} />}
-                      {message.role === 'admin' && <span className="dlv-admin-avatar">D</span>}
-                      <div>{message.role === 'admin' && <em>DLavie Admin</em>}<p>{message.content}{message.typing && <i className="dlv-type-caret" />}</p><small>{new Intl.DateTimeFormat(lang === 'en' ? 'en-US' : 'id-ID', { hour: '2-digit', minute: '2-digit' }).format(message.createdAt)}</small></div>
-                    </article>
-                  ))}
+                  {messages.map((message) => <AssistantMessage key={message.id} message={message} formatter={messageTimeFormatter} />)}
                   {busy && phaseLabel && <div className="dlv-assistant-process"><AssistantAvatar small phase={phase} /><div><span>{phaseLabel}</span><i><b /><b /><b /></i></div></div>}
                 </div>}
 
