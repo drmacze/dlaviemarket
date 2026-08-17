@@ -1,0 +1,58 @@
+/* Native DLavie Core API payment UI */
+.dlv-pay-sheet{width:min(560px,100%);}
+.dlv-pay-mark{background:linear-gradient(145deg,var(--accent),color-mix(in srgb,var(--accent),#000 22%));color:var(--accent-contrast);}
+.dlv-sandbox-note{border-color:color-mix(in srgb,var(--accent),transparent 70%);background:color-mix(in srgb,var(--accent),transparent 94%);}
+.dlv-sandbox-note i{background:var(--accent);box-shadow:0 0 14px color-mix(in srgb,var(--accent),transparent 30%);}
+.dlv-core-form{margin-top:16px;}
+.dlv-method-label{display:block;margin:16px 0 8px;color:var(--theme-muted);font-size:7px;font-weight:850;letter-spacing:.08em;text-transform:uppercase;}
+.dlv-method-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+.dlv-method{min-width:0;min-height:68px;padding:10px 11px;display:grid;grid-template-columns:42px minmax(0,1fr) 14px;gap:10px;align-items:center;border:1px solid var(--theme-line);border-radius:14px;background:var(--theme-soft);color:var(--theme-ink);font:inherit;text-align:left;cursor:pointer;transition:transform .18s ease,border-color .18s ease,background .18s ease;}
+.dlv-method:active{transform:scale(.985);}
+.dlv-method.active{border-color:color-mix(in srgb,var(--accent),transparent 28%);background:color-mix(in srgb,var(--accent),var(--theme-soft) 92%);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent),transparent 78%);}
+.dlv-method>b{width:42px;height:42px;display:grid;place-items:center;border:1px solid var(--theme-line);border-radius:12px;background:var(--theme-panel-solid);font-size:8px;letter-spacing:-.02em;}
+.dlv-method>span{min-width:0;display:flex;flex-direction:column;gap:3px;}
+.dlv-method>span strong{font-size:8px;line-height:1.2;}
+.dlv-method>span small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--theme-muted);font-size:6.6px;}
+.dlv-method>i{color:var(--theme-muted);font-size:17px;font-style:normal;text-align:right;}
+.dlv-core-error{font-size:7.3px;line-height:1.55;}
+.dlv-payment-stage{margin-top:16px;}
+.dlv-payment-status{min-height:64px;padding:11px 12px;display:grid;grid-template-columns:10px minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--theme-line);border-radius:15px;background:var(--theme-soft);}
+.dlv-payment-status>i{width:8px;height:8px;border-radius:50%;background:#efb341;box-shadow:0 0 12px color-mix(in srgb,#efb341,transparent 30%);}
+.dlv-payment-status>span{display:flex;flex-direction:column;gap:3px;}
+.dlv-payment-status>span small{color:var(--theme-muted);font-size:6.5px;text-transform:uppercase;letter-spacing:.08em;}
+.dlv-payment-status>span strong{font-size:9px;}
+.dlv-payment-status>b{font-size:14px;letter-spacing:.02em;}
+.dlv-payment-status.status-paid{border-color:color-mix(in srgb,#43c989,transparent 60%);background:color-mix(in srgb,#43c989,var(--theme-soft) 94%);}
+.dlv-payment-status.status-paid>i{background:#43c989;box-shadow:0 0 12px color-mix(in srgb,#43c989,transparent 25%);}
+.dlv-payment-status.status-expired>i{background:#d36f6f;box-shadow:none;}
+.dlv-payment-total{margin-top:9px;padding:14px;border:1px solid var(--theme-line);border-radius:15px;background:var(--theme-panel-solid);}
+.dlv-payment-total>span{display:block;font-size:24px;font-weight:900;letter-spacing:-.045em;}
+.dlv-payment-total>small{display:block;margin-top:5px;color:var(--theme-muted);font-size:6.6px;word-break:break-all;}
+.dlv-qris-panel,.dlv-va-panel{margin-top:10px;padding:14px;border:1px solid var(--theme-line);border-radius:16px;background:var(--theme-soft);}
+.dlv-qris-panel>p,.dlv-va-panel>p{margin:0 0 12px;color:var(--theme-muted);font-size:7.5px;line-height:1.55;}
+.dlv-qr-wrap{width:min(270px,100%);aspect-ratio:1;margin:0 auto 12px;padding:12px;display:grid;place-items:center;border-radius:18px;background:#fff;box-shadow:0 14px 38px color-mix(in srgb,var(--theme-shadow),transparent 45%);}
+.dlv-qr-wrap img{display:block;width:100%;height:100%;object-fit:contain;}
+.dlv-copy-wide{width:100%;min-height:42px;border:1px solid var(--theme-line);border-radius:11px;background:var(--theme-panel-solid);color:var(--theme-ink);font:inherit;font-size:8px;font-weight:800;cursor:pointer;}
+.dlv-open-app{margin-top:10px;}
+.dlv-va-panel>small{display:block;margin-bottom:7px;color:var(--theme-muted);font-size:7px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;}
+.dlv-va-number{min-height:70px;padding:12px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--theme-line);border-radius:13px;background:var(--theme-panel-solid);}
+.dlv-va-number strong{min-width:0;font-size:20px;letter-spacing:.035em;word-break:break-all;}
+.dlv-va-number button{min-height:34px;padding:0 11px;border:1px solid var(--theme-line);border-radius:9px;background:var(--theme-soft);color:var(--theme-ink);font:inherit;font-size:7px;font-weight:800;cursor:pointer;}
+.dlv-expiry-row{margin-top:9px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;border:1px solid var(--theme-line);border-radius:12px;background:var(--theme-soft);}
+.dlv-expiry-row span{color:var(--theme-muted);font-size:7px;}
+.dlv-expiry-row strong{font-size:10px;}
+.dlv-back-method{width:100%;min-height:40px;margin-top:9px;border:1px solid var(--theme-line);border-radius:11px;background:transparent;color:var(--theme-muted);font:inherit;font-size:7.5px;font-weight:800;cursor:pointer;}
+.dlv-history-button{width:100%;border-top:0;border-left:0;border-right:0;background:transparent;color:var(--theme-ink);font:inherit;text-align:left;cursor:pointer;}
+.dlv-history-button:last-child{border-bottom:0;}
+
+@media(max-width:560px){
+  .dlv-pay-sheet{max-height:calc(94dvh - env(safe-area-inset-top));}
+  .dlv-method-grid{grid-template-columns:1fr 1fr;gap:7px;}
+  .dlv-method{min-height:64px;padding:9px;grid-template-columns:38px minmax(0,1fr) 12px;gap:8px;}
+  .dlv-method>b{width:38px;height:38px;border-radius:10px;font-size:7px;}
+  .dlv-method>span strong{font-size:7.6px;}
+  .dlv-method>span small{font-size:6.2px;}
+  .dlv-payment-total>span{font-size:22px;}
+  .dlv-va-number strong{font-size:17px;}
+  .dlv-qr-wrap{width:min(250px,100%);}
+}
