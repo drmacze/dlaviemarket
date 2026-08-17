@@ -48,7 +48,7 @@ type ChargeResponse = {
 }
 
 type Profile = { username?: string; email?: string }
-type CategoryId = 'all' | 'wallet' | 'bank' | 'retail' | 'paylater' | 'card'
+type CategoryId = 'wallet' | 'bank' | 'retail' | 'paylater' | 'card'
 type MethodId =
   | 'qris' | 'gopay' | 'shopeepay' | 'dana' | 'ovo'
   | 'bca' | 'bni' | 'bri' | 'permata' | 'mandiri' | 'cimb' | 'danamon' | 'bsi' | 'seabank' | 'saqu'
@@ -60,8 +60,7 @@ type Method = {
   id: MethodId
   title: string
   subtitle: string
-  category: Exclude<CategoryId, 'all'>
-  logo: string
+  category: CategoryId
   fallback: string
   networks?: string[]
   special?: boolean
@@ -73,43 +72,33 @@ const STATE_EVENT = 'dlavie:state-changed'
 const rupiah = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 })
 
 const methods: Method[] = [
-  { id: 'qris', title: 'QRIS', subtitle: 'Scan dari aplikasi QRIS apa pun', category: 'wallet', logo: 'https://logo.clearbit.com/qris.id', fallback: 'QRIS' },
-  { id: 'gopay', title: 'GoPay', subtitle: 'GoPay / Gojek', category: 'wallet', logo: 'https://logo.clearbit.com/gopay.co.id', fallback: 'GoPay' },
-  { id: 'shopeepay', title: 'ShopeePay', subtitle: 'Bayar melalui ShopeePay', category: 'wallet', logo: 'https://logo.clearbit.com/shopeepay.co.id', fallback: 'ShopeePay' },
-  { id: 'dana', title: 'DANA', subtitle: 'Bayar melalui aplikasi DANA', category: 'wallet', logo: 'https://logo.clearbit.com/dana.id', fallback: 'DANA' },
-  { id: 'ovo', title: 'OVO', subtitle: 'Tersedia di Midtrans · flow khusus', category: 'wallet', logo: 'https://logo.clearbit.com/ovo.id', fallback: 'OVO', special: true },
+  { id: 'qris', title: 'QRIS', subtitle: 'Scan dari aplikasi QRIS apa pun', category: 'wallet', fallback: 'QRIS' },
+  { id: 'gopay', title: 'GoPay', subtitle: 'GoPay / Gojek', category: 'wallet', fallback: 'gopay' },
+  { id: 'shopeepay', title: 'ShopeePay', subtitle: 'Bayar melalui ShopeePay', category: 'wallet', fallback: 'ShopeePay' },
+  { id: 'dana', title: 'DANA', subtitle: 'Bayar melalui aplikasi DANA', category: 'wallet', fallback: 'DANA' },
+  { id: 'ovo', title: 'OVO', subtitle: 'Tersedia di Midtrans · flow khusus', category: 'wallet', fallback: 'OVO', special: true },
 
-  { id: 'bca', title: 'BCA Virtual Account', subtitle: 'Transfer melalui BCA', category: 'bank', logo: 'https://logo.clearbit.com/bca.co.id', fallback: 'BCA' },
-  { id: 'mandiri', title: 'Mandiri Bill Payment', subtitle: 'Bill Key + Biller Code', category: 'bank', logo: 'https://logo.clearbit.com/bankmandiri.co.id', fallback: 'mandiri' },
-  { id: 'bni', title: 'BNI Virtual Account', subtitle: 'Transfer melalui BNI', category: 'bank', logo: 'https://logo.clearbit.com/bni.co.id', fallback: 'BNI' },
-  { id: 'bri', title: 'BRI Virtual Account', subtitle: 'Transfer melalui BRI', category: 'bank', logo: 'https://logo.clearbit.com/bri.co.id', fallback: 'BRI' },
-  { id: 'permata', title: 'Permata Virtual Account', subtitle: 'Transfer melalui Permata', category: 'bank', logo: 'https://logo.clearbit.com/permatabank.com', fallback: 'Permata' },
-  { id: 'cimb', title: 'CIMB Niaga Virtual Account', subtitle: 'Transfer melalui CIMB Niaga', category: 'bank', logo: 'https://logo.clearbit.com/cimbniaga.co.id', fallback: 'CIMB' },
-  { id: 'danamon', title: 'Danamon Virtual Account', subtitle: 'Transfer melalui Danamon', category: 'bank', logo: 'https://logo.clearbit.com/danamon.co.id', fallback: 'Danamon' },
-  { id: 'bsi', title: 'BSI Virtual Account', subtitle: 'Bank Syariah Indonesia', category: 'bank', logo: 'https://logo.clearbit.com/bankbsi.co.id', fallback: 'BSI' },
-  { id: 'seabank', title: 'SeaBank Virtual Account', subtitle: 'Transfer melalui SeaBank', category: 'bank', logo: 'https://logo.clearbit.com/seabank.co.id', fallback: 'SeaBank' },
-  { id: 'saqu', title: 'Bank Saqu Virtual Account', subtitle: 'Transfer melalui Bank Saqu', category: 'bank', logo: 'https://logo.clearbit.com/banksaqu.co.id', fallback: 'Saqu' },
+  { id: 'bca', title: 'BCA Virtual Account', subtitle: 'Transfer melalui BCA', category: 'bank', fallback: 'BCA' },
+  { id: 'mandiri', title: 'Mandiri Bill Payment', subtitle: 'Bill Key + Biller Code', category: 'bank', fallback: 'mandiri' },
+  { id: 'bni', title: 'BNI Virtual Account', subtitle: 'Transfer melalui BNI', category: 'bank', fallback: 'BNI' },
+  { id: 'bri', title: 'BRI Virtual Account', subtitle: 'Transfer melalui BRI', category: 'bank', fallback: 'BRI' },
+  { id: 'permata', title: 'Permata Virtual Account', subtitle: 'Transfer melalui Permata', category: 'bank', fallback: 'Permata' },
+  { id: 'cimb', title: 'CIMB Niaga Virtual Account', subtitle: 'Transfer melalui CIMB Niaga', category: 'bank', fallback: 'CIMB' },
+  { id: 'danamon', title: 'Danamon Virtual Account', subtitle: 'Transfer melalui Danamon', category: 'bank', fallback: 'Danamon' },
+  { id: 'bsi', title: 'BSI Virtual Account', subtitle: 'Bank Syariah Indonesia', category: 'bank', fallback: 'BSI' },
+  { id: 'seabank', title: 'SeaBank Virtual Account', subtitle: 'Transfer melalui SeaBank', category: 'bank', fallback: 'SeaBank' },
+  { id: 'saqu', title: 'Bank Saqu Virtual Account', subtitle: 'Transfer melalui Bank Saqu', category: 'bank', fallback: 'Saqu' },
 
-  { id: 'indomaret', title: 'Indomaret', subtitle: 'Bayar dengan kode di gerai Indomaret', category: 'retail', logo: 'https://logo.clearbit.com/indomaret.co.id', fallback: 'Indomaret' },
-  { id: 'alfamart', title: 'Alfamart', subtitle: 'Alfamart · Alfamidi · DAN+DAN', category: 'retail', logo: 'https://logo.clearbit.com/alfamart.co.id', fallback: 'Alfamart' },
+  { id: 'indomaret', title: 'Indomaret', subtitle: 'Bayar dengan kode di gerai Indomaret', category: 'retail', fallback: 'Indomaret' },
+  { id: 'alfamart', title: 'Alfamart', subtitle: 'Alfamart · Alfamidi · DAN+DAN', category: 'retail', fallback: 'Alfamart' },
 
-  { id: 'akulaku', title: 'Akulaku PayLater', subtitle: 'Cicilan melalui Akulaku', category: 'paylater', logo: 'https://logo.clearbit.com/akulaku.com', fallback: 'Akulaku' },
-  { id: 'kredivo', title: 'Kredivo', subtitle: 'Bayar nanti / cicilan Kredivo', category: 'paylater', logo: 'https://logo.clearbit.com/kredivo.com', fallback: 'Kredivo' },
+  { id: 'akulaku', title: 'Akulaku PayLater', subtitle: 'Cicilan melalui Akulaku', category: 'paylater', fallback: 'Akulaku' },
+  { id: 'kredivo', title: 'Kredivo', subtitle: 'Bayar nanti / cicilan Kredivo', category: 'paylater', fallback: 'Kredivo' },
 
-  {
-    id: 'card', title: 'Kartu Debit / Kredit', subtitle: 'Visa · Mastercard · JCB · American Express', category: 'card',
-    logo: 'https://api.iconify.design/logos:visa.svg', fallback: 'CARD', special: true,
-    networks: [
-      'https://api.iconify.design/logos:visa.svg',
-      'https://api.iconify.design/logos:mastercard.svg',
-      'https://api.iconify.design/logos:jcb.svg',
-      'https://api.iconify.design/logos:amex.svg',
-    ],
-  },
+  { id: 'card', title: 'Kartu Debit / Kredit', subtitle: 'Visa · Mastercard · JCB · American Express', category: 'card', fallback: 'CARD', special: true, networks: ['VISA', 'Mastercard', 'JCB', 'AMEX'] },
 ]
 
 const categories: Array<{ id: CategoryId; label: string; en: string }> = [
-  { id: 'all', label: 'Semua', en: 'All' },
   { id: 'wallet', label: 'E-Wallet & QR', en: 'E-Wallet & QR' },
   { id: 'bank', label: 'Bank', en: 'Bank' },
   { id: 'retail', label: 'Retail', en: 'Retail' },
@@ -119,8 +108,7 @@ const categories: Array<{ id: CategoryId; label: string; en: string }> = [
 
 function BrandLogo({ method }: { method: Method }) {
   return (
-    <span className="dlv-brand-logo" aria-hidden="true">
-      <img src={method.logo} alt="" loading="lazy" onError={(event) => { event.currentTarget.hidden = true }} />
+    <span className="dlv-brand-logo" data-brand={method.id} aria-hidden="true">
       <b>{method.fallback}</b>
     </span>
   )
@@ -157,7 +145,7 @@ export default function MidtransPaymentSystem() {
   const [balance, setBalance] = useState(() => localBalance())
   const [deposits, setDeposits] = useState<Deposit[]>([])
   const [selected, setSelected] = useState<MethodId>('qris')
-  const [category, setCategory] = useState<CategoryId>('all')
+  const [category, setCategory] = useState<CategoryId>('wallet')
   const [active, setActive] = useState<Deposit | null>(null)
   const [busy, setBusy] = useState(false)
   const [syncing, setSyncing] = useState(false)
@@ -168,20 +156,27 @@ export default function MidtransPaymentSystem() {
 
   const copy = useMemo(() => lang === 'en' ? {
     eyebrow: 'DLAVIE PAY · SANDBOX', title: 'Add wallet balance', body: 'Choose a payment method without leaving the DLavie interface. Midtrans processes the transaction in the background.',
-    sandbox: 'Sandbox mode · no real money is used.', balance: 'Balance', refresh: 'Refresh', checking: 'Checking…', amount: 'Deposit amount', method: 'Payment method', pay: 'Continue with', creating: 'Preparing…',
-    availability: 'Available methods depend on the payment channels activated on this Midtrans merchant.', inactive: 'This payment channel is not activated on your Midtrans merchant yet.', special: 'This method needs an additional secure flow before it can be enabled in DLavie.',
+    sandbox: 'Sandbox mode · no real money is used.', balance: 'Server balance', refresh: 'Refresh', checking: 'Checking…', amount: 'Deposit amount', method: 'Payment method', pay: 'Continue with', creating: 'Preparing…',
+    availability: 'Only channels activated on this Midtrans merchant can be used.', inactive: 'This payment channel is not activated on your Midtrans merchant yet.', special: 'This method needs an additional secure flow before it can be enabled in DLavie.',
     failed: 'Payment could not be created.', min: 'Minimum deposit is Rp1,000.', back: 'Choose another method', copy: 'Copy', pending: 'Waiting for payment', paid: 'Payment received', expired: 'Expired', openProvider: 'Open payment app',
     qrisHelp: 'Scan this QR with a QRIS-compatible banking or e-wallet app.', vaHelp: 'Transfer the exact amount to this virtual account before the timer expires.', appHelp: 'Continue in the payment app or scan the QR from another device.', retailHelp: 'Show this payment code at the selected retail counter.', billHelp: 'Use the Biller Code and Bill Key in Mandiri Bill Payment.', redirectHelp: 'Continue to the provider to complete the payment.', recent: 'Recent deposits', none: 'No deposits yet.', order: 'Order ID', expires: 'Expires in', showHistory: 'Show deposit history', hideHistory: 'Hide deposit history',
   } : {
     eyebrow: 'DLAVIE PAY · SANDBOX', title: 'Isi saldo wallet', body: 'Pilih metode pembayaran tanpa keluar dari antarmuka DLavie. Midtrans hanya memproses transaksi di belakang layar.',
-    sandbox: 'Mode Sandbox · tidak menggunakan uang sungguhan.', balance: 'Saldo', refresh: 'Perbarui', checking: 'Memeriksa…', amount: 'Nominal deposit', method: 'Metode pembayaran', pay: 'Lanjut dengan', creating: 'Menyiapkan…',
-    availability: 'Metode yang benar-benar bisa dipakai mengikuti channel pembayaran yang aktif pada merchant Midtrans ini.', inactive: 'Channel pembayaran ini belum diaktifkan pada merchant Midtrans kamu.', special: 'Metode ini membutuhkan flow keamanan tambahan sebelum bisa diaktifkan di DLavie.',
+    sandbox: 'Mode Sandbox · tidak menggunakan uang sungguhan.', balance: 'Saldo server', refresh: 'Perbarui', checking: 'Memeriksa…', amount: 'Nominal deposit', method: 'Metode pembayaran', pay: 'Lanjut dengan', creating: 'Menyiapkan…',
+    availability: 'Hanya channel yang aktif pada merchant Midtrans ini yang dapat digunakan.', inactive: 'Channel pembayaran ini belum diaktifkan pada merchant Midtrans kamu.', special: 'Metode ini membutuhkan flow keamanan tambahan sebelum bisa diaktifkan di DLavie.',
     failed: 'Pembayaran belum bisa dibuat.', min: 'Minimum deposit adalah Rp1.000.', back: 'Pilih metode lain', copy: 'Salin', pending: 'Menunggu pembayaran', paid: 'Pembayaran diterima', expired: 'Kedaluwarsa', openProvider: 'Buka aplikasi pembayaran',
     qrisHelp: 'Scan QR ini dengan aplikasi bank atau e-wallet yang mendukung QRIS.', vaHelp: 'Transfer nominal yang sama persis ke virtual account ini sebelum waktu habis.', appHelp: 'Lanjutkan lewat aplikasi pembayaran, atau scan QR dari perangkat lain.', retailHelp: 'Tunjukkan kode pembayaran ini di kasir retail yang dipilih.', billHelp: 'Gunakan Biller Code dan Bill Key pada Mandiri Bill Payment.', redirectHelp: 'Lanjutkan ke penyedia untuk menyelesaikan pembayaran.', recent: 'Deposit terbaru', none: 'Belum ada deposit.', order: 'Order ID', expires: 'Berakhir dalam', showHistory: 'Lihat riwayat deposit', hideHistory: 'Tutup riwayat deposit',
   }, [lang])
 
   const selectedMethod = useMemo(() => methods.find((item) => item.id === selected) || methods[0], [selected])
-  const visibleMethods = useMemo(() => category === 'all' ? methods : methods.filter((item) => item.category === category), [category])
+  const visibleMethods = useMemo(() => methods.filter((item) => item.category === category), [category])
+
+  const switchCategory = (next: CategoryId) => {
+    setCategory(next)
+    const first = methods.find((item) => item.category === next)
+    if (first && first.category !== selectedMethod.category) setSelected(first.id)
+    setError('')
+  }
 
   const applyWallet = useCallback((data: WalletResponse) => {
     if (typeof data.balance === 'number') {
@@ -326,14 +321,18 @@ export default function MidtransPaymentSystem() {
   return !open ? null : (
     <div className="midtrans-backdrop" onMouseDown={(event) => event.target === event.currentTarget && setOpen(false)}>
       <section className="midtrans-sheet dlv-pay-sheet" aria-label={copy.title}>
-        <button className="midtrans-close" type="button" onClick={() => setOpen(false)} aria-label="Close">×</button>
+        <button className="midtrans-close dlv-pay-close" type="button" onClick={() => setOpen(false)} aria-label="Close">×</button>
 
         <div className="dlv-pay-topline">
           <div className="midtrans-head dlv-pay-head">
             <span className="midtrans-mark dlv-pay-mark">D</span>
             <div><small>{copy.eyebrow}</small><h2>{copy.title}</h2><p>{copy.body}</p></div>
           </div>
-          <div className="dlv-balance-inline"><small>{copy.balance}</small><strong>{rupiah.format(balance)}</strong><button type="button" onClick={() => void syncWallet().catch(() => undefined)}>{syncing ? '···' : '↻'}</button></div>
+        </div>
+
+        <div className="dlv-balance-bar">
+          <span><small>{copy.balance}</small><strong>{rupiah.format(balance)}</strong></span>
+          <button type="button" onClick={() => void syncWallet().catch(() => undefined)} aria-label={copy.refresh}>{syncing ? '···' : '↻'}</button>
         </div>
 
         <div className="dlv-sandbox-strip"><i />{copy.sandbox}<span>{copy.availability}</span></div>
@@ -359,9 +358,9 @@ export default function MidtransPaymentSystem() {
               {[1000, 5000, 10000, 25000, 50000, 100000].map((value) => <button type="button" key={value} className={Number(amount) === value ? 'active' : ''} onClick={() => setAmount(String(value))}>{rupiah.format(value)}</button>)}
             </div>
 
-            <div className="dlv-method-heading"><span>{copy.method}</span><strong>{methods.length} opsi</strong></div>
+            <div className="dlv-method-heading"><span>{copy.method}</span><strong>{visibleMethods.length} opsi</strong></div>
             <div className="dlv-category-strip" role="tablist" aria-label="Payment categories">
-              {categories.map((item) => <button key={item.id} type="button" className={category === item.id ? 'active' : ''} onClick={() => setCategory(item.id)}>{lang === 'en' ? item.en : item.label}</button>)}
+              {categories.map((item) => <button key={item.id} type="button" className={category === item.id ? 'active' : ''} onClick={() => switchCategory(item.id)}>{lang === 'en' ? item.en : item.label}</button>)}
             </div>
 
             <div className="dlv-method-list">
@@ -369,8 +368,8 @@ export default function MidtransPaymentSystem() {
                 <button type="button" key={method.id} className={`dlv-method-row ${selected === method.id ? 'active' : ''}`} onClick={() => { setSelected(method.id); setError('') }}>
                   <BrandLogo method={method} />
                   <span className="dlv-method-copy"><strong>{method.title}</strong><small>{method.subtitle}</small></span>
-                  {method.networks ? <span className="dlv-network-logos">{method.networks.map((src) => <img src={src} alt="" key={src} loading="lazy" />)}</span> : null}
-                  <span className="dlv-method-state">{method.special ? 'Setup' : selected === method.id ? '✓' : '›'}</span>
+                  {method.networks ? <span className="dlv-network-logos">{method.networks.map((network) => <b key={network} data-network={network.toLowerCase()}>{network}</b>)}</span> : null}
+                  <span className="dlv-method-state">{selected === method.id ? '✓' : '›'}</span>
                 </button>
               ))}
             </div>
