@@ -6,10 +6,18 @@ type ViewMode = 'grid' | 'list'
 const gridIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>'
 const listIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>'
 
+function isActivityRoute() {
+  if (document.documentElement.dataset.page) return document.documentElement.dataset.page === 'activity'
+  const route = window.location.hash.replace(/^#\/?/, '').split(/[?&]/)[0].toLowerCase()
+  return route === 'activity' || route === 'aktivitas'
+}
+
 export default function ActivityViewEnhancer() {
   useEffect(() => {
     let mode: ViewMode = localStorage.getItem(VIEW_KEY) === 'list' ? 'list' : 'grid'
     let raf = 0
+    let observer: MutationObserver | null = null
+    let observedRoot: HTMLElement | null = null
     const cardHandlers = new Map<HTMLElement, EventListener>()
 
     const setMode = (next: ViewMode) => {
@@ -101,6 +109,7 @@ export default function ActivityViewEnhancer() {
     }
 
     const apply = () => {
+      if (!isActivityRoute()) return
       ensureControls()
       attachCardInteractions()
       setMode(mode)
@@ -108,21 +117,39 @@ export default function ActivityViewEnhancer() {
     }
 
     const schedule = () => {
+      if (!isActivityRoute()) return
       cancelAnimationFrame(raf)
       raf = requestAnimationFrame(apply)
     }
 
-    apply()
-    const observer = new MutationObserver(schedule)
-    observer.observe(document.body, { childList: true, subtree: true, characterData: true })
-    window.addEventListener('hashchange', schedule)
-    window.addEventListener('dlavie:state-changed', schedule)
+    const connect = () => {
+      observer?.disconnect()
+      observer = null
+      observedRoot = null
+      cancelAnimationFrame(raf)
+      if (!isActivityRoute()) return
+
+      apply()
+      const root = document.querySelector<HTMLElement>('.order-center-page')
+      if (!root) return
+      observedRoot = root
+      observer = new MutationObserver(schedule)
+      observer.observe(root, { childList: true, subtree: true, characterData: true })
+    }
+
+    const onRoute = () => requestAnimationFrame(connect)
+    const onState = () => { if (isActivityRoute()) schedule() }
+
+    connect()
+    window.addEventListener('hashchange', onRoute)
+    window.addEventListener('dlavie:state-changed', onState)
 
     return () => {
-      observer.disconnect()
+      observer?.disconnect()
+      observedRoot = null
       cancelAnimationFrame(raf)
-      window.removeEventListener('hashchange', schedule)
-      window.removeEventListener('dlavie:state-changed', schedule)
+      window.removeEventListener('hashchange', onRoute)
+      window.removeEventListener('dlavie:state-changed', onState)
       document.querySelector('.activity-view-toggle')?.remove()
       cardHandlers.forEach((handler, card) => {
         card.removeEventListener('click', handler)
