@@ -12,7 +12,7 @@ const orders=():Order[]=>{try{return JSON.parse(localStorage.getItem(ORDER_KEY)|
 const history=():History[]=>{try{return JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]')}catch{return[]}}
 const profile=():Profile|null=>{try{return JSON.parse(localStorage.getItem('dlavie-account-profile-v1')||'null')}catch{return null}}
 const locale=()=>localStorage.getItem('dlavie-language')==='en'?'en-US':'id-ID'
-const dateFmt=(v:number)=>new Intl.DateTimeFormat(locale(),{day:'2-digit',month:'short',year:'numeric'}).format(new Date(v))
+const dateFmt=(v:number)=>new Intl.DateTimeFormat(locale(),{day:'2-digit',month:'short',year:'numeric',timeZone:'Asia/Jakarta'}).format(new Date(v))
 const timeFmt=(v:number)=>new Intl.DateTimeFormat(locale(),{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false,timeZone:'Asia/Jakarta'}).format(new Date(v))
 const fullFmt=(v?:number)=>v?`${dateFmt(v)} · ${timeFmt(v)} WIB`:'—'
 
