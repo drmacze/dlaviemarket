@@ -21,7 +21,7 @@ import AccessExperience from './AccessExperience'
 import LoginRedirectEnhancer from './LoginRedirectEnhancer'
 import DLavieAssistant from './DLavieAssistant'
 import DLavieAssistantHaptics from './DLavieAssistantHaptics'
-import DLavieAssistantEngineBranding from './DLavieAssistantEngineBranding'
+import DLavieAdminSupport from './DLavieAdminSupport'
 import './styles.css'
 import './brand-logos.css'
 import './mobile-polish.css'
@@ -52,6 +52,8 @@ import './market-policies.css'
 import './access-experience.css'
 import './dlavie-assistant.css'
 import './dlavie-assistant-motion.css'
+import './dlavie-assistant-hybrid.css'
+import './dlavie-admin-support.css'
 import './ios-form-zoom-fix.css'
 
 createRoot(document.getElementById('root')!).render(
@@ -75,7 +77,7 @@ createRoot(document.getElementById('root')!).render(
     <AccessExperience />
     <DLavieAssistant />
     <DLavieAssistantHaptics />
-    <DLavieAssistantEngineBranding />
+    <DLavieAdminSupport />
     <DLavieRadio />
     <App />
   </StrictMode>,
