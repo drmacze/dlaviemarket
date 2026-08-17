@@ -18,6 +18,7 @@ import WalletHistoryEnhancer from './WalletHistoryEnhancer'
 import SiteDetailSystem from './SiteDetailSystem'
 import MarketPolicies from './MarketPolicies'
 import AccessExperience from './AccessExperience'
+import LoginRedirectEnhancer from './LoginRedirectEnhancer'
 import './styles.css'
 import './brand-logos.css'
 import './mobile-polish.css'
@@ -56,6 +57,7 @@ createRoot(document.getElementById('root')!).render(
     <LanguageSystem />
     <NavUtilityMenu />
     <AccountSystem />
+    <LoginRedirectEnhancer />
     <MarketFlow />
     <OrderCenter />
     <ActivityViewEnhancer />
