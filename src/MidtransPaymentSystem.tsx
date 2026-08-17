@@ -19,6 +19,15 @@ type WalletResponse = {
   error?: string
 }
 
+type PaymentResponse = {
+  ok?: boolean
+  environment?: string
+  redirect_url?: string
+  order_id?: string
+  error?: string
+  status?: number
+}
+
 type Profile = { username?: string; email?: string }
 
 const API_BASE = 'https://ydaeukhqwishlrjyfktk.supabase.co/functions/v1'
@@ -58,6 +67,8 @@ export default function MidtransPaymentSystem() {
     live: 'Sandbox mode is active. Payments here are for testing and do not use real money.',
     invalid: 'Minimum deposit is Rp1,000.',
     failed: 'Could not create the Midtrans Sandbox payment. Try again in a moment.',
+    failedCode: 'Payment request failed',
+    connection: 'Could not reach the payment server. Check your connection and try again.',
     syncing: 'Checking…',
     pending: 'Pending', paid: 'Paid', expired: 'Expired', cancelled: 'Cancelled', failedStatus: 'Failed', denied: 'Denied', created: 'Created',
   } : {
@@ -74,6 +85,8 @@ export default function MidtransPaymentSystem() {
     live: 'Mode Sandbox aktif. Pembayaran di sini hanya untuk pengujian dan tidak menggunakan uang sungguhan.',
     invalid: 'Minimum deposit adalah Rp1.000.',
     failed: 'Pembayaran Midtrans Sandbox belum bisa dibuat. Coba lagi sebentar.',
+    failedCode: 'Permintaan pembayaran gagal',
+    connection: 'Server pembayaran tidak dapat dijangkau. Periksa koneksi lalu coba lagi.',
     syncing: 'Memeriksa…',
     pending: 'Menunggu', paid: 'Berhasil', expired: 'Kedaluwarsa', cancelled: 'Dibatalkan', failedStatus: 'Gagal', denied: 'Ditolak', created: 'Dibuat',
   }, [lang])
@@ -129,8 +142,7 @@ export default function MidtransPaymentSystem() {
       const result = await walletRequest('status', token)
       if (result.response.status === 401) {
         localStorage.removeItem(TOKEN_KEY)
-        await ensureWallet()
-        return
+        return await ensureWallet()
       }
       if (!result.response.ok || !result.data.ok) throw new Error(result.data.error || 'wallet_status_error')
       applyWallet(result.data)
@@ -139,6 +151,16 @@ export default function MidtransPaymentSystem() {
       setSyncing(false)
     }
   }, [applyWallet, ensureWallet, walletRequest])
+
+  const paymentRequest = useCallback(async (token: string, numeric: number, profile: Profile | null) => {
+    const response = await fetch(`${API_BASE}/dlavie-create-payment`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-dlavie-wallet-token': token },
+      body: JSON.stringify({ amount: numeric, customer: { name: profile?.username, email: profile?.email } }),
+    })
+    const data = await response.json().catch(() => ({})) as PaymentResponse
+    return { response, data }
+  }, [])
 
   useEffect(() => {
     const intercept = (event: MouseEvent) => {
@@ -195,23 +217,34 @@ export default function MidtransPaymentSystem() {
       setError(copy.invalid)
       return
     }
+
     setBusy(true)
     setError('')
     try {
-      const token = await ensureWallet()
       const profile = readProfile()
-      const response = await fetch(`${API_BASE}/dlavie-create-payment`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-dlavie-wallet-token': token },
-        body: JSON.stringify({ amount: numeric, customer: { name: profile?.username, email: profile?.email } }),
-      })
-      const data = await response.json().catch(() => ({})) as { ok?: boolean; redirect_url?: string; order_id?: string; error?: string }
-      if (!response.ok || !data.ok || !data.redirect_url) throw new Error(data.error || 'payment_create_error')
-      if (data.order_id) localStorage.setItem('dlavie-last-midtrans-order', data.order_id)
-      window.location.assign(data.redirect_url)
+      let token = localStorage.getItem(TOKEN_KEY)
+      if (!token) token = await ensureWallet()
+
+      let result = await paymentRequest(token, numeric, profile)
+
+      if (result.response.status === 401) {
+        localStorage.removeItem(TOKEN_KEY)
+        token = await ensureWallet()
+        result = await paymentRequest(token, numeric, profile)
+      }
+
+      if (!result.response.ok || !result.data.ok || !result.data.redirect_url) {
+        const suffix = result.data.error ? ` · ${result.data.error}` : ` · HTTP ${result.response.status}`
+        setError(`${copy.failedCode}${suffix}`)
+        setBusy(false)
+        return
+      }
+
+      if (result.data.order_id) localStorage.setItem('dlavie-last-midtrans-order', result.data.order_id)
+      window.location.href = result.data.redirect_url
     } catch (cause) {
       console.error('Midtrans payment', cause)
-      setError(copy.failed)
+      setError(copy.connection)
       setBusy(false)
     }
   }
