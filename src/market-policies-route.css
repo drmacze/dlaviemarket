@@ -1,0 +1,21 @@
+html[data-page="help"] .hero,
+html[data-page="help"] .marquee,
+html[data-page="help"] .catalog-section,
+html[data-page="help"] .experience,
+html[data-page="help"] .security,
+html[data-page="help"] .history-section,
+html[data-page="help"] .final-cta,
+html[data-page="legal"] .hero,
+html[data-page="legal"] .marquee,
+html[data-page="legal"] .catalog-section,
+html[data-page="legal"] .experience,
+html[data-page="legal"] .security,
+html[data-page="legal"] .history-section,
+html[data-page="legal"] .final-cta{display:none!important;}
+
+html[data-page="help"] main,
+html[data-page="legal"] main{display:none!important;}
+
+.page-nav-menu{max-height:calc(100dvh - 110px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;}
+
+@media(max-width:560px){.page-nav-menu{max-height:calc(100dvh - 94px - env(safe-area-inset-bottom));}}
