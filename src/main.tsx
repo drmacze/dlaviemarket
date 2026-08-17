@@ -13,6 +13,7 @@ import StateBridge from './StateBridge'
 import DLavieRadio from './DLavieRadio'
 import ActivityViewEnhancer from './ActivityViewEnhancer'
 import MidtransPaymentSystem from './MidtransPaymentSystem'
+import WalletHistoryEnhancer from './WalletHistoryEnhancer'
 import './styles.css'
 import './brand-logos.css'
 import './mobile-polish.css'
@@ -36,6 +37,7 @@ import './nav-utility.css'
 import './midtrans-payment.css'
 import './dlavie-core-pay.css'
 import './dlavie-core-pay-fix.css'
+import './wallet-history-enhancer.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -50,6 +52,7 @@ createRoot(document.getElementById('root')!).render(
     <OrderCenter />
     <ActivityViewEnhancer />
     <MidtransPaymentSystem />
+    <WalletHistoryEnhancer />
     <DLavieRadio />
     <App />
   </StrictMode>,
