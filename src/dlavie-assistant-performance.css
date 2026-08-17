@@ -7,7 +7,7 @@
 }
 
 .dlv-assistant-panel{
-  contain:layout paint style;
+  contain:layout style;
   transform:translate3d(0,0,0);
   -webkit-transform:translate3d(0,0,0);
   backface-visibility:hidden;
@@ -25,22 +25,19 @@
 }
 
 .dlv-assistant-body{
-  contain:layout paint style;
+  contain:layout style;
   -webkit-overflow-scrolling:touch;
   transform:translateZ(0);
   -webkit-transform:translateZ(0);
 }
 
-.dlv-assistant-thread{
-  contain:layout style;
-}
-
+.dlv-assistant-thread,
 .dlv-assistant-message,
 .dlv-assistant-process,
 .dlv-assistant-quick,
 .dlv-assistant-intake,
 .dlv-assistant-receipt{
-  contain:layout style paint;
+  contain:layout style;
 }
 
 .dlv-ai-avatar,
