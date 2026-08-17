@@ -12,6 +12,7 @@ import OrderCenter from './OrderCenter'
 import StateBridge from './StateBridge'
 import DLavieRadio from './DLavieRadio'
 import ActivityViewEnhancer from './ActivityViewEnhancer'
+import MidtransPaymentSystem from './MidtransPaymentSystem'
 import './styles.css'
 import './brand-logos.css'
 import './mobile-polish.css'
@@ -32,6 +33,7 @@ import './ambient-mobile-safe.css'
 import './market-route-compact.css'
 import './activity-view-polish.css'
 import './nav-utility.css'
+import './midtrans-payment.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -45,6 +47,7 @@ createRoot(document.getElementById('root')!).render(
     <MarketFlow />
     <OrderCenter />
     <ActivityViewEnhancer />
+    <MidtransPaymentSystem />
     <DLavieRadio />
     <App />
   </StrictMode>,
