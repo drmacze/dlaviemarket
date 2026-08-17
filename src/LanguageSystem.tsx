@@ -120,7 +120,7 @@ const exact: Record<string, string> = {
   'Mode demo aktif.': 'Demo mode is active.',
   'OTP di bawah bisa disimulasikan untuk menguji flow. Saat backend supplier tersambung, status dan kode akan diperbarui otomatis.': 'OTP can be simulated below to test the flow. Once a supplier backend is connected, status and codes will update automatically.',
   'Belum ada nomor yang menunggu SMS.': 'No numbers are waiting for SMS.',
-  'Beli nomor dari Market. Setelah checkout, sesi akan muncul otomatis di sini.': 'Buy a number from Market. The session will appear here automatically after checkout.',
+  'Beli nomor dari Market. Setelah checkout, sesi akan muncul otomatis di sini.': 'Buy a number from Market. The session will appear automatically here after checkout.',
   'Riwayat': 'History',
   'Transaksi terbaru': 'Recent transactions',
   'Tambah saldo': 'Add balance',
@@ -160,12 +160,17 @@ function translateDynamic(text: string) {
   return exact[text] || text
 }
 
+function insideAssistant(node: Node) {
+  const element = node.nodeType === Node.ELEMENT_NODE ? node as Element : node.parentElement
+  return !!element?.closest('.dlv-assistant')
+}
+
 function applyEnglish(root: ParentNode = document) {
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT)
   const nodes: Text[] = []
   let node = walker.nextNode()
   while (node) {
-    if (node.parentElement && !['SCRIPT', 'STYLE', 'CODE', 'PRE'].includes(node.parentElement.tagName)) nodes.push(node as Text)
+    if (node.parentElement && !node.parentElement.closest('.dlv-assistant') && !['SCRIPT', 'STYLE', 'CODE', 'PRE'].includes(node.parentElement.tagName)) nodes.push(node as Text)
     node = walker.nextNode()
   }
 
@@ -181,6 +186,7 @@ function applyEnglish(root: ParentNode = document) {
   })
 
   root.querySelectorAll?.<HTMLInputElement>('input[placeholder]').forEach((input) => {
+    if (input.closest('.dlv-assistant')) return
     const placeholder = input.placeholder.trim()
     const map: Record<string, string> = {
       'Cari layanan...': 'Search services...',
@@ -209,7 +215,10 @@ export default function LanguageSystem() {
     }
 
     run()
-    const observer = new MutationObserver(run)
+    const observer = new MutationObserver((mutations) => {
+      if (mutations.length && mutations.every((mutation) => insideAssistant(mutation.target))) return
+      run()
+    })
     observer.observe(document.body, { childList: true, subtree: true, characterData: true })
     window.addEventListener('hashchange', run)
     return () => {
