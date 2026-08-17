@@ -12,6 +12,7 @@ import OrderCenter from './OrderCenter'
 import StateBridge from './StateBridge'
 import DLavieRadio from './DLavieRadio'
 import ActivityViewEnhancer from './ActivityViewEnhancer'
+import ActivityMetadataEnhancer from './ActivityMetadataEnhancer'
 import MidtransPaymentSystem from './MidtransPaymentSystem'
 import WalletHistoryEnhancer from './WalletHistoryEnhancer'
 import './styles.css'
@@ -38,6 +39,7 @@ import './midtrans-payment.css'
 import './dlavie-core-pay.css'
 import './dlavie-core-pay-fix.css'
 import './wallet-history-enhancer.css'
+import './activity-metadata.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -51,6 +53,7 @@ createRoot(document.getElementById('root')!).render(
     <MarketFlow />
     <OrderCenter />
     <ActivityViewEnhancer />
+    <ActivityMetadataEnhancer />
     <MidtransPaymentSystem />
     <WalletHistoryEnhancer />
     <DLavieRadio />
