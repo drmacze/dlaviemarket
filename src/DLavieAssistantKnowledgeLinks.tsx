@@ -27,8 +27,15 @@ function linkifyParagraph(p:HTMLElement){
  p.replaceChildren(fragment)
 }
 
+function patchEngineVersion(){
+ document.querySelectorAll<HTMLElement>('.dlv-assistant-ready-meta strong').forEach(node=>{
+  if(/^DLavie v\d+/i.test(node.textContent||''))node.textContent='DLavie v3'
+ })
+}
+
 function applyLinks(){
  document.querySelectorAll<HTMLElement>('.dlv-assistant-message.is-assistant:not(.is-typing) p').forEach(linkifyParagraph)
+ patchEngineVersion()
 }
 
 function setReactInputValue(input:HTMLInputElement,value:string){
