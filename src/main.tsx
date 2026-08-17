@@ -34,6 +34,7 @@ import './market-route-compact.css'
 import './activity-view-polish.css'
 import './nav-utility.css'
 import './midtrans-payment.css'
+import './dlavie-core-pay.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
