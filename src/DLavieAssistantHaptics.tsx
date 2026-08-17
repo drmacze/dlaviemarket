@@ -21,9 +21,10 @@ function pulse(kind: HapticKind) {
 
   const root = document.documentElement
   root.classList.remove('dlv-haptic-pulse')
-  void root.offsetWidth
-  root.classList.add('dlv-haptic-pulse')
-  window.setTimeout(() => root.classList.remove('dlv-haptic-pulse'), 150)
+  requestAnimationFrame(() => {
+    root.classList.add('dlv-haptic-pulse')
+    window.setTimeout(() => root.classList.remove('dlv-haptic-pulse'), 150)
+  })
 }
 
 export default function DLavieAssistantHaptics() {
