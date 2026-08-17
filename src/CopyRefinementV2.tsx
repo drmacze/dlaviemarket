@@ -19,6 +19,11 @@ function replaceTextNode(element: Element | null, text: string) {
   if (node && node.textContent?.trim() !== text) node.textContent = ` ${text} `
 }
 
+function insideAssistant(node: Node) {
+  const element = node.nodeType === Node.ELEMENT_NODE ? node as Element : node.parentElement
+  return !!element?.closest('.dlv-assistant')
+}
+
 function applyCopy() {
   const language: Language = localStorage.getItem('dlavie-language') === 'en' ? 'en' : 'id'
   const en = language === 'en'
@@ -129,7 +134,10 @@ export default function CopyRefinementV2() {
       })
     }
     run()
-    const observer = new MutationObserver(run)
+    const observer = new MutationObserver((mutations) => {
+      if (mutations.length && mutations.every((mutation) => insideAssistant(mutation.target))) return
+      run()
+    })
     observer.observe(document.body, { childList:true, subtree:true })
     window.addEventListener('hashchange', run)
     return () => {
