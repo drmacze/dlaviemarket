@@ -1,0 +1,67 @@
+/* DLavie Assistant performance layer — preserve visuals, reduce main-thread/layout spill. */
+.dlv-assistant{
+  isolation:isolate;
+  contain:layout style;
+  transform:translateZ(0);
+  -webkit-transform:translateZ(0);
+}
+
+.dlv-assistant-panel{
+  contain:layout paint style;
+  transform:translate3d(0,0,0);
+  -webkit-transform:translate3d(0,0,0);
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  will-change:transform,opacity;
+}
+
+.dlv-assistant-header,
+.dlv-assistant-sessionbar,
+.dlv-assistant-composer-wrap{
+  transform:translateZ(0);
+  -webkit-transform:translateZ(0);
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+
+.dlv-assistant-body{
+  contain:layout paint style;
+  -webkit-overflow-scrolling:touch;
+  transform:translateZ(0);
+  -webkit-transform:translateZ(0);
+}
+
+.dlv-assistant-thread{
+  contain:layout style;
+}
+
+.dlv-assistant-message,
+.dlv-assistant-process,
+.dlv-assistant-quick,
+.dlv-assistant-intake,
+.dlv-assistant-receipt{
+  contain:layout style paint;
+}
+
+.dlv-ai-avatar,
+.dlv-ai-avatar svg,
+.dlv-type-caret,
+.dlv-assistant-process i b{
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+
+/* Keep the same transitions/effects while avoiding touch-delay and accidental text selection work. */
+.dlv-assistant button{
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+
+@media(max-width:620px){
+  .dlv-assistant-panel{
+    will-change:transform,opacity;
+  }
+  .dlv-assistant-body{
+    overscroll-behavior:contain;
+  }
+}
