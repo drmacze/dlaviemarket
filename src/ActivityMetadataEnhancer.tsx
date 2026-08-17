@@ -16,6 +16,13 @@ const dateFmt=(v:number)=>new Intl.DateTimeFormat(locale(),{day:'2-digit',month:
 const timeFmt=(v:number)=>new Intl.DateTimeFormat(locale(),{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false,timeZone:'Asia/Jakarta'}).format(new Date(v))
 const fullFmt=(v?:number)=>v?`${dateFmt(v)} · ${timeFmt(v)} WIB`:'—'
 
+function isActivityRoute(){
+ const page=document.documentElement.dataset.page
+ if(page)return page==='activity'
+ const route=window.location.hash.replace(/^#\/?/,'').split(/[?&]/)[0].toLowerCase()
+ return route==='activity'||route==='aktivitas'
+}
+
 function inferOrder(item:History,all:Order[]){
  const direct=item.orderId||item.id
  const byId=all.find(x=>x.id===direct)
@@ -31,6 +38,7 @@ function inferOrder(item:History,all:Order[]){
 export default function ActivityMetadataEnhancer(){
  useEffect(()=>{
   let raf=0
+  let observer:MutationObserver|null=null
   const seen=new Set(history().map(x=>x.id))
 
   const persistMissingTimestamps=()=>{
@@ -53,6 +61,7 @@ export default function ActivityMetadataEnhancer(){
   }
 
   const apply=()=>{
+   if(!isActivityRoute())return
    persistMissingTimestamps()
    const all=orders(),active=all.filter(x=>x.status==='waiting'||x.status==='received'),uid=profile()?.id||'Guest'
    const head=document.querySelector<HTMLElement>('.order-center-head>div:first-child')
@@ -90,15 +99,31 @@ export default function ActivityMetadataEnhancer(){
    })
   }
 
-  const schedule=()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(apply)}
-  const onState=()=>{schedule()}
-  schedule()
-  const observer=new MutationObserver(m=>{if(m.some(x=>x.type==='childList'))schedule()})
-  observer.observe(document.body,{childList:true,subtree:true})
+  const schedule=()=>{
+   if(!isActivityRoute())return
+   cancelAnimationFrame(raf)
+   raf=requestAnimationFrame(apply)
+  }
+
+  const connect=()=>{
+   observer?.disconnect()
+   observer=null
+   cancelAnimationFrame(raf)
+   if(!isActivityRoute())return
+   apply()
+   const root=document.querySelector<HTMLElement>('.order-center-page')
+   if(!root)return
+   observer=new MutationObserver(m=>{if(m.some(x=>x.type==='childList'))schedule()})
+   observer.observe(root,{childList:true,subtree:true})
+  }
+
+  const onState=()=>{if(isActivityRoute())schedule()}
+  const onRoute=()=>requestAnimationFrame(connect)
+  connect()
   window.addEventListener(STATE_EVENT,onState)
   window.addEventListener('storage',onState)
-  window.addEventListener('hashchange',schedule)
-  return()=>{observer.disconnect();cancelAnimationFrame(raf);window.removeEventListener(STATE_EVENT,onState);window.removeEventListener('storage',onState);window.removeEventListener('hashchange',schedule)}
+  window.addEventListener('hashchange',onRoute)
+  return()=>{observer?.disconnect();cancelAnimationFrame(raf);window.removeEventListener(STATE_EVENT,onState);window.removeEventListener('storage',onState);window.removeEventListener('hashchange',onRoute)}
  },[])
  return null
 }
