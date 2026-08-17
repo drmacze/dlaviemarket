@@ -20,6 +20,7 @@ import MarketPolicies from './MarketPolicies'
 import AccessExperience from './AccessExperience'
 import LoginRedirectEnhancer from './LoginRedirectEnhancer'
 import DLavieAssistant from './DLavieAssistant'
+import DLavieAssistantHaptics from './DLavieAssistantHaptics'
 import './styles.css'
 import './brand-logos.css'
 import './mobile-polish.css'
@@ -49,6 +50,7 @@ import './site-detail-system.css'
 import './market-policies.css'
 import './access-experience.css'
 import './dlavie-assistant.css'
+import './dlavie-assistant-motion.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -70,6 +72,7 @@ createRoot(document.getElementById('root')!).render(
     <MarketPolicies />
     <AccessExperience />
     <DLavieAssistant />
+    <DLavieAssistantHaptics />
     <DLavieRadio />
     <App />
   </StrictMode>,
