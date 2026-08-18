@@ -72,6 +72,7 @@ import './dlavie-assistant-fast-composer.css'
 import './dlavie-admin-support.css'
 import './refund-center.css'
 import './refund-admin-queue.css'
+import './refund-investigation-v2.css'
 import './ios-form-zoom-fix.css'
 import './route-height-fix-v2.css'
 
