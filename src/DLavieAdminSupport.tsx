@@ -78,13 +78,13 @@ export default function DLavieAdminSupport() {
   if (!enabled) return null
 
   const login = async (event: FormEvent) => {
-    event.preventDefault(); if (!code.trim() || busy) return
+    event.preventDefault(); if (code.length !== 6 || busy) return
     setBusy(true); setError('')
     try {
-      const data = await request('login', '', { access_code: code.trim() })
+      const data = await request('login', '', { access_code: code })
       sessionStorage.setItem(TOKEN_KEY, data.admin_token)
       setToken(data.admin_token); setAdminName(data.admin_name || 'DLavie Admin'); setCode('')
-    } catch { setError('Kode admin tidak valid.') }
+    } catch { setError('PIN admin tidak valid.') }
     finally { setBusy(false) }
   }
 
@@ -117,10 +117,10 @@ export default function DLavieAdminSupport() {
   if (!token) return (
     <div className="dlv-admin-shell is-login">
       <form className="dlv-admin-login" onSubmit={login}>
-        <span>DLAVIE INTERNAL</span><h1>Support Console</h1><p>Masuk untuk menangani sesi yang di-escalate dari DLavie Intelligence Engine.</p>
-        <label><small>ADMIN ACCESS CODE</small><input type="password" value={code} onChange={(event) => setCode(event.target.value)} autoComplete="off" placeholder="DLV-ADM-…" /></label>
+        <span>DLAVIE INTERNAL</span><h1>Support Console</h1><p>Masukkan PIN admin untuk menangani live support dan antrean refund.</p>
+        <label><small>ADMIN PIN · 6 DIGIT</small><input type="password" inputMode="numeric" pattern="[0-9]*" maxLength={6} value={code} onChange={(event) => setCode(event.target.value.replace(/\D/g, '').slice(0, 6))} autoComplete="one-time-code" placeholder="••••••" aria-label="PIN admin 6 digit" /></label>
         {error && <div className="dlv-admin-error">{error}</div>}
-        <button disabled={busy || !code.trim()}>{busy ? 'Memverifikasi…' : 'Masuk ke Support Queue'}<b>→</b></button>
+        <button disabled={busy || code.length !== 6}>{busy ? 'Memverifikasi PIN…' : 'Masuk ke Support Queue'}<b>→</b></button>
       </form>
     </div>
   )
