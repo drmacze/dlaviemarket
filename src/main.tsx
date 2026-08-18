@@ -22,6 +22,7 @@ import LoginRedirectEnhancer from './LoginRedirectEnhancer'
 import DLavieAssistant from './DLavieAssistant'
 import DLavieAssistantHaptics from './DLavieAssistantHaptics'
 import DLavieAssistantKnowledgeLinks from './DLavieAssistantKnowledgeLinks'
+import DLavieAssistantSessionReconciler from './DLavieAssistantSessionReconciler'
 import DLavieAdminSupport from './DLavieAdminSupport'
 import './styles.css'
 import './brand-logos.css'
@@ -83,6 +84,7 @@ createRoot(document.getElementById('root')!).render(
     <DLavieAssistant />
     <DLavieAssistantHaptics />
     <DLavieAssistantKnowledgeLinks />
+    <DLavieAssistantSessionReconciler />
     <DLavieAdminSupport />
     <DLavieRadio />
     <App />
