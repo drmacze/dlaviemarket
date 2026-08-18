@@ -29,7 +29,7 @@ function linkifyParagraph(p:HTMLElement){
 
 function patchEngineVersion(root:ParentNode){
  root.querySelectorAll<HTMLElement>('.dlv-assistant-ready-meta strong').forEach(node=>{
-  if(/^DLavie v\d+/i.test(node.textContent||''))node.textContent='DLavie v3'
+  if(/^DLavie v\d+/i.test(node.textContent||'')&&node.textContent!=='DLavie v8')node.textContent='DLavie v8'
  })
 }
 
