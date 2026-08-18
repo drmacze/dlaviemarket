@@ -15,6 +15,21 @@ function setNativeValue(input: HTMLTextAreaElement, value: string) {
   descriptor?.set?.call(input, value)
   input.dispatchEvent(new Event('input', { bubbles: true }))
 }
+function touchAssistant(root: HTMLElement) {
+  try { root.dispatchEvent(new Event('pointerdown', { bubbles: true })) } catch { /* optional */ }
+}
+function sendHaptic() {
+  try {
+    const nav = navigator as Navigator & { vibrate?: (pattern: number | number[]) => boolean }
+    nav.vibrate?.([7, 18, 7])
+  } catch { /* browser may not expose vibration */ }
+  const html = document.documentElement
+  html.classList.remove('dlv-haptic-pulse')
+  requestAnimationFrame(() => {
+    html.classList.add('dlv-haptic-pulse')
+    window.setTimeout(() => html.classList.remove('dlv-haptic-pulse'), 150)
+  })
+}
 
 export default function DLavieAssistantFastComposer() {
   const [target, setTarget] = useState<Target | null>(null)
@@ -24,6 +39,7 @@ export default function DLavieAssistantFastComposer() {
   const [disabled, setDisabled] = useState(false)
   const sendingRef = useRef(false)
   const currentFormRef = useRef<HTMLFormElement | null>(null)
+  const lastTouchRef = useRef(0)
 
   const syncTarget = useCallback((next: Target) => {
     if (!next.form.isConnected || !next.nativeInput.isConnected || !next.nativeButton.isConnected) return false
@@ -104,6 +120,7 @@ export default function DLavieAssistantFastComposer() {
       const prompt = node.closest<HTMLButtonElement>('[data-prompt]')
       if (prompt && target.root.contains(prompt)) {
         setDraft(prompt.textContent?.trim() || '')
+        touchAssistant(target.root)
         requestAnimationFrame(() => document.querySelector<HTMLTextAreaElement>('.dlv-fast-composer-input')?.focus({ preventScroll: true }))
         return
       }
@@ -116,10 +133,19 @@ export default function DLavieAssistantFastComposer() {
           ? (en ? 'I am still here. I want to add more information.' : 'Saya masih di sini. Saya ingin menambahkan informasi.')
           : (en ? 'Explain your previous answer more simply, with a direct answer first and clear steps.' : 'Jelaskan jawaban sebelumnya lebih sederhana. Beri jawaban langsung terlebih dahulu lalu langkah yang jelas.')
       setDraft(value)
+      touchAssistant(target.root)
       requestAnimationFrame(() => document.querySelector<HTMLTextAreaElement>('.dlv-fast-composer-input')?.focus({ preventScroll: true }))
     }
     document.addEventListener('click', click)
     return () => document.removeEventListener('click', click)
+  }, [target])
+
+  const markTypingActivity = useCallback(() => {
+    if (!target) return
+    const now = Date.now()
+    if (now - lastTouchRef.current < 850) return
+    lastTouchRef.current = now
+    touchAssistant(target.root)
   }, [target])
 
   const send = useCallback(() => {
@@ -127,6 +153,8 @@ export default function DLavieAssistantFastComposer() {
     const text = draft.trim()
     if (!text) return
     sendingRef.current = true
+    touchAssistant(target.root)
+    sendHaptic()
     setNativeValue(target.nativeInput, text)
     setDraft('')
     requestAnimationFrame(() => {
@@ -154,8 +182,9 @@ export default function DLavieAssistantFastComposer() {
         placeholder={placeholder}
         maxLength={1600}
         rows={1}
-        onChange={(event) => setDraft(event.target.value)}
+        onChange={(event) => { setDraft(event.target.value); markTypingActivity() }}
         onKeyDown={(event) => {
+          markTypingActivity()
           if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); send() }
         }}
         aria-label="Tulis pesan ke DLavie Support"
