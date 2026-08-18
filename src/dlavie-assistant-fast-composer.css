@@ -1,0 +1,27 @@
+/* Low-latency composer overlay. The native React textarea remains in layout but is not typed into per keystroke. */
+.dlv-assistant.is-fast-compose .dlv-assistant-composer>textarea{color:transparent!important;caret-color:transparent!important;pointer-events:none!important;-webkit-text-fill-color:transparent!important}
+.dlv-assistant.is-fast-compose .dlv-assistant-composer>button[type="submit"]{opacity:0!important;pointer-events:none!important}
+
+.dlv-fast-composer-input{position:fixed;z-index:10020;box-sizing:border-box;border:0!important;outline:0!important;resize:none;overflow:auto;background:transparent!important;color:var(--theme-ink);-webkit-text-fill-color:var(--theme-ink);font:inherit;font-size:16px!important;line-height:1.35;padding:12px 7px 9px 12px;border-radius:14px;appearance:none;-webkit-appearance:none;box-shadow:none!important;overscroll-behavior:contain}
+.dlv-fast-composer-input::placeholder{color:var(--theme-muted-2);-webkit-text-fill-color:var(--theme-muted-2)}
+.dlv-fast-composer-input:disabled{opacity:.58;cursor:not-allowed}
+.dlv-fast-composer-send{position:fixed;z-index:10021;border:0;border-radius:10px;background:var(--theme-ink);color:var(--theme-bg);display:grid;place-items:center;cursor:pointer;box-shadow:none;transition:transform .16s ease,opacity .16s ease,background .16s ease}
+.dlv-fast-composer-send:active:not(:disabled){transform:scale(.94)}
+.dlv-fast-composer-send:disabled{opacity:.22;cursor:not-allowed}
+.dlv-fast-composer-send svg{width:14px;height:14px}
+.dlv-assistant.mode-admin .dlv-fast-composer-send{background:var(--accent);color:#fff}
+.dlv-assistant.mode-admin_pending .dlv-fast-composer-send{background:color-mix(in srgb,#ddb04a,var(--theme-ink) 18%);color:#fff}
+
+/* Closed state must never inherit a stale admin color/state from the previous session. */
+.dlv-assistant[data-session-visual="closed"] .dlv-assistant-identity small{font-size:0!important}
+.dlv-assistant[data-session-visual="closed"] .dlv-assistant-identity small::after{content:"Sesi selesai · siap memulai sesi baru";font-size:7.8px;color:var(--theme-muted);letter-spacing:.01em}
+.dlv-assistant[data-session-visual="closed"] .dlv-ui-mode-chip i{background:var(--accent)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent),transparent 87%)!important}
+
+/* Keep the avatar's letter-building show on the large Assistant avatar only. Never draw the word under compact avatars/launcher. */
+.dlv-launcher-avatar .dlv-ai-avatar::before,.dlv-launcher-avatar .dlv-ai-avatar::after,.dlv-assistant-message .dlv-ai-avatar::before,.dlv-assistant-message .dlv-ai-avatar::after{content:none!important;display:none!important}
+
+@media(max-width:620px){
+  .dlv-fast-composer-input{font-size:16px!important}
+  .dlv-fast-composer-send{border-radius:10px}
+}
+@media(prefers-reduced-motion:reduce){.dlv-fast-composer-send{transition:none!important}}
