@@ -30,6 +30,7 @@ import DLavieAssistantReceiptPolish from './DLavieAssistantReceiptPolish'
 import DLavieAdminSupport from './DLavieAdminSupport'
 import RefundCenter from './RefundCenter'
 import DLavieRefundAdminQueue from './DLavieRefundAdminQueue'
+import DLavieOrderEvidenceBridge from './DLavieOrderEvidenceBridge'
 import './styles.css'
 import './brand-logos.css'
 import './mobile-polish.css'
@@ -86,6 +87,7 @@ createRoot(document.getElementById('root')!).render(
     <LoginRedirectEnhancer />
     <MarketFlow />
     <OrderCenter />
+    <DLavieOrderEvidenceBridge />
     <ActivityViewEnhancer />
     <ActivityMetadataEnhancer />
     <MidtransPaymentSystem />
