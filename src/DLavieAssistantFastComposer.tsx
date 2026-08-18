@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
-import { createPortal } from 'react-dom'
+import { createPortal, flushSync } from 'react-dom'
 
 type Target = {
   root: HTMLElement
@@ -158,11 +158,19 @@ export default function DLavieAssistantFastComposer() {
     sendingRef.current = true
     touchAssistant(target.root)
     sendHaptic()
-    setNativeValue(target.nativeInput, text)
-    setDraft('')
+
+    // React's original composer is controlled. Flush the synthetic input update before
+    // submitting so sendMessage always reads the exact text visible in the fast composer,
+    // never the previous prompt/message from React state.
+    flushSync(() => setNativeValue(target.nativeInput, text))
+
     requestAnimationFrame(() => {
-      try { target.form.requestSubmit() }
-      finally { window.setTimeout(() => { sendingRef.current = false }, 100) }
+      try {
+        target.form.requestSubmit()
+        setDraft('')
+      } finally {
+        window.setTimeout(() => { sendingRef.current = false }, 100)
+      }
     })
   }, [disabled, draft, target])
 
