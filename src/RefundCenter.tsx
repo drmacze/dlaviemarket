@@ -14,6 +14,8 @@ function orders():LocalOrder[]{try{return JSON.parse(localStorage.getItem(ORDER_
 function token(){return localStorage.getItem(TOKEN_KEY)||''}
 function rupiah(n?:number|null){return typeof n==='number'?new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n):'—'}
 function when(v?:string|null){return v?new Intl.DateTimeFormat('id-ID',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Jakarta'}).format(new Date(v)):'—'}
+function routeInfo(){const raw=window.location.hash.replace(/^#\/?/,'');const [route,query='']=raw.split('?');return{route:route.toLowerCase(),params:new URLSearchParams(query)}}
+function isActivity(){const {route}=routeInfo();return route==='activity'||route==='aktivitas'}
 async function request(action:string,extra:Record<string,string>={}){const p=profile();if(!p||!token())throw new Error('Masuk ke akun terlebih dahulu.');const body=new URLSearchParams({action,wallet_token:token(),user_id:p.id,...extra});const r=await fetch(API,{method:'POST',body});const d=await r.json().catch(()=>({}));if(!r.ok||!d.ok){const code=d.error||'refund_error';const map:Record<string,string>={refund_already_open:`Permintaan refund untuk reference ini masih aktif (${d.refund_ref||''}).`,refund_daily_limit:'Batas permintaan refund harian tercapai.',deposit_not_found_for_wallet:'Deposit ID tidak ditemukan pada wallet akun ini.',invalid_wallet:'Wallet tidak valid. Buka Wallet terlebih dahulu lalu coba lagi.',refund_cannot_cancel:'Request ini sudah diproses dan tidak bisa dibatalkan.'};throw new Error(map[code]||'Permintaan refund belum dapat diproses.')}return d}
 
 export default function RefundCenter(){
@@ -22,15 +24,21 @@ export default function RefundCenter(){
  const load=useCallback(async()=>{try{const d=await request('list');setItems(d.refunds||[])}catch(e){setError(e instanceof Error?e.message:'Refund history gagal dimuat.')}},[])
  useEffect(()=>{if(open)void load()},[open,load])
  useEffect(()=>{
+  const checkDeepLink=()=>{const {route,params}=routeInfo();if((route==='activity'||route==='aktivitas')&&params.get('refund')==='1'){setOpen(true);setTab('request')}}
+  checkDeepLink();window.addEventListener('hashchange',checkDeepLink);return()=>window.removeEventListener('hashchange',checkDeepLink)
+ },[])
+ useEffect(()=>{
   let observer:MutationObserver|null=null,raf=0
   const apply=()=>{
-   const route=window.location.hash.replace(/^#\/?/,'').split('?')[0].toLowerCase();if(route!=='activity'&&route!=='aktivitas')return
+   if(!isActivity())return
    const head=document.querySelector<HTMLElement>('.order-center-head');if(head&&!head.querySelector('.dlv-refund-center-trigger')){const b=document.createElement('button');b.type='button';b.className='dlv-refund-center-trigger';b.innerHTML='<span>↺</span><b>Refund Center</b>';head.appendChild(b)}
    document.querySelectorAll<HTMLElement>('.transaction-row').forEach(row=>{if(row.querySelector('.dlv-refund-row-trigger'))return;const ref=row.querySelector<HTMLElement>('.activity-history-ledger code')?.textContent?.trim();if(!ref)return;const b=document.createElement('button');b.type='button';b.className='dlv-refund-row-trigger';b.dataset.ref=ref;b.textContent='Minta refund';row.appendChild(b)})
   }
-  const schedule=()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(apply)}
+  const schedule=()=>{if(!isActivity())return;cancelAnimationFrame(raf);raf=requestAnimationFrame(apply)}
+  const connect=()=>{observer?.disconnect();observer=null;cancelAnimationFrame(raf);if(!isActivity())return;apply();const root=document.querySelector<HTMLElement>('.order-center-page');if(!root)return;observer=new MutationObserver(m=>{if(m.some(x=>x.type==='childList'))schedule()});observer.observe(root,{childList:true,subtree:true})}
   const click=(e:MouseEvent)=>{const t=e.target as HTMLElement|null;if(t?.closest('.dlv-refund-center-trigger')){setOpen(true);setTab('request');setReference('');return}const row=t?.closest<HTMLButtonElement>('.dlv-refund-row-trigger');if(row){setOpen(true);setTab('request');const ref=row.dataset.ref||'';setReference(ref);setSource(ref.startsWith('DLVDEP-')?'deposit':'order')}}
-  document.addEventListener('click',click);window.addEventListener('hashchange',schedule);window.addEventListener(STATE_EVENT,schedule);observer=new MutationObserver(m=>{if(m.some(x=>x.type==='childList'))schedule()});observer.observe(document.body,{childList:true,subtree:true});schedule();return()=>{document.removeEventListener('click',click);window.removeEventListener('hashchange',schedule);window.removeEventListener(STATE_EVENT,schedule);observer?.disconnect();cancelAnimationFrame(raf)}
+  const route=()=>requestAnimationFrame(connect)
+  document.addEventListener('click',click);window.addEventListener('hashchange',route);window.addEventListener(STATE_EVENT,schedule);connect();return()=>{document.removeEventListener('click',click);window.removeEventListener('hashchange',route);window.removeEventListener(STATE_EVENT,schedule);observer?.disconnect();cancelAnimationFrame(raf)}
  },[])
  const submit=async(e:FormEvent)=>{e.preventDefault();if(busy||reference.trim().length<4||details.trim().length<5)return;setBusy(true);setError('');setSuccess('');try{const o=localOrder;const d=await request('create',{source_type:source,source_reference:reference.trim(),reason,details:details.trim(),...(source==='order'?{amount:String(o?.price||0),service:o?.serviceName||'',provider:o?.providerName||'',order_status:o?.status||'',source_created_at:o?.createdAt?new Date(o.createdAt).toISOString():''}:{})});setSuccess(`Request ${d.refund.refund_ref} berhasil dikirim ke admin.`);setDetails('');await load();setTab('history')}catch(e){setError(e instanceof Error?e.message:'Refund gagal dikirim.')}finally{setBusy(false)}}
  const cancel=async(ref:string)=>{if(busy)return;setBusy(true);setError('');try{await request('cancel',{refund_ref:ref});await load()}catch(e){setError(e instanceof Error?e.message:'Request gagal dibatalkan.')}finally{setBusy(false)}}
