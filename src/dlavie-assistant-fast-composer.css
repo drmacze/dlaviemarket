@@ -12,10 +12,21 @@
 .dlv-assistant.mode-admin .dlv-fast-composer-send{background:var(--accent);color:#fff}
 .dlv-assistant.mode-admin_pending .dlv-fast-composer-send{background:color-mix(in srgb,#ddb04a,var(--theme-ink) 18%);color:#fff}
 
-/* Closed state must never inherit a stale admin color/state from the previous session. */
-.dlv-assistant[data-session-visual="closed"] .dlv-assistant-identity small{font-size:0!important}
-.dlv-assistant[data-session-visual="closed"] .dlv-assistant-identity small::after{content:"Sesi selesai · siap memulai sesi baru";font-size:7.8px;color:var(--theme-muted);letter-spacing:.01em}
+/* Closed state must never inherit stale admin copy/color from the previous session. */
+.dlv-assistant[data-session-visual="closed"] .dlv-assistant-panel[data-ui-stage="ended"] .dlv-assistant-identity small{font-size:0!important}
+.dlv-assistant[data-session-visual="closed"] .dlv-assistant-panel[data-ui-stage="ended"] .dlv-assistant-identity small::after{content:"Sesi selesai · siap memulai sesi baru";font-size:7.8px;color:var(--theme-muted);letter-spacing:.01em}
 .dlv-assistant[data-session-visual="closed"] .dlv-ui-mode-chip i{background:var(--accent)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent),transparent 87%)!important}
+.dlv-assistant[data-session-visual="closed"] .dlv-ui-mode-chip{border-color:color-mix(in srgb,var(--accent),var(--theme-line) 60%)!important}
+
+/* Keep every support state in the DLavie teal family; only the waiting queue uses amber. */
+.dlv-ui-mode-chip[data-mode="admin"] i{background:var(--accent)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent),transparent 87%)!important}
+.dlv-assistant[data-ui="v3"] .dlv-assistant-message.is-admin p{border-color:color-mix(in srgb,var(--accent),transparent 58%)!important;background:linear-gradient(145deg,color-mix(in srgb,var(--accent),transparent 91%),var(--theme-panel-solid))!important}
+.dlv-assistant[data-ui="v3"] .dlv-assistant-message.is-admin>div>em{color:var(--accent)!important}
+.dlv-assistant[data-ui="v3"] .dlv-admin-avatar{background:linear-gradient(145deg,color-mix(in srgb,var(--accent),white 10%),color-mix(in srgb,var(--accent),black 25%))!important;box-shadow:0 8px 18px color-mix(in srgb,var(--accent),transparent 70%)!important}
+
+/* The ready card should expose the actual backend generation, not an old v4 label. */
+.dlv-assistant[data-ui="v3"] .dlv-assistant-ready-meta>div:first-child strong{font-size:0!important}
+.dlv-assistant[data-ui="v3"] .dlv-assistant-ready-meta>div:first-child strong::after{content:"DLavie v8";font-size:7.5px}
 
 /* Keep the avatar's letter-building show on the large Assistant avatar only. Never draw the word under compact avatars/launcher. */
 .dlv-launcher-avatar .dlv-ai-avatar::before,.dlv-launcher-avatar .dlv-ai-avatar::after,.dlv-assistant-message .dlv-ai-avatar::before,.dlv-assistant-message .dlv-ai-avatar::after{content:none!important;display:none!important}
