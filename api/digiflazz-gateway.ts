@@ -17,6 +17,8 @@ function md5(value: string) {
   return createHash('md5').update(value).digest('hex')
 }
 
+const POSTPAID_COMMANDS = new Set(['inq-pasca', 'pay-pasca', 'status-pasca'])
+
 export default {
   async fetch(request: Request) {
     if (request.method !== 'POST') return json({ ok: false, forwarded: false, error: 'method_not_allowed' }, 405)
@@ -41,7 +43,14 @@ export default {
     try { body = JSON.parse(raw) } catch { return json({ ok: false, forwarded: false, error: 'invalid_json' }, 400) }
 
     const op = String(body.op || '')
-    if (op === 'ping') return json({ ok: true, forwarded: false, region: process.env.VERCEL_REGION || 'unknown' })
+    if (op === 'ping') {
+      return json({
+        ok: true,
+        forwarded: false,
+        gateway: 'dlavie-static-egress',
+        region: process.env.DLAVIE_GATEWAY_REGION || process.env.VERCEL_REGION || 'unknown',
+      })
+    }
 
     const username = String(body.username || '').trim()
     const apiKey = String(body.api_key || '').trim()
@@ -58,7 +67,10 @@ export default {
       const refId = String(body.ref_id || '').trim()
       const sku = String(body.buyer_sku_code || '').trim()
       const customerNo = String(body.customer_no || '').trim()
+      const commands = String(body.commands || '').trim()
       if (!refId || !sku || !customerNo) return json({ ok: false, forwarded: false, error: 'transaction_fields_missing' }, 400)
+      if (commands && !POSTPAID_COMMANDS.has(commands)) return json({ ok: false, forwarded: false, error: 'invalid_postpaid_command' }, 400)
+
       endpoint = 'https://api.digiflazz.com/v1/transaction'
       payload = {
         username,
@@ -68,8 +80,18 @@ export default {
         sign: md5(`${username}${apiKey}${refId}`),
         testing: Boolean(body.testing),
       }
-      const maxPrice = Number(body.max_price)
-      if (Number.isFinite(maxPrice) && maxPrice > 0) payload.max_price = Math.round(maxPrice)
+
+      if (commands) payload.commands = commands
+      if (!commands) {
+        const maxPrice = Number(body.max_price)
+        if (Number.isFinite(maxPrice) && maxPrice > 0) payload.max_price = Math.round(maxPrice)
+      }
+
+      // Reserved for documented Digiflazz products that require additional fields.
+      // The DLavie UI currently blocks these products until a structured form exists.
+      for (const key of ['year', 'amount', 'vehicle_no', 'chassis_no']) {
+        if (body[key] != null && String(body[key]).trim()) payload[key] = body[key]
+      }
     } else {
       return json({ ok: false, forwarded: false, error: 'invalid_operation' }, 400)
     }
@@ -87,12 +109,13 @@ export default {
         ok: upstream.ok,
         forwarded: true,
         upstream_status: upstream.status,
+        command: payload.commands || 'prepaid',
         data: response?.data ?? null,
         response,
       }, upstream.ok ? 200 : 502)
     } catch {
-      // Once fetch() starts, delivery to the supplier is ambiguous. The orchestrator
-      // must keep the order pending instead of issuing an automatic refund.
+      // Once fetch() starts, supplier delivery is ambiguous. The orchestrator must
+      // keep the order pending instead of issuing an automatic duplicate refund.
       return json({ ok: false, forwarded: true, error: 'upstream_delivery_unknown' }, 502)
     }
   },
