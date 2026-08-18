@@ -8,6 +8,7 @@ import LanguageSystem from './LanguageSystem'
 import NavUtilityMenu from './NavUtilityMenu'
 import AccountSystem from './AccountSystem'
 import MarketFlow from './MarketFlow'
+import DLavieDigitalMarket from './DLavieDigitalMarket'
 import OrderCenter from './OrderCenter'
 import StateBridge from './StateBridge'
 import DLavieRadio from './DLavieRadio'
@@ -28,6 +29,7 @@ import DLavieAssistantUIV2 from './DLavieAssistantUIV2'
 import DLavieAssistantFastComposer from './DLavieAssistantFastComposer'
 import DLavieAssistantReceiptPolish from './DLavieAssistantReceiptPolish'
 import DLavieAdminSupport from './DLavieAdminSupport'
+import DLavieDigiflazzAdmin from './DLavieDigiflazzAdmin'
 import RefundCenter from './RefundCenter'
 import DLavieRefundAdminQueue from './DLavieRefundAdminQueue'
 import DLavieOrderEvidenceBridge from './DLavieOrderEvidenceBridge'
@@ -42,6 +44,7 @@ import './account-system.css'
 import './avatar-collection.css'
 import './avatar-effects-v2.css'
 import './market-flow.css'
+import './digital-market.css'
 import './order-center.css'
 import './service-brand-polish.css'
 import './provider-logo-card.css'
@@ -70,6 +73,7 @@ import './dlavie-assistant-ui-v3.css'
 import './dlavie-assistant-ui-v3-links.css'
 import './dlavie-assistant-fast-composer.css'
 import './dlavie-admin-support.css'
+import './digiflazz-admin.css'
 import './refund-center.css'
 import './refund-admin-queue.css'
 import './refund-investigation-v2.css'
@@ -87,6 +91,7 @@ createRoot(document.getElementById('root')!).render(
     <AccountSystem />
     <LoginRedirectEnhancer />
     <MarketFlow />
+    <DLavieDigitalMarket />
     <OrderCenter />
     <DLavieOrderEvidenceBridge />
     <ActivityViewEnhancer />
@@ -105,6 +110,7 @@ createRoot(document.getElementById('root')!).render(
     <DLavieAssistantFastComposer />
     <DLavieAssistantReceiptPolish />
     <DLavieAdminSupport />
+    <DLavieDigiflazzAdmin />
     <DLavieRefundAdminQueue />
     <DLavieRadio />
     <App />
