@@ -24,6 +24,7 @@ import DLavieAssistantHaptics from './DLavieAssistantHaptics'
 import DLavieAssistantKnowledgeLinks from './DLavieAssistantKnowledgeLinks'
 import DLavieAssistantSessionReconciler from './DLavieAssistantSessionReconciler'
 import DLavieAssistantUIV2 from './DLavieAssistantUIV2'
+import DLavieAssistantReceiptPolish from './DLavieAssistantReceiptPolish'
 import DLavieAdminSupport from './DLavieAdminSupport'
 import './styles.css'
 import './brand-logos.css'
@@ -89,6 +90,7 @@ createRoot(document.getElementById('root')!).render(
     <DLavieAssistantKnowledgeLinks />
     <DLavieAssistantSessionReconciler />
     <DLavieAssistantUIV2 />
+    <DLavieAssistantReceiptPolish />
     <DLavieAdminSupport />
     <DLavieRadio />
     <App />
