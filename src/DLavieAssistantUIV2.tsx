@@ -65,7 +65,8 @@ export default function DLavieAssistantUIV2() {
   useEffect(() => {
     const root = document.querySelector<HTMLElement>('.dlv-assistant')
     if (!root) return
-    root.dataset.ui = 'v4'
+    root.dataset.ui = 'v3'
+    root.dataset.controller = 'v4'
     let frame = 0
     let previousStage = ''
 
