@@ -178,10 +178,12 @@ export default function DLavieAssistantUIV2() {
     }
 
     const enhanceLatestMessage = (panel: HTMLElement) => {
-      panel.querySelectorAll('.dlv-ui-message-actions').forEach((node) => node.remove())
       const replies = [...panel.querySelectorAll<HTMLElement>('.dlv-assistant-message.is-assistant:not(.is-typing), .dlv-assistant-message.is-admin')]
       const latest = replies.at(-1)
-      if (!latest) return
+      panel.querySelectorAll<HTMLElement>('.dlv-ui-message-actions').forEach((actions) => {
+        if (!latest || !latest.contains(actions)) actions.remove()
+      })
+      if (!latest || latest.querySelector('.dlv-ui-message-actions')) return
       const bubble = latest.querySelector<HTMLElement>(':scope > div')
       const text = latest.querySelector('p')?.textContent?.trim()
       if (!bubble || !text) return
