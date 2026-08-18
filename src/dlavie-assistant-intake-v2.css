@@ -1,14 +1,14 @@
-/* Structured Assistant intake paths. Visual-only; existing motion remains unchanged. */
+/* Structured Assistant intake paths — one DLavie color family. */
 .dlv-assistant-intake[data-intake="help"]{--intake-accent:var(--accent)}
-.dlv-assistant-intake[data-intake="transaction"]{--intake-accent:#7aa7ff}
-.dlv-assistant-intake[data-intake="policy"]{--intake-accent:#c39bff}
+.dlv-assistant-intake[data-intake="transaction"]{--intake-accent:color-mix(in srgb,var(--accent),white 12%)}
+.dlv-assistant-intake[data-intake="policy"]{--intake-accent:color-mix(in srgb,var(--accent),white 24%)}
 
 .dlv-assistant-intake>div>span{color:var(--intake-accent,var(--accent))}
 .dlv-assistant-intake .dlv-intake-split{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .dlv-assistant-intake .dlv-intake-split label{min-width:0}
-.dlv-assistant-intake .dlv-intake-note{margin:0;padding:10px 12px;border-left:2px solid var(--intake-accent,var(--accent));background:color-mix(in srgb,var(--intake-accent,var(--accent)),transparent 92%);color:var(--theme-muted);font-size:8px;line-height:1.55;border-radius:0 9px 9px 0}
-.dlv-assistant-intake[data-intake="transaction"] input[required]{border-color:color-mix(in srgb,var(--intake-accent),var(--theme-line) 62%)}
-.dlv-assistant-intake[data-intake="transaction"] input[required]:focus,.dlv-assistant-intake[data-intake="policy"] textarea:focus{border-color:var(--intake-accent)}
+.dlv-assistant-intake .dlv-intake-note{margin:0;padding:10px 12px;border-left:2px solid var(--intake-accent,var(--accent));background:color-mix(in srgb,var(--intake-accent,var(--accent)),transparent 93%);color:var(--theme-muted);font-size:8px;line-height:1.55;border-radius:0 9px 9px 0}
+.dlv-assistant-intake[data-intake="transaction"] input[required]{border-color:color-mix(in srgb,var(--intake-accent),var(--theme-line) 64%)}
+.dlv-assistant-intake[data-intake="transaction"] input[required]:focus,.dlv-assistant-intake[data-intake="policy"] textarea:focus{border-color:var(--intake-accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--intake-accent),transparent 88%)}
 .dlv-assistant-intake[data-intake="transaction"]>button b,.dlv-assistant-intake[data-intake="policy"]>button b{color:var(--intake-accent)}
 
 @media(max-width:620px){
