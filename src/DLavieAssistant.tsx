@@ -7,6 +7,7 @@ type Message = { id: string; role: Role; content: string; createdAt: number; kin
 type Stage = 'ready' | 'quick' | 'intake' | 'chat' | 'ended'
 type Phase = 'idle' | 'wave' | 'understanding' | 'searching' | 'thinking' | 'typing'
 type SupportMode = 'ai' | 'admin_pending' | 'admin'
+type IntakeMode = 'help' | 'transaction' | 'policy'
 type ServerMessage = { id: string; role: Role; content: string; metadata?: { kind?: string; admin?: string }; created_at: string }
 type ActiveSession = { sessionId: string; sessionRef: string; walletRef: string; startedAt: number; supportMode: SupportMode }
 type ToastState = { title: string; body: string; kind: 'assistant' | 'admin' | 'system' } | null
@@ -95,8 +96,13 @@ function clientContext() {
     route: window.location.hash || '#/home',
     language: language(),
     local_orders: readOrders().slice(-8).map((order) => ({
-      id: order.id, service: order.serviceName || null, provider: order.providerName || null,
-      price: order.price || null, status: order.status || null, created_at: order.createdAt || null, expires_at: order.expiresAt || null,
+      id: order.id,
+      service: order.serviceName || null,
+      provider: order.providerName || null,
+      price: order.price || null,
+      status: order.status || null,
+      created_at: order.createdAt || null,
+      expires_at: order.expiresAt || null,
       source: 'browser_demo',
     })),
   }
@@ -115,9 +121,7 @@ function sameMessages(current: Message[], next: Message[]) {
     return !!other && item.id === other.id && item.role === other.role && item.content === other.content && item.kind === other.kind && item.createdAt === other.createdAt
   })
 }
-function nextAnimationFrame() {
-  return new Promise<number>((resolve) => requestAnimationFrame(resolve))
-}
+function nextAnimationFrame() { return new Promise<number>((resolve) => requestAnimationFrame(resolve)) }
 
 function AssistantAvatar({ phase = 'idle', small = false }: { phase?: Phase; small?: boolean }) {
   return (
@@ -166,10 +170,17 @@ export default function DLavieAssistant() {
   const [busy, setBusy] = useState(false)
   const [unread, setUnread] = useState(0)
   const [toast, setToast] = useState<ToastState>(null)
+  const [intakeMode, setIntakeMode] = useState<IntakeMode>('help')
   const [subject, setSubject] = useState('')
   const [category, setCategory] = useState('payment_wallet')
   const [referenceId, setReferenceId] = useState('')
   const [detail, setDetail] = useState('')
+  const [impact, setImpact] = useState('normal')
+  const [startedWhen, setStartedWhen] = useState('today')
+  const [transactionType, setTransactionType] = useState('deposit')
+  const [visibleStatus, setVisibleStatus] = useState('failed')
+  const [paymentMethod, setPaymentMethod] = useState('')
+  const [policyTopic, setPolicyTopic] = useState('payment_refund')
   const [draft, setDraft] = useState('')
   const [error, setError] = useState('')
   const [cooldownUntil, setCooldownUntil] = useState(0)
@@ -185,22 +196,31 @@ export default function DLavieAssistant() {
   const lang = language()
   const messageTimeFormatter = useMemo(() => new Intl.DateTimeFormat(lang === 'en' ? 'en-US' : 'id-ID', { hour: '2-digit', minute: '2-digit' }), [lang])
   const copy = useMemo(() => lang === 'en' ? {
-    title: 'DLavie Assistant', subtitle: 'DLavie Engine · account-aware', online: 'Available', guest: 'Sign in to use live support.', guestBody: 'Public documentation and policies remain available without an account. Live support can access only the signed-in user context.', signIn: 'Sign in / create account',
+    title: 'DLavie Assistant', online: 'Available', guest: 'Sign in to use live support.', guestBody: 'Public documentation and policies remain available without an account. Live support can access only the signed-in user context.', signIn: 'Sign in / create account',
     readyEyebrow: 'PRIVATE SUPPORT SESSION', readyTitle: 'Need help with DLavie?', readyBody: 'Start a session to ask about payments, wallet, order references, OTP sessions, policies, or a technical issue.', start: 'Start session', session: 'Session', elapsed: 'Elapsed', end: 'End',
-    help: 'Help me', transaction: 'Check a transaction', policy: 'Ask about policy', quickHint: 'Choose an option to continue. The message field will unlock after a short support intake.',
-    intakeTitle: 'A little context first.', intakeBody: 'This helps Assistant inspect the right information before opening free chat.', subject: 'Subject', category: 'Category', reference: 'Reference ID (optional)', detail: 'Short summary (optional)', sendIntake: 'Send context',
-    categories: { payment_wallet: 'Payment & wallet', order_otp: 'Order & OTP', account: 'Account', technical: 'Technical issue', policy: 'Policy & refund', other: 'Other' },
+    help: 'Help me', transaction: 'Check a transaction', policy: 'Ask about policy', quickHint: 'Choose the kind of support you need. Each path asks only for context relevant to that request.',
     placeholder: 'Write a message to DLavie Support…', send: 'Send', cooldown: 'Please wait', filtered: 'Change the wording before sending. This chat blocks inappropriate language.', closed: 'Session closed', newSession: 'Start new session', sessionReceipt: 'Session receipt',
     waitingAdmin: 'Waiting for admin', adminOnline: 'Admin online', aiMode: 'DLavie Engine',
+    categories: { payment_wallet: 'Payment & wallet', order_otp: 'Order & OTP', account: 'Account', technical: 'Technical issue', pricing_stock: 'Price & stock', documentation: 'Navigation & documentation', other: 'Other' },
   } : {
-    title: 'DLavie Assistant', subtitle: 'DLavie Engine · memahami akunmu', online: 'Tersedia', guest: 'Masuk untuk menggunakan live support.', guestBody: 'Dokumentasi dan kebijakan tetap dapat dibaca tanpa akun. Live support hanya boleh membaca konteks user yang sedang login.', signIn: 'Masuk / buat akun',
+    title: 'DLavie Assistant', online: 'Tersedia', guest: 'Masuk untuk menggunakan live support.', guestBody: 'Dokumentasi dan kebijakan tetap dapat dibaca tanpa akun. Live support hanya boleh membaca konteks user yang sedang login.', signIn: 'Masuk / buat akun',
     readyEyebrow: 'PRIVATE SUPPORT SESSION', readyTitle: 'Ada yang bisa dibantu?', readyBody: 'Mulai sesi untuk bertanya tentang pembayaran, wallet, reference ID, order/OTP, kebijakan, atau kendala teknis.', start: 'Start session', session: 'Sesi', elapsed: 'Durasi', end: 'Akhiri',
-    help: 'Bantu saya', transaction: 'Cek transaksi', policy: 'Tanya kebijakan', quickHint: 'Pilih salah satu untuk melanjutkan. Kolom chat akan terbuka setelah form konteks singkat.',
-    intakeTitle: 'Berikan sedikit konteks.', intakeBody: 'Ini membantu Assistant memeriksa informasi yang tepat sebelum free chat dibuka.', subject: 'Subject', category: 'Kategori', reference: 'Reference ID (opsional)', detail: 'Ringkasan singkat (opsional)', sendIntake: 'Kirim konteks',
-    categories: { payment_wallet: 'Pembayaran & wallet', order_otp: 'Order & OTP', account: 'Akun', technical: 'Kendala teknis', policy: 'Kebijakan & refund', other: 'Lainnya' },
+    help: 'Bantu saya', transaction: 'Cek transaksi', policy: 'Tanya kebijakan', quickHint: 'Pilih jenis bantuan. Setiap jalur hanya menanyakan informasi yang memang relevan untuk permintaan tersebut.',
     placeholder: 'Tulis pesan ke DLavie Support…', send: 'Kirim', cooldown: 'Tunggu sebentar', filtered: 'Ubah kalimat sebelum dikirim. Percakapan ini memblokir kata yang tidak pantas.', closed: 'Sesi ditutup', newSession: 'Mulai sesi baru', sessionReceipt: 'Tanda terima sesi',
     waitingAdmin: 'Menunggu admin', adminOnline: 'Admin online', aiMode: 'DLavie Engine',
+    categories: { payment_wallet: 'Pembayaran & wallet', order_otp: 'Order & OTP', account: 'Akun', technical: 'Kendala teknis', pricing_stock: 'Harga & stok', documentation: 'Navigasi & dokumentasi', other: 'Lainnya' },
   }, [lang])
+
+  const intakeCopy = useMemo(() => {
+    if (lang === 'en') {
+      if (intakeMode === 'transaction') return { eyebrow: 'TRANSACTION CHECK', title: 'Which record should I inspect?', body: 'A transaction check needs an exact reference and the state you currently see.', submit: 'Check this transaction' }
+      if (intakeMode === 'policy') return { eyebrow: 'POLICY QUESTION', title: 'What rule do you want to understand?', body: 'Choose the policy area and describe your scenario. A transaction ID is not needed unless the question later becomes a case review.', submit: 'Review policy' }
+      return { eyebrow: 'GENERAL SUPPORT', title: 'Tell me what is getting in your way.', body: 'Give me the issue area, impact, when it started, and a short description. I will decide whether a reference is actually needed.', submit: 'Analyze my issue' }
+    }
+    if (intakeMode === 'transaction') return { eyebrow: 'CEK TRANSAKSI', title: 'Record mana yang perlu saya periksa?', body: 'Pemeriksaan transaksi membutuhkan reference yang tepat serta status yang saat ini kamu lihat.', submit: 'Periksa transaksi' }
+    if (intakeMode === 'policy') return { eyebrow: 'TANYA KEBIJAKAN', title: 'Aturan apa yang ingin kamu pahami?', body: 'Pilih topik kebijakan dan ceritakan skenarionya. ID transaksi belum dibutuhkan kecuali pertanyaan berubah menjadi pemeriksaan kasus.', submit: 'Pelajari kebijakan' }
+    return { eyebrow: 'BANTU SAYA', title: 'Ceritakan apa yang sedang menghambatmu.', body: 'Berikan area masalah, dampak, kapan mulai terjadi, dan ringkasan singkat. Saya akan menentukan sendiri apakah reference ID memang diperlukan.', submit: 'Analisis masalah' }
+  }, [intakeMode, lang])
 
   const syncAuth = useCallback(() => {
     const next = readProfile()
@@ -244,17 +264,14 @@ export default function DLavieAssistant() {
   useEffect(() => {
     if (!open) return
     requestAnimationFrame(() => { if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight })
-  }, [messages, open, stage, busy])
+  }, [messages, open, stage, busy, intakeMode])
 
   useEffect(() => {
     if (!sessionId || !startedAt || stage === 'ended') return
     saveActive({ sessionId, sessionRef, walletRef, startedAt, supportMode })
   }, [sessionId, sessionRef, walletRef, startedAt, supportMode, stage])
 
-  const touch = useCallback(() => {
-    lastInteractionRef.current = Date.now()
-    warnedAtRef.current = null
-  }, [])
+  const touch = useCallback(() => { lastInteractionRef.current = Date.now(); warnedAtRef.current = null }, [])
 
   const api = useCallback(async (action: string, extra: Record<string, string> = {}) => {
     if (!profile) throw new Error('profile_required')
@@ -283,7 +300,6 @@ export default function DLavieAssistant() {
     const abortId = ++typingAbortRef.current
     setPhase('typing')
     setMessages((list) => [...list, { id, role: 'assistant', content: '', createdAt: Date.now(), kind, typing: true }])
-
     const rate = text.length > 700 ? 5 / 7 : text.length > 350 ? 3 / 11 : 2 / 11
     const started = performance.now()
     let visibleLength = 0
@@ -297,7 +313,6 @@ export default function DLavieAssistant() {
       const chunk = text.slice(0, visibleLength)
       setMessages((list) => list.map((item) => item.id === id ? { ...item, content: chunk } : item))
     }
-
     setMessages((list) => list.map((item) => item.id === id ? { ...item, content: text, typing: false } : item))
     setPhase('idle')
     if (!open) {
@@ -375,15 +390,23 @@ export default function DLavieAssistant() {
     finally { setBusy(false) }
   }
 
-  const chooseHelp = async (mode: 'help' | 'transaction' | 'policy') => {
+  const chooseHelp = async (mode: IntakeMode) => {
     if (!profile) return
-    touch(); setPhase('wave')
-    if (mode === 'transaction') setCategory('payment_wallet')
+    touch(); setPhase('wave'); setIntakeMode(mode); setError(''); setDetail(''); setReferenceId('')
+    if (mode === 'transaction') { setCategory('payment_wallet'); setTransactionType('deposit'); setVisibleStatus('failed') }
     if (mode === 'policy') setCategory('policy')
     const greeting = lang === 'en'
-      ? `Hi ${profile.username}, I'm DLavie Assistant. I'll inspect the issue step by step. If the DLavie Engine can't resolve it confidently, I'll hand this same session to a human admin.`
-      : `Hai ${profile.username}, saya DLavie Assistant. Saya akan memeriksa masalahmu langkah demi langkah. Jika DLavie Engine tidak bisa menyelesaikannya dengan yakin, sesi yang sama akan saya serahkan ke admin manusia.`
-    await new Promise((resolve) => window.setTimeout(resolve, 350))
+      ? mode === 'transaction'
+        ? `Hi ${profile.username}. Send me the exact transaction reference and the state you see. I will inspect only records linked to your signed-in wallet.`
+        : mode === 'policy'
+          ? `Hi ${profile.username}. Tell me which DLavie policy you want to understand and the scenario you have in mind. I will answer from the active DLavie documentation before asking for transaction data.`
+          : `Hi ${profile.username}. Tell me what is confusing or not working. I will first understand the situation, then ask for a reference only if the case actually needs one.`
+      : mode === 'transaction'
+        ? `Hai ${profile.username}. Kirim reference transaksi yang tepat dan status yang kamu lihat. Saya hanya akan memeriksa record yang terhubung ke wallet akunmu.`
+        : mode === 'policy'
+          ? `Hai ${profile.username}. Pilih kebijakan DLavie yang ingin kamu pahami dan ceritakan skenarionya. Saya akan menjawab dari dokumentasi DLavie terlebih dahulu tanpa meminta data transaksi yang tidak diperlukan.`
+          : `Hai ${profile.username}. Ceritakan apa yang membingungkan atau tidak berjalan sesuai harapan. Saya akan memahami situasinya dulu, lalu baru meminta reference jika kasusnya memang membutuhkan pemeriksaan record.`
+    await new Promise((resolve) => window.setTimeout(resolve, 260))
     await typeAssistant(greeting, 'greeting')
     setStage('intake')
   }
@@ -395,18 +418,65 @@ export default function DLavieAssistant() {
     if (mode === 'admin_pending' || mode === 'admin') saveActive(sessionId && startedAt ? { sessionId, sessionRef, walletRef, startedAt, supportMode: mode } : null)
   }
 
+  const intakeValid = intakeMode === 'transaction'
+    ? referenceId.trim().length >= 5 && detail.trim().length >= 3
+    : intakeMode === 'policy'
+      ? policyTopic.length > 0 && detail.trim().length >= 3
+      : subject.trim().length >= 3 && detail.trim().length >= 3
+
   const submitIntake = async (event: FormEvent) => {
     event.preventDefault()
-    if (!sessionId || subject.trim().length < 3 || busy) return
-    touch()
-    const summary = `${copy.subject}: ${subject.trim()}\n${copy.category}: ${copy.categories[category as keyof typeof copy.categories]}${referenceId.trim() ? `\nReference: ${referenceId.trim()}` : ''}${detail.trim() ? `\n${detail.trim()}` : ''}`
-    setMessages((list) => [...list, { id: makeId('user'), role: 'user', content: summary, createdAt: Date.now(), kind: 'intake' }])
+    if (!sessionId || !intakeValid || busy) return
+    touch(); setError('')
+
+    const generatedSubject = intakeMode === 'transaction'
+      ? `${lang === 'en' ? 'Transaction check' : 'Cek transaksi'} · ${transactionType}`
+      : intakeMode === 'policy'
+        ? `${lang === 'en' ? 'Policy question' : 'Pertanyaan kebijakan'} · ${policyTopic}`
+        : subject.trim()
+    const generatedCategory = intakeMode === 'policy' ? 'policy' : intakeMode === 'transaction' ? (transactionType === 'order' ? 'order_otp' : 'payment_wallet') : category
+    const structured = {
+      intake_type: intakeMode,
+      issue_area: intakeMode === 'help' ? category : '',
+      impact: intakeMode === 'help' ? impact : '',
+      started_when: intakeMode === 'help' ? startedWhen : '',
+      transaction_type: intakeMode === 'transaction' ? transactionType : '',
+      visible_status: intakeMode === 'transaction' ? visibleStatus : '',
+      payment_method: intakeMode === 'transaction' ? paymentMethod.trim() : '',
+      policy_topic: intakeMode === 'policy' ? policyTopic : '',
+      scenario: detail.trim(),
+    }
+
+    const summary = intakeMode === 'transaction'
+      ? `${lang === 'en' ? 'Transaction' : 'Transaksi'}: ${transactionType}\nReference: ${referenceId.trim()}\n${lang === 'en' ? 'Visible status' : 'Status terlihat'}: ${visibleStatus}${paymentMethod.trim() ? `\n${lang === 'en' ? 'Method' : 'Metode'}: ${paymentMethod.trim()}` : ''}\n${detail.trim()}`
+      : intakeMode === 'policy'
+        ? `${lang === 'en' ? 'Policy topic' : 'Topik kebijakan'}: ${policyTopic}\n${detail.trim()}`
+        : `${lang === 'en' ? 'Issue' : 'Masalah'}: ${subject.trim()}\n${lang === 'en' ? 'Area' : 'Area'}: ${copy.categories[category as keyof typeof copy.categories] || category}\n${lang === 'en' ? 'Impact' : 'Dampak'}: ${impact}\n${lang === 'en' ? 'Started' : 'Mulai'}: ${startedWhen}\n${detail.trim()}`
+
+    setMessages((list) => [...list, { id: makeId('user'), role: 'user', content: summary, createdAt: Date.now(), kind: `intake_${intakeMode}` }])
     try {
-      const data = await withProcessing(() => api('context', { session_id: sessionId, subject: subject.trim(), category, reference_id: referenceId.trim(), detail: detail.trim(), client_context: JSON.stringify(clientContext()) }))
+      const data = await withProcessing(() => api('context', {
+        session_id: sessionId,
+        intake_type: intakeMode,
+        subject: generatedSubject,
+        category: generatedCategory,
+        reference_id: intakeMode === 'transaction' ? referenceId.trim() : '',
+        detail: detail.trim(),
+        impact: structured.impact,
+        started_when: structured.started_when,
+        transaction_type: structured.transaction_type,
+        visible_status: structured.visible_status,
+        payment_method: structured.payment_method,
+        policy_topic: structured.policy_topic,
+        intake_data: JSON.stringify(structured),
+        client_context: JSON.stringify(clientContext()),
+      }))
       applySupportMode(data)
       if (data.message) await typeAssistant(data.message, data.escalated ? 'handoff' : 'intake_response')
       setStage('chat'); setCooldownUntil(Date.now() + 900)
-    } catch (err) { setStage('chat'); setError(err instanceof Error ? err.message : 'Assistant belum dapat memproses konteks.'); setPhase('idle') }
+    } catch (err) {
+      setStage('chat'); setError(err instanceof Error ? err.message : 'Assistant belum dapat memproses konteks.'); setPhase('idle')
+    }
   }
 
   const sendMessage = async (event: FormEvent) => {
@@ -438,8 +508,11 @@ export default function DLavieAssistant() {
     try {
       const data = await api('close', { session_id: sessionId, reason })
       if (data.message) await typeAssistant(data.message, 'closing')
-    } catch { await typeAssistant(lang === 'en' ? 'Thank you for using DLavie Support. This session is now closed.' : 'Terima kasih sudah menggunakan DLavie Support. Sesi ini sekarang ditutup.', 'closing') }
-    finally { setEndedAt(Date.now()); setStage('ended'); setBusy(false); setPhase('idle'); idleBusyRef.current = false; saveActive(null) }
+    } catch {
+      await typeAssistant(lang === 'en' ? 'Thank you for using DLavie Support. This session is now closed.' : 'Terima kasih sudah menggunakan DLavie Support. Sesi ini sekarang ditutup.', 'closing')
+    } finally {
+      setEndedAt(Date.now()); setStage('ended'); setBusy(false); setPhase('idle'); idleBusyRef.current = false; saveActive(null)
+    }
   }, [api, lang, sessionId, stage, typeAssistant])
 
   useEffect(() => {
@@ -458,7 +531,7 @@ export default function DLavieAssistant() {
 
   const newSession = () => {
     setStage('ready'); setSessionId(''); setSessionRef(''); setWalletRef(''); setSupportMode('ai'); setAssignedAdmin(''); setStartedAt(null); setEndedAt(null); setMessages([]); seenServerIdsRef.current.clear()
-    setSubject(''); setCategory('payment_wallet'); setReferenceId(''); setDetail(''); setDraft(''); setError(''); setCooldownUntil(0); warnedAtRef.current = null; saveActive(null); touch()
+    setIntakeMode('help'); setSubject(''); setCategory('payment_wallet'); setReferenceId(''); setDetail(''); setImpact('normal'); setStartedWhen('today'); setTransactionType('deposit'); setVisibleStatus('failed'); setPaymentMethod(''); setPolicyTopic('payment_refund'); setDraft(''); setError(''); setCooldownUntil(0); warnedAtRef.current = null; saveActive(null); touch()
   }
 
   const duration = startedAt ? (endedAt || now) - startedAt : 0
@@ -513,7 +586,7 @@ export default function DLavieAssistant() {
                 {stage === 'ready' && (
                   <div className="dlv-assistant-ready">
                     <span>{copy.readyEyebrow}</span><h3>{copy.readyTitle}</h3><p>{copy.readyBody}</p>
-                    <div className="dlv-assistant-ready-meta"><div><small>ENGINE</small><strong>DLavie v3</strong></div><div><small>FALLBACK</small><strong>Human admin</strong></div><div><small>PRIVACY</small><strong>User-scoped</strong></div></div>
+                    <div className="dlv-assistant-ready-meta"><div><small>ENGINE</small><strong>DLavie v4</strong></div><div><small>FALLBACK</small><strong>Human admin</strong></div><div><small>PRIVACY</small><strong>User-scoped</strong></div></div>
                     {error && <div className="dlv-assistant-error">{error}</div>}
                     <button type="button" className="dlv-assistant-start" onClick={() => void startSession()} disabled={busy}><span>{busy ? (lang === 'en' ? 'Starting…' : 'Menyiapkan sesi…') : copy.start}</span><b>→</b></button>
                   </div>
@@ -526,15 +599,40 @@ export default function DLavieAssistant() {
 
                 {stage === 'quick' && <div className="dlv-assistant-quick"><p>{copy.quickHint}</p><button type="button" onClick={() => void chooseHelp('help')}><span><b>✦</b><strong>{copy.help}</strong></span><i>→</i></button><button type="button" onClick={() => void chooseHelp('transaction')}><span><b>↗</b><strong>{copy.transaction}</strong></span><i>→</i></button><button type="button" onClick={() => void chooseHelp('policy')}><span><b>§</b><strong>{copy.policy}</strong></span><i>→</i></button></div>}
 
-                {stage === 'intake' && <form className="dlv-assistant-intake" onSubmit={submitIntake}>
-                  <div><span>SUPPORT INTAKE</span><h3>{copy.intakeTitle}</h3><p>{copy.intakeBody}</p></div>
-                  <label><span>{copy.subject}</span><input value={subject} onChange={(event) => setSubject(event.target.value)} placeholder={lang === 'en' ? 'Example: QRIS deposit failed' : 'Contoh: deposit QRIS gagal'} maxLength={100} /></label>
-                  <label><span>{copy.category}</span><select value={category} onChange={(event) => setCategory(event.target.value)}>{Object.entries(copy.categories).map(([value, label]) => <option value={value} key={value}>{label}</option>)}</select></label>
-                  <label><span>{copy.reference}</span><input value={referenceId} onChange={(event) => setReferenceId(event.target.value.trimStart())} placeholder={`${profile?.id || 'DLV-…'} / DLVDEP-… / WLT-…`} maxLength={100} /></label>
-                  <label><span>{copy.detail}</span><textarea value={detail} onChange={(event) => setDetail(event.target.value)} placeholder={lang === 'en' ? 'What happened?' : 'Apa yang terjadi?'} maxLength={500} rows={3} /></label>
-                  {error && <div className="dlv-assistant-error">{error}</div>}
-                  <button type="submit" disabled={subject.trim().length < 3 || busy}><span>{busy ? (lang === 'en' ? 'Reviewing…' : 'Memeriksa…') : copy.sendIntake}</span><b>→</b></button>
-                </form>}
+                {stage === 'intake' && (
+                  <form className={`dlv-assistant-intake intake-${intakeMode}`} data-intake={intakeMode} onSubmit={submitIntake}>
+                    <div><span>{intakeCopy.eyebrow}</span><h3>{intakeCopy.title}</h3><p>{intakeCopy.body}</p></div>
+
+                    {intakeMode === 'help' && <>
+                      <label><span>{lang === 'en' ? 'What do you need help with?' : 'Apa yang ingin dibantu?'}</span><input value={subject} onChange={(event) => setSubject(event.target.value)} placeholder={lang === 'en' ? 'Example: I do not understand how to deposit' : 'Contoh: saya bingung cara melakukan deposit'} maxLength={120} /></label>
+                      <label><span>{lang === 'en' ? 'Issue area' : 'Area masalah'}</span><select value={category} onChange={(event) => setCategory(event.target.value)}>{Object.entries(copy.categories).map(([value, label]) => <option value={value} key={value}>{label}</option>)}</select></label>
+                      <div className="dlv-intake-split">
+                        <label><span>{lang === 'en' ? 'Impact' : 'Dampak'}</span><select value={impact} onChange={(event) => setImpact(event.target.value)}><option value="question">{lang === 'en' ? 'Just a question' : 'Hanya pertanyaan'}</option><option value="normal">{lang === 'en' ? 'Blocking one action' : 'Menghambat satu proses'}</option><option value="high">{lang === 'en' ? 'Cannot continue' : 'Tidak bisa melanjutkan'}</option></select></label>
+                        <label><span>{lang === 'en' ? 'Started' : 'Mulai terjadi'}</span><select value={startedWhen} onChange={(event) => setStartedWhen(event.target.value)}><option value="just_now">{lang === 'en' ? 'Just now' : 'Baru saja'}</option><option value="today">{lang === 'en' ? 'Today' : 'Hari ini'}</option><option value="days">{lang === 'en' ? 'A few days' : 'Beberapa hari'}</option><option value="not_problem">{lang === 'en' ? 'Not a problem / how-to' : 'Bukan error / hanya ingin tahu'}</option></select></label>
+                      </div>
+                      <label><span>{lang === 'en' ? 'Describe the situation' : 'Ceritakan situasinya'}</span><textarea value={detail} onChange={(event) => setDetail(event.target.value)} placeholder={lang === 'en' ? 'What are you trying to do, and where are you confused or blocked?' : 'Apa yang sedang kamu coba lakukan, dan di bagian mana kamu bingung atau terhambat?'} maxLength={700} rows={4} /></label>
+                    </>}
+
+                    {intakeMode === 'transaction' && <>
+                      <label><span>{lang === 'en' ? 'Transaction type' : 'Jenis transaksi'}</span><select value={transactionType} onChange={(event) => setTransactionType(event.target.value)}><option value="deposit">Deposit / wallet</option><option value="order">Order / nomor</option><option value="refund">Refund</option></select></label>
+                      <label><span>{lang === 'en' ? 'Reference ID · required' : 'Reference ID · wajib'}</span><input value={referenceId} onChange={(event) => setReferenceId(event.target.value.trimStart())} placeholder="DLVDEP-… / Order ID" maxLength={110} required /></label>
+                      <div className="dlv-intake-split">
+                        <label><span>{lang === 'en' ? 'Status you see' : 'Status yang terlihat'}</span><select value={visibleStatus} onChange={(event) => setVisibleStatus(event.target.value)}><option value="failed">Failed / gagal</option><option value="pending">Pending</option><option value="paid">Paid / berhasil</option><option value="expired">Expired</option><option value="missing">{lang === 'en' ? 'Missing / not shown' : 'Tidak muncul'}</option><option value="other">{lang === 'en' ? 'Other' : 'Lainnya'}</option></select></label>
+                        <label><span>{lang === 'en' ? 'Method / provider' : 'Metode / provider'}</span><input value={paymentMethod} onChange={(event) => setPaymentMethod(event.target.value)} placeholder="QRIS / GoPay / BCA / provider" maxLength={60} /></label>
+                      </div>
+                      <label><span>{lang === 'en' ? 'What looks wrong?' : 'Apa yang tidak sesuai?'}</span><textarea value={detail} onChange={(event) => setDetail(event.target.value)} placeholder={lang === 'en' ? 'Example: payment failed after selecting QRIS, but I want to know whether any balance was charged.' : 'Contoh: pembayaran gagal setelah memilih QRIS, saya ingin memastikan apakah ada saldo yang terpotong.'} maxLength={700} rows={4} /></label>
+                    </>}
+
+                    {intakeMode === 'policy' && <>
+                      <label><span>{lang === 'en' ? 'Policy topic' : 'Topik kebijakan'}</span><select value={policyTopic} onChange={(event) => setPolicyTopic(event.target.value)}><option value="terms">Terms of Service</option><option value="privacy">Privacy Policy</option><option value="payment_refund">Payment & Refund</option><option value="acceptable_use">Acceptable Use</option><option value="service_disclosure">Service Disclosure</option><option value="account_access">{lang === 'en' ? 'Account & access rules' : 'Aturan akun & akses'}</option></select></label>
+                      <label><span>{lang === 'en' ? 'Your question or scenario' : 'Pertanyaan atau skenario'}</span><textarea value={detail} onChange={(event) => setDetail(event.target.value)} placeholder={lang === 'en' ? 'Example: if an OTP never arrives before expiry, when can a refund apply?' : 'Contoh: jika OTP tidak pernah masuk sampai sesi expired, kapan refund bisa berlaku?'} maxLength={900} rows={5} /></label>
+                      <p className="dlv-intake-note">{lang === 'en' ? 'Assistant will answer from DLavie documentation first. It will request a transaction reference only if your question becomes a case-specific review.' : 'Assistant akan menjawab dari dokumentasi DLavie terlebih dahulu. Reference transaksi baru diminta jika pertanyaan berubah menjadi pemeriksaan kasus tertentu.'}</p>
+                    </>}
+
+                    {error && <div className="dlv-assistant-error">{error}</div>}
+                    <button type="submit" disabled={!intakeValid || busy}><span>{busy ? (lang === 'en' ? 'Reviewing…' : 'Memeriksa…') : intakeCopy.submit}</span><b>→</b></button>
+                  </form>
+                )}
 
                 {stage === 'ended' && <div className="dlv-assistant-receipt"><span>SESSION COMPLETE</span><h3>{copy.closed}</h3><div><p><small>{copy.sessionReceipt}</small><strong>{sessionRef}</strong></p><p><small>{copy.elapsed}</small><strong>{formatDuration(duration)}</strong></p><p><small>USER ID</small><strong>{profile?.id}</strong></p><p><small>WALLET</small><strong>{walletRef || '—'}</strong></p></div><button type="button" onClick={newSession}>{copy.newSession}<b>→</b></button></div>}
               </div>
