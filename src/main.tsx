@@ -10,6 +10,7 @@ import AccountSystem from './AccountSystem'
 import MarketFlow from './MarketFlow'
 import DLavieDigitalMarket from './DLavieDigitalMarket'
 import OrderCenter from './OrderCenter'
+import DigitalActivityFeed from './DigitalActivityFeed'
 import StateBridge from './StateBridge'
 import DLavieRadio from './DLavieRadio'
 import ActivityViewEnhancer from './ActivityViewEnhancer'
@@ -53,6 +54,7 @@ import './ambient-player.css'
 import './ambient-mobile-safe.css'
 import './market-route-compact.css'
 import './activity-view-polish.css'
+import './digital-activity.css'
 import './nav-utility.css'
 import './midtrans-payment.css'
 import './dlavie-core-pay.css'
@@ -93,6 +95,7 @@ createRoot(document.getElementById('root')!).render(
     <MarketFlow />
     <DLavieDigitalMarket />
     <OrderCenter />
+    <DigitalActivityFeed />
     <DLavieOrderEvidenceBridge />
     <ActivityViewEnhancer />
     <ActivityMetadataEnhancer />
