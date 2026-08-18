@@ -109,7 +109,10 @@ export default function DLavieAssistantFastComposer() {
   useEffect(() => {
     if (!target) return
     const counter = target.root.querySelector<HTMLElement>('.dlv-assistant-composer-meta span:first-child')
-    if (counter) counter.textContent = `${draft.length}/1600`
+    if (!counter) return
+    const value = `${draft.length}/1600`
+    if (counter.firstChild?.nodeType === Node.TEXT_NODE) counter.firstChild.nodeValue = value
+    else counter.appendChild(document.createTextNode(value))
   }, [draft, target])
 
   useEffect(() => {
