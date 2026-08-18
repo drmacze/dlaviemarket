@@ -24,6 +24,7 @@ import DLavieAssistantHaptics from './DLavieAssistantHaptics'
 import DLavieAssistantKnowledgeLinks from './DLavieAssistantKnowledgeLinks'
 import DLavieAssistantSessionReconciler from './DLavieAssistantSessionReconciler'
 import DLavieAssistantUIV2 from './DLavieAssistantUIV2'
+import DLavieAssistantFastComposer from './DLavieAssistantFastComposer'
 import DLavieAssistantReceiptPolish from './DLavieAssistantReceiptPolish'
 import DLavieAdminSupport from './DLavieAdminSupport'
 import './styles.css'
@@ -63,6 +64,7 @@ import './dlavie-assistant-performance.css'
 import './dlavie-assistant-ui-v2.css'
 import './dlavie-assistant-ui-v3.css'
 import './dlavie-assistant-ui-v3-links.css'
+import './dlavie-assistant-fast-composer.css'
 import './dlavie-admin-support.css'
 import './ios-form-zoom-fix.css'
 import './route-height-fix-v2.css'
@@ -91,6 +93,7 @@ createRoot(document.getElementById('root')!).render(
     <DLavieAssistantKnowledgeLinks />
     <DLavieAssistantSessionReconciler />
     <DLavieAssistantUIV2 />
+    <DLavieAssistantFastComposer />
     <DLavieAssistantReceiptPolish />
     <DLavieAdminSupport />
     <DLavieRadio />
