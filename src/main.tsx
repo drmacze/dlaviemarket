@@ -23,6 +23,7 @@ import DLavieAssistant from './DLavieAssistant'
 import DLavieAssistantHaptics from './DLavieAssistantHaptics'
 import DLavieAssistantKnowledgeLinks from './DLavieAssistantKnowledgeLinks'
 import DLavieAssistantSessionReconciler from './DLavieAssistantSessionReconciler'
+import DLavieAssistantUIV2 from './DLavieAssistantUIV2'
 import DLavieAdminSupport from './DLavieAdminSupport'
 import './styles.css'
 import './brand-logos.css'
@@ -58,6 +59,7 @@ import './dlavie-assistant-hybrid.css'
 import './dlavie-assistant-knowledge.css'
 import './dlavie-assistant-intake-v2.css'
 import './dlavie-assistant-performance.css'
+import './dlavie-assistant-ui-v2.css'
 import './dlavie-admin-support.css'
 import './ios-form-zoom-fix.css'
 import './route-height-fix-v2.css'
@@ -85,6 +87,7 @@ createRoot(document.getElementById('root')!).render(
     <DLavieAssistantHaptics />
     <DLavieAssistantKnowledgeLinks />
     <DLavieAssistantSessionReconciler />
+    <DLavieAssistantUIV2 />
     <DLavieAdminSupport />
     <DLavieRadio />
     <App />
