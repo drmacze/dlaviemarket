@@ -27,6 +27,8 @@ import DLavieAssistantUIV2 from './DLavieAssistantUIV2'
 import DLavieAssistantFastComposer from './DLavieAssistantFastComposer'
 import DLavieAssistantReceiptPolish from './DLavieAssistantReceiptPolish'
 import DLavieAdminSupport from './DLavieAdminSupport'
+import RefundCenter from './RefundCenter'
+import DLavieRefundAdminQueue from './DLavieRefundAdminQueue'
 import './styles.css'
 import './brand-logos.css'
 import './mobile-polish.css'
@@ -66,6 +68,8 @@ import './dlavie-assistant-ui-v3.css'
 import './dlavie-assistant-ui-v3-links.css'
 import './dlavie-assistant-fast-composer.css'
 import './dlavie-admin-support.css'
+import './refund-center.css'
+import './refund-admin-queue.css'
 import './ios-form-zoom-fix.css'
 import './route-height-fix-v2.css'
 
@@ -88,6 +92,7 @@ createRoot(document.getElementById('root')!).render(
     <SiteDetailSystem />
     <MarketPolicies />
     <AccessExperience />
+    <RefundCenter />
     <DLavieAssistant />
     <DLavieAssistantHaptics />
     <DLavieAssistantKnowledgeLinks />
@@ -96,6 +101,7 @@ createRoot(document.getElementById('root')!).render(
     <DLavieAssistantFastComposer />
     <DLavieAssistantReceiptPolish />
     <DLavieAdminSupport />
+    <DLavieRefundAdminQueue />
     <DLavieRadio />
     <App />
   </StrictMode>,
