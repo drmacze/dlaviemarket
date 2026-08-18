@@ -20,6 +20,7 @@ import WalletHistoryEnhancer from './WalletHistoryEnhancer'
 import SiteDetailSystem from './SiteDetailSystem'
 import MarketPolicies from './MarketPolicies'
 import AccessExperience from './AccessExperience'
+import DigitalPositioningEnhancer from './DigitalPositioningEnhancer'
 import LoginRedirectEnhancer from './LoginRedirectEnhancer'
 import './DLavieAssistantEndpointV9'
 import DLavieAssistant from './DLavieAssistant'
@@ -104,6 +105,7 @@ createRoot(document.getElementById('root')!).render(
     <SiteDetailSystem />
     <MarketPolicies />
     <AccessExperience />
+    <DigitalPositioningEnhancer />
     <RefundCenter />
     <DLavieAssistant />
     <DLavieAssistantHaptics />
