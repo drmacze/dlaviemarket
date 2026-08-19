@@ -1,5 +1,5 @@
 {
-  "release": "digital-market-color-polish-v4",
+  "release": "digital-market-mobile-polish-v5",
   "built_for": "2026-08-19",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
@@ -10,8 +10,11 @@
     "premium card depth and category glow",
     "homepage grid/list switch",
     "market grid/list switch",
-    "polished search filters and view controls",
-    "enhanced Digital Market hero and checkout surfaces"
+    "compact mobile hero hierarchy",
+    "refined wallet and supplier status surfaces",
+    "browser-toolbar-safe bottom spacing",
+    "denser two-column mobile category grid",
+    "enhanced product and checkout surfaces"
   ],
-  "note": "If this file is visible on GitHub Pages with this release value, the colorful Digital Market UI v4 has been deployed."
+  "note": "If this release is visible on GitHub Pages, the Digital Market mobile polish v5 has been deployed."
 }
