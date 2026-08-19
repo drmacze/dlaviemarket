@@ -1,0 +1,73 @@
+/* DLavie Digital Market v6 — tighter mobile grid, quieter sync state, less dead space */
+html[data-page="market"][data-digital-market] .dlv-digital-market{min-height:0!important}
+
+/* Keep the market content comfortably below fixed navigation without wasting a full screen. */
+@media(max-width:760px){
+ html[data-page="market"][data-digital-market] .dlv-digital-market{
+  padding-top:calc(92px + env(safe-area-inset-top))!important;
+  padding-bottom:calc(54px + env(safe-area-inset-bottom))!important;
+ }
+ .dlv-digital-shell{display:grid;gap:0}
+ .dlv-digital-hero{padding:17px 17px 15px!important;border-radius:20px!important}
+ .dlv-digital-hero h1{max-width:11.6ch!important;font-size:36px!important;line-height:.91!important}
+ .dlv-digital-hero p{max-width:95%;font-size:8.4px!important;line-height:1.5!important}
+ .dlv-digital-hero aside{margin-top:2px;padding:10px 12px!important;border-radius:14px!important}
+ .dlv-digital-hero aside strong{font-size:18px!important}
+ .dlv-digital-status{margin-bottom:14px!important;min-height:42px!important}
+
+ .dlv-digital-title-row{margin-bottom:10px!important}
+ .dlv-digital-title h2{font-size:29px!important;max-width:9ch!important}
+ .dlv-view-switch{border-radius:14px!important;background:color-mix(in srgb,var(--theme-panel-solid) 90%,transparent)!important}
+
+ .dlv-market-kind-switch{margin-bottom:10px!important}
+ .dlv-market-kind-switch>button{min-height:68px!important;padding:9px 10px!important;border-radius:16px!important}
+ .dlv-market-kind-switch>button>i{width:39px!important;height:39px!important}
+ .dlv-market-kind-switch>button>span strong{font-size:9px!important}
+ .dlv-market-kind-switch>button>span small{font-size:6.7px!important;line-height:1.35!important}
+ .dlv-market-kind-switch>button.is-active::after{right:9px!important;top:8px!important;font-size:5px!important;padding:3px 5px!important}
+
+ /* 2-column cards remain the default on iPhone, but no longer feel oversized. */
+ .dlv-category-grid.is-grid{gap:9px!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .dlv-category-grid.is-grid>button{
+  min-height:132px!important;
+  padding:11px!important;
+  border-radius:18px!important;
+  grid-template-columns:43px minmax(0,1fr)!important;
+ }
+ .dlv-category-grid.is-grid>button>i{width:43px!important;height:43px!important;border-radius:13px!important}
+ .dlv-category-grid.is-grid>button>span{gap:3px!important}
+ .dlv-category-grid.is-grid>button strong{font-size:9.2px!important;line-height:1.15!important}
+ .dlv-category-grid.is-grid>button small{font-size:6.5px!important;line-height:1.38!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+ .dlv-category-grid.is-grid>button>b{right:9px!important;top:10px!important;padding:4px 6px!important;font-size:5px!important;letter-spacing:.06em!important}
+ .dlv-category-grid>button.is-sync-pending{filter:saturate(.88)!important}
+ .dlv-category-grid>button.is-sync-pending>b{opacity:.72!important}
+
+ /* The explanatory empty-state should read as supporting information, not another large product card. */
+ .dlv-catalog-empty{margin-top:1px!important;padding:15px 16px!important;border-radius:16px!important;gap:5px!important}
+ .dlv-catalog-empty b{font-size:10.5px!important}
+ .dlv-catalog-empty span{font-size:7.2px!important;line-height:1.45!important}
+
+ /* Compact floating ambient player on market so it does not cover the right-hand grid card. */
+ html[data-page="market"][data-digital-market] .ambient-player{top:auto!important;right:10px!important;bottom:calc(176px + env(safe-area-inset-bottom))!important;transform:scale(.82);transform-origin:100% 100%;opacity:.82;transition:opacity .18s ease,transform .18s ease}
+ html[data-page="market"][data-digital-market] .ambient-player:hover,
+ html[data-page="market"][data-digital-market] .ambient-player:focus-within{opacity:1;transform:scale(.9)}
+ html[data-page="market"][data-digital-market] .ambient-panel{transform-origin:100% 100%}
+
+ /* Footer follows the catalog immediately; App route shells no longer leave a visual void. */
+ html[data-page="market"][data-digital-market] .footer{margin-top:0!important;padding-top:18px!important}
+ html[data-page="market"][data-digital-market] .dlv-digital-market+*{margin-top:0}
+
+ .dlv-product-stage{padding-bottom:4px!important}
+ .dlv-product-list.is-grid>button{min-height:145px!important}
+ .dlv-product-checkout{margin-bottom:6px}
+}
+
+@media(max-width:390px){
+ .dlv-category-grid.is-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .dlv-category-grid.is-grid>button{min-height:126px!important;padding:10px!important}
+ .dlv-category-grid.is-grid>button>i{width:40px!important;height:40px!important}
+ .dlv-category-grid.is-grid>button strong{font-size:8.7px!important}
+ .dlv-category-grid.is-grid>button small{font-size:6.2px!important}
+}
+
+@media(max-width:330px){.dlv-category-grid.is-grid{grid-template-columns:1fr!important}}
