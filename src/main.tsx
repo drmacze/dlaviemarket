@@ -11,6 +11,7 @@ import LegacyNokosMarket from './LegacyNokosMarket'
 import DLavieDigitalMarketV23 from './DLavieDigitalMarketV23'
 import DigitalPostpaidPaymentGuard from './DigitalPostpaidPaymentGuard'
 import DigitalHomeMarket from './DigitalHomeMarket'
+import DLaviePromoBanners from './DLaviePromoBanners'
 import OrderCenter from './OrderCenter'
 import DigitalActivityFeed from './DigitalActivityFeed'
 import DigitalActivityPageSync from './DigitalActivityPageSync'
@@ -64,6 +65,7 @@ import './digital-market-v21.css'
 import './digital-market-v22.css'
 import './digital-market-v23.css'
 import './digital-postpaid-payguard-v22.css'
+import './dlavie-promo-banners-v24.css'
 import './order-center.css'
 import './service-brand-polish.css'
 import './provider-logo-card.css'
@@ -119,6 +121,7 @@ createRoot(document.getElementById('root')!).render(
     <DLavieDigitalMarketV23 />
     <DigitalPostpaidPaymentGuard />
     <DigitalHomeMarket />
+    <DLaviePromoBanners />
     <OrderCenter />
     <DigitalActivityFeed />
     <DigitalActivityPageSync />
