@@ -12,6 +12,7 @@ import DLavieDigitalMarket from './DLavieDigitalMarket'
 import DigitalHomeMarket from './DigitalHomeMarket'
 import OrderCenter from './OrderCenter'
 import DigitalActivityFeed from './DigitalActivityFeed'
+import DigitalActivityPageSync from './DigitalActivityPageSync'
 import StateBridge from './StateBridge'
 import DLavieRadio from './DLavieRadio'
 import ActivityViewEnhancer from './ActivityViewEnhancer'
@@ -20,6 +21,7 @@ import MidtransPaymentSystem from './MidtransPaymentSystem'
 import WalletHistoryEnhancer from './WalletHistoryEnhancer'
 import SiteDetailSystem from './SiteDetailSystem'
 import MarketPolicies from './MarketPolicies'
+import DigitalPolicyCenterV2 from './DigitalPolicyCenterV2'
 import AccessExperience from './AccessExperience'
 import DigitalPositioningEnhancer from './DigitalPositioningEnhancer'
 import LoginRedirectEnhancer from './LoginRedirectEnhancer'
@@ -90,6 +92,7 @@ import './refund-admin-queue.css'
 import './refund-investigation-v2.css'
 import './ios-form-zoom-fix.css'
 import './route-height-fix-v2.css'
+import './digital-content-sync-v7.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -106,6 +109,7 @@ createRoot(document.getElementById('root')!).render(
     <DigitalHomeMarket />
     <OrderCenter />
     <DigitalActivityFeed />
+    <DigitalActivityPageSync />
     <DLavieOrderEvidenceBridge />
     <ActivityViewEnhancer />
     <ActivityMetadataEnhancer />
@@ -113,6 +117,7 @@ createRoot(document.getElementById('root')!).render(
     <WalletHistoryEnhancer />
     <SiteDetailSystem />
     <MarketPolicies />
+    <DigitalPolicyCenterV2 />
     <AccessExperience />
     <DigitalPositioningEnhancer />
     <RefundCenter />
