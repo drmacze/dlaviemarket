@@ -12,8 +12,7 @@ const contributors:Contributor[]=[
 function isEnglish(){return localStorage.getItem('dlavie-language')==='en'}
 function route(){return location.hash.replace(/^#\/?/,'').split('?')[0].toLowerCase()}
 function findPlacement(){
- const guest=document.querySelector<HTMLElement>('.dlv-guest-doc-v2 .dlv-doc-main')
- if(guest)return{parent:guest,before:guest.querySelector<HTMLElement>('.dlv-doc-footer')}
+ if(document.querySelector('.dlv-guest-doc-v2'))return null
  const r=route()
  if(r==='market'){
   const parent=document.querySelector<HTMLElement>('.dlv-digital-market .dlv-digital-shell')
