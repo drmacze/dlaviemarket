@@ -1,6 +1,6 @@
 {
-  "release": "digital-market-h2h-provider-v17",
-  "built_for": "2026-08-19",
+  "release": "digital-market-h2h-admin-ui-v18",
+  "built_for": "2026-08-20",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
   "homepage_positioning": "digital-products",
@@ -15,8 +15,10 @@
     "verified callback that re-checks supplier status before wallet updates",
     "source-filtered H2H catalog in DLavie Market",
     "H2H Control Center inside the existing support-admin session",
+    "mobile-first H2H admin UI with compact dark controls and Safari bottom safe spacing",
+    "friendly admin error messages instead of raw backend identifiers",
     "wallet reserve idempotency and automatic refund protections retained",
     "Nomor Virtual retained as an additional service"
   ],
-  "note": "v17 switches the active DLavie Digital Market path from IAK to H2H.id. Save Member ID, transaction PIN and H2H Password in Admin, test HCoin, configure callback and optional Webhook Key, sync catalog, then explicitly enable transactions."
+  "note": "v18 focuses on the H2H Control Center mobile experience: compact header and cards, dark Refresh and disabled states, improved form hierarchy, callback controls, bottom browser-safe spacing, and human-readable admin errors."
 }
