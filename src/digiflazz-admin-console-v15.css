@@ -1,0 +1,41 @@
+/* DLavie admin console integration v15
+   The Human Support Console owns a full-screen stacking context at z-index 9999.
+   Keep Digiflazz controls above it only while that console is present. */
+.dlv-admin-shell ~ .dlv-digi-admin{
+  z-index:10050;
+}
+.dlv-admin-shell ~ .dlv-digi-admin > aside{
+  z-index:10060;
+}
+
+/* Make the control discoverable on the admin screen instead of hiding it
+   behind the iOS bottom browser toolbar. */
+@media (max-width:680px){
+  .dlv-admin-shell ~ .dlv-digi-admin{
+    top:calc(78px + env(safe-area-inset-top));
+    right:12px;
+    bottom:auto;
+  }
+  .dlv-admin-shell ~ .dlv-digi-admin .dlv-digi-admin-toggle{
+    min-height:40px;
+    padding:0 13px;
+    border-color:rgba(74,201,149,.45);
+    background:#111514;
+    color:#f4f4f2;
+    box-shadow:0 14px 38px rgba(0,0,0,.42),0 0 0 1px rgba(74,201,149,.06) inset;
+    font-size:8px;
+  }
+  .dlv-admin-shell ~ .dlv-digi-admin > aside{
+    width:100%;
+    inset:0;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+}
+
+/* Desktop: keep it visible as an internal tool near the lower-right edge. */
+@media (min-width:681px){
+  .dlv-admin-shell ~ .dlv-digi-admin{
+    right:18px;
+    bottom:18px;
+  }
+}
