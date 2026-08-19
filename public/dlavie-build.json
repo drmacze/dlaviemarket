@@ -1,5 +1,5 @@
 {
-  "release": "digital-market-digiflazz-ready-v13",
+  "release": "digital-market-catalog-normalization-v14",
   "built_for": "2026-08-19",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
@@ -10,12 +10,13 @@
     "homepage and market grid/list modes",
     "digital-market-first Help and Legal centers",
     "unified Activity timeline for digital orders, Wallet and Virtual Number",
-    "public documentation synchronized with Digital Market",
-    "abandoned contributor rail removed from runtime",
+    "abandoned contributor rail fully removed",
     "reference Static Egress Gateway for Digiflazz Buyer API",
     "PBB inquiry with optional tax year",
     "E-Money inquiry with amount",
-    "SAMSAT inquiry with payment code and identity number"
+    "SAMSAT inquiry with payment code and identity number",
+    "automatic Digiflazz category normalization for prepaid and postpaid catalog",
+    "automatic extended-input detection for PBB E-Money and SAMSAT"
   ],
-  "note": "v13 prepares the real Digiflazz catalog path and enables the special postpaid forms. Live catalog still requires Buyer credentials plus a deployed static-IP gateway and Digiflazz IP whitelist."
+  "note": "v14 normalizes Digiflazz catalog rows before they reach the Market UI. Live catalog still requires Buyer credentials plus a deployed static-IP gateway and Digiflazz IP whitelist."
 }
