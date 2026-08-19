@@ -1,5 +1,5 @@
 {
-  "release": "digital-market-mobile-polish-v5",
+  "release": "digital-market-mobile-polish-v6",
   "built_for": "2026-08-19",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
@@ -10,11 +10,12 @@
     "premium card depth and category glow",
     "homepage grid/list switch",
     "market grid/list switch",
-    "compact mobile hero hierarchy",
-    "refined wallet and supplier status surfaces",
-    "browser-toolbar-safe bottom spacing",
-    "denser two-column mobile category grid",
-    "enhanced product and checkout surfaces"
+    "tighter mobile hero and wallet hierarchy",
+    "denser two-column category cards",
+    "quieter sync badges",
+    "reduced empty space before footer",
+    "market-aware compact ambient player",
+    "refined product and checkout surfaces"
   ],
-  "note": "If this release is visible on GitHub Pages, the Digital Market mobile polish v5 has been deployed."
+  "note": "If this release is visible on GitHub Pages, the Digital Market mobile polish v6 has been deployed."
 }
