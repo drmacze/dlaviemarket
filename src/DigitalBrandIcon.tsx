@@ -17,16 +17,27 @@ const domainRules:Array<[RegExp,string]>=[
  [/shopeepay|shopee pay/,'shopeepay.co.id'],
  [/linkaja|link aja/,'linkaja.id'],
  [/bpjs/,'bpjs-kesehatan.go.id'],
- [/mobile legends|mlbb/,'mobilelegends.com'],
+ [/mobile legends|mlbb|magic chess/,'mobilelegends.com'],
  [/free fire|garena ff/,'ff.garena.com'],
  [/pubg/,'pubgmobile.com'],
+ [/call of duty|cod mobile|codm/,'callofduty.com'],
+ [/honor of kings/,'honorofkings.com'],
+ [/roblox/,'roblox.com'],
+ [/valorant/,'playvalorant.com'],
+ [/wild rift|league of legends|teamfight tactics|\btft\b/,'leagueoflegends.com'],
+ [/genshin|honkai|zenless|hoyoverse/,'hoyoverse.com'],
+ [/arena breakout/,'arenabreakout.com'],
+ [/delta force/,'playdeltaforce.com'],
+ [/blood strike/,'blood-strike.com'],
+ [/arena of valor/,'arenaofvalor.com'],
+ [/farlight 84/,'farlight84.com'],
+ [/fc mobile|ea sports fc/,'ea.com'],
+ [/zepeto/,'zepeto.me'],
  [/steam/,'steampowered.com'],
  [/google play/,'play.google.com'],
  [/playstation|psn/,'playstation.com'],
  [/xbox/,'xbox.com'],
  [/garena/,'garena.com'],
- [/valorant/,'playvalorant.com'],
- [/genshin|honkai|hoyoverse/,'hoyoverse.com'],
  [/tiktok/,'tiktok.com'],
  [/netflix/,'netflix.com'],
  [/spotify/,'spotify.com'],
@@ -50,8 +61,8 @@ function iconType(value=''):CategoryIconType{
  if(x.includes('data')||x.includes('internet')||x.includes('kuota'))return'network'
  if(x.includes('pln')||x.includes('listrik'))return'bolt'
  if(x.includes('wallet')||x.includes('money')||x.includes('saldo'))return'wallet'
- if(x.includes('game')||x.includes('voucher'))return'game'
- if(x.includes('tagihan')||x.includes('postpaid')||x.includes('pdam')||x.includes('bpjs')||x.includes('pbb'))return'receipt'
+ if(x.includes('game')||x.includes('voucher')||x.includes('streaming'))return'game'
+ if(x.includes('tagihan')||x.includes('postpaid')||x.includes('pdam')||x.includes('bpjs')||x.includes('pbb')||x.includes('samsat')||x.includes('pajak')||x.includes('multifinance')||x.includes('gas')||x.includes('asuransi'))return'receipt'
  if(x.includes('nomor virtual')||x.includes('virtual number')||x.includes('sms')||x.includes('otp'))return'sim'
  return'phone'
 }
@@ -77,5 +88,5 @@ export default function DigitalBrandIcon({brand,category='',className=''}:{brand
  useEffect(()=>setFailed(false),[domain])
  if(!domain||failed)return <span className={`dlv-brand-icon is-fallback ${className}`} title={label}><DigitalCategoryIcon value={`${category} ${brand}`}/></span>
  const src=`https://www.google.com/s2/favicons?sz=256&domain_url=https://${domain}`
- return <span className={`dlv-brand-icon is-official ${className}`} title={label}><img src={src} alt={`${label} logo`} referrerPolicy="no-referrer" loading="lazy" onError={()=>setFailed(true)}/></span>
+ return <span className={`dlv-brand-icon is-official ${className}`} title={label} data-domain={domain}><img src={src} alt={`${label} logo`} referrerPolicy="no-referrer" loading="lazy" onError={()=>setFailed(true)}/></span>
 }
