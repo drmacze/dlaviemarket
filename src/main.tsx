@@ -24,6 +24,7 @@ import DigitalRouteContextV2 from './DigitalRouteContextV2'
 import MarketPolicies from './MarketPolicies'
 import DigitalPolicyCenterV2 from './DigitalPolicyCenterV2'
 import AccessExperience from './AccessExperience'
+import DigitalGuestDocumentationV2 from './DigitalGuestDocumentationV2'
 import DigitalPositioningEnhancer from './DigitalPositioningEnhancer'
 import LoginRedirectEnhancer from './LoginRedirectEnhancer'
 import './DLavieAssistantEndpointV9'
@@ -95,6 +96,7 @@ import './ios-form-zoom-fix.css'
 import './route-height-fix-v2.css'
 import './digital-content-sync-v7.css'
 import './digital-context-sync-v7.css'
+import './digital-guest-doc-v8.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -122,6 +124,7 @@ createRoot(document.getElementById('root')!).render(
     <MarketPolicies />
     <DigitalPolicyCenterV2 />
     <AccessExperience />
+    <DigitalGuestDocumentationV2 />
     <DigitalPositioningEnhancer />
     <RefundCenter />
     <DLavieAssistant />
