@@ -1,25 +1,27 @@
 {
-  "release": "digital-market-h2h-internal-sandbox-v20",
+  "release": "digital-market-h2h-catalog-ux-v21",
   "built_for": "2026-08-20",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
   "homepage_positioning": "digital-products",
   "provider": "H2H.id",
   "features": [
-    "H2H.id catalog with 8255 active SKU at latest successful sync",
-    "internal DLavie Sandbox is the default while H2H Production is off",
+    "H2H.id storefront normalized to 8231 currently active safe SKU",
+    "supplier codes replaced by human-readable product names from H2H keterangan fields",
+    "zero-price checker dynamic helper and TEST SKU excluded from the fixed-price storefront",
+    "hierarchical category to brand or game to product navigation",
+    "Voucher and Game separated into dedicated game boxes such as Mobile Legends Free Fire PUBG Mobile Roblox Valorant and more",
+    "Paket Data Pulsa E-Wallet Voucher Operator and Streaming separated by provider or service brand",
+    "official-domain favicon mapping expanded for telcos wallets and major games",
+    "mobile product tap opens an immediate bottom-sheet checkout instead of a checkout panel below the long product list",
+    "sandbox status and test balance integrated into the Market header instead of a blocking floating banner",
     "isolated Rp1,000,000 virtual sandbox balance per DLavie Wallet",
     "sandbox transactions never call H2H.id and never debit HCoin or the real DLavie Wallet",
-    "sandbox prepaid purchase and status simulation",
-    "sandbox PPOB inquiry payment and status simulation",
     "sandbox target suffix 000 simulates failure and virtual refund",
     "sandbox target suffix 999 remains pending",
     "other sandbox targets resolve success with simulated SN or PLN token",
-    "H2H Production remains explicit opt-in and is blocked while last known HCoin is zero",
-    "H2H Member ID PIN and H2H Password stored in Supabase Vault",
-    "signed H2H webhook with HMAC-SHA256 raw-body verification and five-minute replay tolerance",
-    "real production wallet reserve idempotency and automatic refund protections retained",
+    "H2H Production remains explicit opt-in and blocked while last known HCoin is zero",
     "Nomor Virtual retained as an additional service"
   ],
-  "note": "v20 adds an isolated internal testing environment so DLavie can exercise checkout, pending, success, failure, refund, SN/token, history and PPOB flows before funding H2H. Production calls remain off until explicitly enabled."
+  "note": "v21 focuses on customer-facing catalog quality: readable H2H names, clean provider/game grouping, official-domain icons, non-blocking sandbox UI, and a mobile checkout sheet that visibly opens as soon as a product is selected."
 }
