@@ -47,23 +47,32 @@ function build(){
  section.append(header,viewport,foot)
  return section
 }
+function visibleFooter(){
+ const candidates=Array.from(document.querySelectorAll<HTMLElement>('footer.footer.shell,footer.footer,.footer.shell,.footer'))
+ const visible=candidates.filter(el=>{const style=getComputedStyle(el);const rect=el.getBoundingClientRect();return style.display!=='none'&&style.visibility!=='hidden'&&Number(style.opacity||1)!==0&&rect.width>1&&rect.height>1})
+ return visible.at(-1)||candidates.at(-1)||null
+}
 
 export default function DLavieContributorSiteBridge(){
  useEffect(()=>{
   let raf=0
+  let currentParent:HTMLElement|null=null
   const mount=()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{
    const existing=document.querySelector<HTMLElement>('.dlv-contributors-site')
-   if(document.querySelector('.dlv-guest-doc-v2')){existing?.remove();return}
-   const footer=document.querySelector<HTMLElement>('footer.footer.shell, footer.footer, .footer.shell, .footer')
-   if(!footer?.parentElement){existing?.remove();return}
-   if(existing&&existing.parentElement===footer.parentElement&&existing.nextElementSibling===footer)return
+   if(document.querySelector('.dlv-guest-doc-v2')){existing?.remove();currentParent?.classList.remove('dlv-contributor-host-parent');currentParent=null;return}
+   const footer=visibleFooter()
+   if(!footer?.parentElement){existing?.remove();currentParent?.classList.remove('dlv-contributor-host-parent');currentParent=null;return}
+   const parent=footer.parentElement as HTMLElement
+   if(currentParent&&currentParent!==parent)currentParent.classList.remove('dlv-contributor-host-parent')
+   currentParent=parent;parent.classList.add('dlv-contributor-host-parent')
+   if(existing&&existing.parentElement===parent&&existing.nextElementSibling===footer)return
    existing?.remove()
    footer.before(build())
   })}
   mount()
-  const observer=new MutationObserver(mount);observer.observe(document.body,{childList:true,subtree:true})
-  window.addEventListener('hashchange',mount);window.addEventListener('storage',mount);window.addEventListener('dlavie:language-change',mount);window.addEventListener('dlavie:state-changed',mount)
-  return()=>{cancelAnimationFrame(raf);observer.disconnect();window.removeEventListener('hashchange',mount);window.removeEventListener('storage',mount);window.removeEventListener('dlavie:language-change',mount);window.removeEventListener('dlavie:state-changed',mount);document.querySelector('.dlv-contributors-site')?.remove()}
+  const observer=new MutationObserver(mount);observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style','hidden']})
+  window.addEventListener('hashchange',mount);window.addEventListener('storage',mount);window.addEventListener('dlavie:language-change',mount);window.addEventListener('dlavie:state-changed',mount);window.addEventListener('resize',mount)
+  return()=>{cancelAnimationFrame(raf);observer.disconnect();window.removeEventListener('hashchange',mount);window.removeEventListener('storage',mount);window.removeEventListener('dlavie:language-change',mount);window.removeEventListener('dlavie:state-changed',mount);window.removeEventListener('resize',mount);currentParent?.classList.remove('dlv-contributor-host-parent');document.querySelector('.dlv-contributors-site')?.remove()}
  },[])
  return null
 }
