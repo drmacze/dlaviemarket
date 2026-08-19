@@ -1,5 +1,5 @@
 {
-  "release": "digital-market-contributor-rail-v12",
+  "release": "digital-market-digiflazz-ready-v13",
   "built_for": "2026-08-19",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
@@ -11,10 +11,11 @@
     "digital-market-first Help and Legal centers",
     "unified Activity timeline for digital orders, Wallet and Virtual Number",
     "public documentation synchronized with Digital Market",
-    "contributor rail mounted before the active visible footer",
-    "contributor rail stacking context lifted above decorative backgrounds",
-    "GitHub, Supabase, Midtrans and Digiflazz integration identities",
-    "smooth infinite marquee with reduced-motion support"
+    "abandoned contributor rail removed from runtime",
+    "reference Static Egress Gateway for Digiflazz Buyer API",
+    "PBB inquiry with optional tax year",
+    "E-Money inquiry with amount",
+    "SAMSAT inquiry with payment code and identity number"
   ],
-  "note": "v12 fixes the contributor rail being hidden by page background/stacking layers and ignores hidden duplicate footers when choosing its mount position."
+  "note": "v13 prepares the real Digiflazz catalog path and enables the special postpaid forms. Live catalog still requires Buyer credentials plus a deployed static-IP gateway and Digiflazz IP whitelist."
 }
