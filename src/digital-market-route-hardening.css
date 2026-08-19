@@ -1,0 +1,12 @@
+/* Route ownership hardening: the standard #/market route always belongs to DLavie Digital Market.
+   Legacy virtual-number UI is mounted separately only for #/market?mode=nokos. */
+html[data-page="market"] .dlv-digital-market{
+  display:block;
+  min-height:100dvh;
+  padding:calc(124px + env(safe-area-inset-top)) 18px calc(96px + env(safe-area-inset-bottom));
+}
+@media(max-width:760px){
+  html[data-page="market"] .dlv-digital-market{
+    padding:calc(103px + env(safe-area-inset-top)) 12px calc(92px + env(safe-area-inset-bottom));
+  }
+}
