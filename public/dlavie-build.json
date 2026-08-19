@@ -14,11 +14,13 @@
     "E-Wallet phone-number products separated from card-based Kartu E-Money targets",
     "Flazz BRIZZI TapCash and e-Money Mandiri are not forced through +62 phone formatting",
     "context-aware numeric or text destination fields across digital product types",
-    "final review card before every digital purchase",
+    "final review card before every prepaid purchase or postpaid inquiry",
     "required user confirmation checkbox for destination product and amount accuracy",
     "required digital transaction policy acknowledgement before submit",
     "server-side v22 guard requires confirmation context before a new H2H order can be claimed",
     "policy version and confirmation timestamp are persisted on the digital order",
+    "postpaid final payment has a second two-checkbox confirmation after inquiry reveals the exact total",
+    "postpaid payment confirmation timestamp and policy version are persisted server-side",
     "provider mismatch blocks telco checkout",
     "sensitive destination and SN values masked in normal result and order history views",
     "explicit private Receipt view reveals full transaction data",
@@ -29,5 +31,5 @@
     "screenshot prevention is not falsely claimed because browsers cannot guarantee it",
     "H2H sandbox remains isolated from HCoin and the real DLavie Wallet"
   ],
-  "note": "v22 adds guarded purchasing and receipt handling: phone intelligence, provider-aware catalog routing, context-aware destination inputs, mandatory final verification and policy consent with server-side evidence, masked sensitive data, and an explicit downloadable/printable receipt center."
+  "note": "v22 adds guarded purchasing and receipt handling: phone intelligence, provider-aware catalog routing, context-aware destination inputs, mandatory final verification and policy consent with server-side evidence, a second guard before postpaid payment, masked sensitive data, and an explicit downloadable/printable receipt center."
 }
