@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, type ReactNode } from 'react'
 
 const normalize=(value='')=>value.toLowerCase().replace(/[^a-z0-9]+/g,' ')
 type CategoryIconType='phone'|'network'|'bolt'|'wallet'|'game'|'receipt'|'sim'
@@ -58,7 +58,7 @@ function iconType(value=''):CategoryIconType{
 
 export function DigitalCategoryIcon({value,className=''}:{value:string;className?:string}){
  const type=iconType(value)
- const paths:Record<CategoryIconType,React.ReactNode>={
+ const paths:Record<CategoryIconType,ReactNode>={
   phone:<><rect x="7" y="2.7" width="10" height="18.6" rx="2.5"/><path d="M10.5 5.5h3"/><path d="M11 18.2h2"/></>,
   network:<><path d="M4.4 9.3a11 11 0 0 1 15.2 0"/><path d="M7.2 12.3a7 7 0 0 1 9.6 0"/><path d="M10 15.2a3 3 0 0 1 4 0"/><circle cx="12" cy="18.1" r=".9" fill="currentColor" stroke="none"/></>,
   bolt:<><path d="m13.3 2.8-7 10h5l-.8 8.4 7.2-11.2h-5.1z"/></>,
