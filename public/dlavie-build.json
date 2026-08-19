@@ -1,5 +1,5 @@
 {
-  "release": "digital-market-contributor-rail-v9",
+  "release": "digital-market-contributor-rail-v10",
   "built_for": "2026-08-19",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
@@ -11,9 +11,10 @@
     "digital-market-first Help and Legal centers",
     "unified Activity timeline for digital orders, Wallet and Virtual Number",
     "public documentation synchronized with Digital Market",
-    "looping contributor and infrastructure rail on DLavie pages",
+    "direct contributor rail mounting before public documentation footer",
+    "global contributor rail for member pages",
     "GitHub, Supabase, Midtrans and Digiflazz integration identities",
     "smooth infinite marquee with reduced-motion support"
   ],
-  "note": "If this release is visible on GitHub Pages, DLavie pages include the looping contributor/infrastructure logo rail."
+  "note": "v10 fixes the contributor rail on public/guest documentation by mounting it directly before the documentation footer instead of relying on a React portal."
 }
