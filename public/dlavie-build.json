@@ -1,0 +1,8 @@
+{
+  "release": "digital-market-default",
+  "built_for": "2026-08-19",
+  "expected_market_route": "#/market",
+  "legacy_nokos_route": "#/market?mode=nokos",
+  "homepage_positioning": "digital-products",
+  "note": "If this file is visible on GitHub Pages, the digital-market deployment pipeline has published the current public directory."
+}
