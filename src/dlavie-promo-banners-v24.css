@@ -30,9 +30,9 @@
  .dlv-promo-home-host{margin:0 0 22px}.dlv-promo-market-host{margin:2px 0 20px}
  .dlv-promo-carousel{--promo-radius:20px}
  .dlv-promo-art{aspect-ratio:16/7}
- .dlv-promo-arrow{width:36px;height:36px;border-radius:12px;font-size:27px;opacity:.92;top:calc((100vw - 40px) * .21875);max-top:140px}
+ .dlv-promo-arrow{width:36px;height:36px;border-radius:12px;font-size:27px;opacity:.92;top:calc((100% - 62px)/2)}
  .dlv-promo-arrow.is-prev{left:8px}.dlv-promo-arrow.is-next{right:8px}
- .dlv-promo-dots{bottom:auto;top:calc(min(100%,(100vw - 40px)*.4375) - 28px);padding:5px 7px;gap:5px}
+ .dlv-promo-dots{top:auto;bottom:66px;padding:5px 7px;gap:5px}
  .dlv-promo-progress{display:none}
  .dlv-promo-mobile-caption{display:grid;grid-template-columns:1fr auto;grid-template-areas:"label action" "title action";gap:3px 12px;align-items:center;padding:13px 15px 14px;background:linear-gradient(180deg,color-mix(in srgb,var(--theme-panel-solid),#07100e 8%),var(--theme-panel-solid));border-top:1px solid color-mix(in srgb,var(--accent),transparent 84%)}
  .dlv-promo-mobile-caption>span{grid-area:label;color:color-mix(in srgb,var(--accent),var(--theme-ink) 18%);font-size:8px;font-weight:850;letter-spacing:.16em;text-transform:uppercase}
@@ -46,6 +46,6 @@
  .dlv-promo-mobile-caption{padding:11px 12px 12px;gap:2px 8px}
  .dlv-promo-mobile-caption>strong{font-size:12px}
  .dlv-promo-mobile-caption>button{height:34px;padding:0 10px;font-size:8px}
- .dlv-promo-dots{top:auto;bottom:62px}
+ .dlv-promo-dots{bottom:62px}
 }
 @media(prefers-reduced-motion:reduce){.dlv-promo-track,.dlv-promo-sprite,.dlv-promo-arrow{transition:none}.dlv-promo-progress{display:none}}
