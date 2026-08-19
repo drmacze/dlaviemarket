@@ -1,5 +1,5 @@
 {
-  "release": "digital-market-public-docs-v8",
+  "release": "digital-market-contributor-rail-v9",
   "built_for": "2026-08-19",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
@@ -10,9 +10,10 @@
     "homepage and market grid/list modes",
     "digital-market-first Help and Legal centers",
     "unified Activity timeline for digital orders, Wallet and Virtual Number",
-    "public documentation navigation synchronized to real site pages",
-    "public docs for Digital Market, Wallet & Payments, Security, Activity, Help and Legal",
-    "Virtual Number positioned as an additional service across documentation"
+    "public documentation synchronized with Digital Market",
+    "looping contributor and infrastructure rail on DLavie pages",
+    "GitHub, Supabase, Midtrans and Digiflazz integration identities",
+    "smooth infinite marquee with reduced-motion support"
   ],
-  "note": "If this release is visible on GitHub Pages, the public Documentation menu and content are synchronized with DLavie Digital Market."
+  "note": "If this release is visible on GitHub Pages, DLavie pages include the looping contributor/infrastructure logo rail."
 }
