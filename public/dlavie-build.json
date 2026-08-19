@@ -1,23 +1,21 @@
 {
-  "release": "digital-market-admin-digiflazz-visible-v15",
+  "release": "digital-market-iak-provider-v16",
   "built_for": "2026-08-19",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
   "homepage_positioning": "digital-products",
+  "provider": "IAK",
   "features": [
-    "vibrant digital market UI",
-    "official-domain brand favicons",
-    "homepage and market grid/list modes",
-    "digital-market-first Help and Legal centers",
-    "unified Activity timeline for digital orders, Wallet and Virtual Number",
-    "abandoned contributor rail fully removed",
-    "reference Static Egress Gateway for Digiflazz Buyer API",
-    "PBB inquiry with optional tax year",
-    "E-Money inquiry with amount",
-    "SAMSAT inquiry with payment code and identity number",
-    "automatic Digiflazz category normalization for prepaid and postpaid catalog",
-    "automatic extended-input detection for PBB E-Money and SAMSAT",
-    "Digiflazz Control Center kept above the Human Support Console on desktop and iPhone"
+    "Digital Market routed to IAK direct API backend",
+    "IAK Sandbox and Production credentials stored in Supabase Vault",
+    "no Static Egress Gateway required for the IAK setup path",
+    "IAK prepaid catalog, topup, status check and signed callback",
+    "IAK postpaid catalog, inquiry, payment and status check",
+    "E-Money custom amount and SAMSAT identity inquiry support",
+    "source-filtered IAK catalog in DLavie Market",
+    "IAK Control Center inside the existing support-admin session",
+    "wallet reserve, idempotency and refund protections retained",
+    "Nomor Virtual retained as an additional service"
   ],
-  "note": "v15 fixes the Digiflazz admin control being hidden behind the full-screen Human Support Console. The same admin session is reused; live catalog still requires Buyer credentials plus a deployed static-IP gateway and Digiflazz IP whitelist."
+  "note": "v16 switches the active DLavie Digital Market path from Digiflazz to IAK. Start in Testing/Sandbox, save IAK username and Sandbox API Key, test the connection, then sync the catalog before enabling live transactions."
 }
