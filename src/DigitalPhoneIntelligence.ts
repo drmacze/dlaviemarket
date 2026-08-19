@@ -42,7 +42,8 @@ export function isTelcoCategory(category=''){
 }
 
 export function isPhoneCategory(category=''){
-  return isTelcoCategory(category)
+  const x=category.toLowerCase()
+  return isTelcoCategory(category)||x==='e-wallet'
 }
 
 const phoneWalletBrands=['dana','ovo','gopay','shopeepay','linkaja','isaku','astrapay','doku','grab','indrive','maxim']
