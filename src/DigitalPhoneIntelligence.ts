@@ -1,4 +1,6 @@
 export type IndonesianOperator='Telkomsel'|'IM3'|'XL'|'AXIS'|'Tri'|'Smartfren'|null
+const MANUAL_PREFIX='dlavie-manual-operator-v22:'
+const operators=['Telkomsel','IM3','XL','AXIS','Tri','Smartfren'] as const
 
 export function phoneDigits(value=''){
   let x=value.replace(/\D/g,'')
@@ -23,9 +25,16 @@ export function maskPhone(value=''){
   return `${x.slice(0,4)}••••${x.slice(-3)}`
 }
 
+export function setManualOperator(value:string,operator:Exclude<IndonesianOperator,null>){
+  const d=phoneDigits(value);if(!d)return
+  sessionStorage.setItem(`${MANUAL_PREFIX}${d}`,operator)
+}
+
 export function detectIndonesianOperator(value=''):IndonesianOperator{
-  const x=localPhone(value)
+  const digits=phoneDigits(value),x=localPhone(value)
   if(!x)return null
+  const manual=sessionStorage.getItem(`${MANUAL_PREFIX}${digits}`)
+  if(manual&&operators.includes(manual as any))return manual as Exclude<IndonesianOperator,null>
   const p=x.slice(0,4)
   if(['0811','0812','0813','0821','0822','0823','0851','0852','0853'].includes(p))return'Telkomsel'
   if(['0814','0815','0816','0855','0856','0857','0858'].includes(p))return'IM3'
