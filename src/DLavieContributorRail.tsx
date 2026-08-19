@@ -46,7 +46,7 @@ export default function DLavieContributorRail(){
  useEffect(()=>{
   const node=document.createElement('div');node.className='dlv-contributor-anchor'
   let raf=0
-  const place=()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{const placement=findPlacement();if(!placement){setAnchor(null);return}const {parent,before}=placement;if(before&&before.parentElement===parent)parent.insertBefore(node,before);else if(node.parentElement!==parent||node!==parent.lastElementChild)parent.appendChild(node);setAnchor(node);setEnglish(isEnglish())})}
+  const place=()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{const placement=findPlacement();if(!placement){if(node.parentElement)node.remove();setAnchor(null);return}const {parent,before}=placement;if(before&&before.parentElement===parent){if(node.parentElement!==parent||node.nextSibling!==before)parent.insertBefore(node,before)}else if(node.parentElement!==parent||node!==parent.lastElementChild)parent.appendChild(node);setAnchor(node);setEnglish(isEnglish())})}
   place();const observer=new MutationObserver(place);observer.observe(document.body,{childList:true,subtree:true});window.addEventListener('hashchange',place);window.addEventListener('storage',place);window.addEventListener('dlavie:language-change',place)
   return()=>{cancelAnimationFrame(raf);observer.disconnect();window.removeEventListener('hashchange',place);window.removeEventListener('storage',place);window.removeEventListener('dlavie:language-change',place);node.remove()}
  },[])
