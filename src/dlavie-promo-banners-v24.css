@@ -1,0 +1,51 @@
+/* DLavie promotional banner system v24 */
+.dlv-promo-home-host,.dlv-promo-market-host{width:100%;min-width:0}
+.dlv-promo-home-host{margin:0 0 clamp(22px,3vw,38px)}
+.dlv-promo-market-host{margin:0 0 clamp(18px,2.4vw,30px)}
+.dlv-promo-carousel{--promo-radius:clamp(18px,2vw,28px);position:relative;width:100%;isolation:isolate;color:var(--theme-ink);user-select:none;-webkit-user-select:none}
+.dlv-promo-viewport{overflow:hidden;border-radius:var(--promo-radius);border:1px solid color-mix(in srgb,var(--accent),var(--theme-line) 82%);background:#05090b;box-shadow:0 24px 70px color-mix(in srgb,var(--theme-shadow),transparent 12%),0 0 0 1px color-mix(in srgb,var(--accent),transparent 94%) inset;touch-action:pan-y;overscroll-behavior-x:contain}
+.dlv-promo-track{display:flex;width:100%;will-change:transform;transition:transform .65s cubic-bezier(.2,.78,.2,1)}
+.dlv-promo-slide{min-width:100%;width:100%;position:relative}
+.dlv-promo-art{position:relative;display:block;width:100%;aspect-ratio:16/7;padding:0;border:0;background:#05090b;cursor:pointer;text-align:inherit;overflow:hidden;color:inherit}
+.dlv-promo-sprite{position:absolute;inset:0;display:block;background-repeat:no-repeat;background-size:100% 400%;background-color:#05090b;transform:scale(1.002);transition:transform .7s cubic-bezier(.2,.78,.2,1),filter .35s ease}
+.dlv-promo-art:hover .dlv-promo-sprite{transform:scale(1.012)}
+.dlv-promo-theme-wash{position:absolute;inset:0;pointer-events:none;background:linear-gradient(118deg,color-mix(in srgb,var(--accent),transparent 91%) 0%,transparent 44%,color-mix(in srgb,var(--accent),transparent 96%) 100%);mix-blend-mode:screen;opacity:.9}
+:root[data-theme="light"] .dlv-promo-theme-wash{mix-blend-mode:color;opacity:.55}
+.dlv-promo-mobile-caption{display:none}
+.dlv-promo-arrow{position:absolute;z-index:4;top:50%;translate:0 -50%;width:42px;height:42px;padding:0;border:1px solid color-mix(in srgb,var(--accent),var(--theme-line) 72%);border-radius:14px;background:color-mix(in srgb,var(--theme-panel-solid),transparent 18%);color:var(--theme-ink);backdrop-filter:blur(18px) saturate(120%);-webkit-backdrop-filter:blur(18px) saturate(120%);box-shadow:0 12px 34px rgba(0,0,0,.28);font:500 31px/1 system-ui,-apple-system,sans-serif;cursor:pointer;opacity:.8;transition:opacity .2s,transform .2s,border-color .2s}
+.dlv-promo-arrow:hover,.dlv-promo-arrow:focus-visible{opacity:1;transform:scale(1.04);border-color:color-mix(in srgb,var(--accent),white 18%)}
+.dlv-promo-arrow.is-prev{left:14px}.dlv-promo-arrow.is-next{right:14px}
+.dlv-promo-dots{position:absolute;z-index:5;left:50%;bottom:13px;translate:-50% 0;display:flex;gap:7px;align-items:center;padding:6px 9px;border:1px solid rgba(255,255,255,.10);border-radius:999px;background:rgba(5,8,10,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.dlv-promo-dots button{width:18px;height:12px;padding:0;border:0;background:transparent;display:grid;place-items:center;cursor:pointer}
+.dlv-promo-dots i{display:block;width:5px;height:5px;border-radius:999px;background:rgba(255,255,255,.42);transition:width .25s,background .25s,box-shadow .25s}
+.dlv-promo-dots button.is-active i{width:14px;background:var(--accent);box-shadow:0 0 14px color-mix(in srgb,var(--accent),transparent 30%)}
+.dlv-promo-progress{position:absolute;z-index:5;left:var(--promo-radius);right:var(--promo-radius);bottom:0;height:2px;overflow:hidden;border-radius:99px;background:transparent;pointer-events:none}
+.dlv-promo-progress i{display:block;width:100%;height:100%;transform-origin:left;background:linear-gradient(90deg,color-mix(in srgb,var(--accent),white 8%),var(--accent));animation:dlvPromoProgress 6.5s linear forwards;box-shadow:0 0 10px var(--accent)}
+@keyframes dlvPromoProgress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.dlv-promo-market-host .dlv-promo-carousel{max-width:none}
+.dlv-promo-carousel.is-game .dlv-promo-viewport{border-color:color-mix(in srgb,var(--accent),rgba(188,88,255,.4) 48%)}
+.dlv-promo-carousel.is-data .dlv-promo-viewport{border-color:color-mix(in srgb,var(--accent),rgba(44,199,255,.36) 48%)}
+
+@media(max-width:780px){
+ .dlv-promo-home-host{margin:0 0 22px}.dlv-promo-market-host{margin:2px 0 20px}
+ .dlv-promo-carousel{--promo-radius:20px}
+ .dlv-promo-art{aspect-ratio:16/7}
+ .dlv-promo-arrow{width:36px;height:36px;border-radius:12px;font-size:27px;opacity:.92;top:calc((100vw - 40px) * .21875);max-top:140px}
+ .dlv-promo-arrow.is-prev{left:8px}.dlv-promo-arrow.is-next{right:8px}
+ .dlv-promo-dots{bottom:auto;top:calc(min(100%,(100vw - 40px)*.4375) - 28px);padding:5px 7px;gap:5px}
+ .dlv-promo-progress{display:none}
+ .dlv-promo-mobile-caption{display:grid;grid-template-columns:1fr auto;grid-template-areas:"label action" "title action";gap:3px 12px;align-items:center;padding:13px 15px 14px;background:linear-gradient(180deg,color-mix(in srgb,var(--theme-panel-solid),#07100e 8%),var(--theme-panel-solid));border-top:1px solid color-mix(in srgb,var(--accent),transparent 84%)}
+ .dlv-promo-mobile-caption>span{grid-area:label;color:color-mix(in srgb,var(--accent),var(--theme-ink) 18%);font-size:8px;font-weight:850;letter-spacing:.16em;text-transform:uppercase}
+ .dlv-promo-mobile-caption>strong{grid-area:title;min-width:0;color:var(--theme-ink);font-size:13px;line-height:1.28;font-weight:750}
+ .dlv-promo-mobile-caption>button{grid-area:action;height:38px;padding:0 12px;border:1px solid color-mix(in srgb,var(--accent),transparent 64%);border-radius:12px;background:color-mix(in srgb,var(--accent),transparent 86%);color:var(--theme-ink);font-size:9px;font-weight:800;white-space:nowrap;cursor:pointer}
+ .dlv-promo-mobile-caption>button b{margin-left:7px;color:var(--accent)}
+}
+@media(max-width:520px){
+ .dlv-promo-carousel{--promo-radius:18px}
+ .dlv-promo-arrow{width:34px;height:34px;font-size:25px;border-radius:11px}
+ .dlv-promo-mobile-caption{padding:11px 12px 12px;gap:2px 8px}
+ .dlv-promo-mobile-caption>strong{font-size:12px}
+ .dlv-promo-mobile-caption>button{height:34px;padding:0 10px;font-size:8px}
+ .dlv-promo-dots{top:auto;bottom:62px}
+}
+@media(prefers-reduced-motion:reduce){.dlv-promo-track,.dlv-promo-sprite,.dlv-promo-arrow{transition:none}.dlv-promo-progress{display:none}}
