@@ -19,7 +19,31 @@ async function getReadiness(db:any,s:any){
 }
 async function gateway(db:any,s:any,payload:any){const [gw,user,key]=await Promise.all([secret(db,"dlavie_digiflazz_gateway_secret"),secret(db,"dlavie_digiflazz_username"),secret(db,"dlavie_digiflazz_api_key")]);if(!s.gateway_url||!gw||!user||!key)throw new Error("integration_not_ready");const raw=JSON.stringify({...payload,username:user,api_key:key}),ts=String(Math.floor(Date.now()/1000)),sig=await hmac(gw,`${ts}\n${raw}`);const r=await fetch(String(s.gateway_url),{method:"POST",headers:{"content-type":"application/json","x-dlavie-timestamp":ts,"x-dlavie-signature":sig},body:raw});const d=await r.json().catch(()=>({}));if(!r.ok||!d.ok)throw new Error(d.message||d.error||`gateway_http_${r.status}`);return d}
 function sell(base:number,s:any){const min=Math.max(0,Number(s.minimum_markup||0)),v=Number(s.markup_value||0),m=s.markup_mode==="percent"?Math.max(min,Math.round(base*v/100)):Math.max(min,Math.round(v));return Math.max(base,base+m)}
-function extended(category:string,brand:string){const x=`${category} ${brand}`.toLowerCase().replace(/\s+/g,"");return x.includes("pbb")||x.includes("emoney")||x.includes("samsat")}
+function compact(...values:unknown[]){return values.map(v=>safe(v,300)).join(" ").toLowerCase().replace(/[^a-z0-9]+/g,"")}
+function extended(...values:unknown[]){const x=compact(...values);return x.includes("pbb")||x.includes("pajakbumibangunan")||x.includes("emoney")||x.includes("etoll")||x.includes("brizzi")||x.includes("flazz")||x.includes("tapcash")||x.includes("samsat")}
+function normalizeCategory(kind:string,rawCategory:string,brand:string,name:string,type:string,sku:string){
+  const all=compact(rawCategory,brand,name,type,sku),cat=compact(rawCategory),br=compact(brand);
+  if(kind==="postpaid"){
+    if(all.includes("samsat"))return "SAMSAT";
+    if(all.includes("pbb")||all.includes("pajakbumibangunan"))return "PBB";
+    if(all.includes("bpjs"))return "BPJS";
+    if(all.includes("pdam")||all.includes("airminum"))return "PDAM";
+    if(all.includes("pln")||all.includes("listrik"))return "PLN & Listrik";
+    if(all.includes("emoney")||all.includes("etoll")||all.includes("brizzi")||all.includes("flazz")||all.includes("tapcash"))return "E-Money";
+    if(all.includes("internet")||all.includes("indihome")||all.includes("telkom")||all.includes("tvkabel")||all.includes("televisi"))return "Internet & TV";
+    if(all.includes("multifinance")||all.includes("finance")||all.includes("leasing"))return "Multifinance";
+    if(all.includes("gas")||all.includes("pgn"))return "Gas";
+    if(all.includes("pajak"))return "Pajak";
+    return "Tagihan Lainnya";
+  }
+  if(["pulsa","pulsaoperator","mobile"].includes(cat)||all.includes("pulsa"))return "Pulsa";
+  if(["data","paketdata","internet"].includes(cat)||all.includes("paketdata")||all.includes("kuota"))return "Paket Data";
+  if(["pln","listrik"].includes(cat)||all.includes("pln")||all.includes("tokenlistrik"))return "PLN";
+  if(["emoney","ewallet","dompetdigital"].includes(cat)||all.includes("ewallet")||all.includes("emoney")||["dana","ovo","gopay","shopeepay","linkaja"].includes(br))return "E-Wallet";
+  if(["games","game","voucher","vouchergame"].includes(cat)||all.includes("games")||all.includes("voucher"))return "Voucher & Game";
+  if(["aktivasi","aktivasivoucher"].includes(cat))return "Aktivasi & Voucher";
+  return rawCategory||"Produk Digital Lainnya";
+}
 
 Deno.serve(withSupabase({auth:"none"},async(req,ctx)=>{
   const headers=cors();if(req.method==="OPTIONS")return new Response(null,{status:204,headers});if(req.method!=="POST")return Response.json({error:"method_not_allowed"},{status:405,headers});
@@ -74,7 +98,10 @@ Deno.serve(withSupabase({auth:"none"},async(req,ctx)=>{
           const d=await gateway(db,s,{op:"price_list",cmd}),rows=Array.isArray(d.data)?d.data:Array.isArray(d.response?.data)?d.response.data:[];
           if(!Array.isArray(rows))throw new Error("invalid_pricelist_response");
           const productKind=cmd==="prepaid"?"prepaid":"postpaid";
-          const mapped=rows.map((x:any)=>{const category=safe(x.category,120)||"Lainnya",brand=safe(x.brand,120)||"Lainnya",base=productKind==="prepaid"?Math.max(0,Math.round(Number(x.price||0))):0;return{source:"digiflazz",product_kind:productKind,sku:safe(x.buyer_sku_code,160),product_name:safe(x.product_name,220)||safe(x.buyer_sku_code,160),category,brand,product_type:safe(x.type,120)||null,seller_name:safe(x.seller_name,160)||null,base_price:base,sell_price:productKind==="prepaid"?sell(base,s):0,admin_fee:x.admin==null?null:Math.round(Number(x.admin||0)),commission:x.commission==null?null:Math.round(Number(x.commission||0)),buyer_product_status:Boolean(x.buyer_product_status),seller_product_status:Boolean(x.seller_product_status),unlimited_stock:productKind==="postpaid"?true:x.unlimited_stock!==false,stock:productKind==="postpaid"?0:Math.max(0,Math.round(Number(x.stock||0))),multi:productKind==="postpaid"?false:Boolean(x.multi),start_cut_off:safe(x.start_cut_off,30)||null,end_cut_off:safe(x.end_cut_off,30)||null,description:safe(x.desc,1200)||null,requires_extended_input:productKind==="postpaid"&&extended(category,brand),raw:x,synced_at:started,updated_at:started};}).filter((x:any)=>x.sku);
+          const mapped=rows.map((x:any)=>{
+            const rawCategory=safe(x.category,120)||"Lainnya",brand=safe(x.brand,120)||"Lainnya",name=safe(x.product_name,220)||safe(x.buyer_sku_code,160),type=safe(x.type,120)||"",sku=safe(x.buyer_sku_code,160),category=normalizeCategory(productKind,rawCategory,brand,name,type,sku),base=productKind==="prepaid"?Math.max(0,Math.round(Number(x.price||0))):0;
+            return{source:"digiflazz",product_kind:productKind,sku,product_name:name,category,brand,product_type:type||null,seller_name:safe(x.seller_name,160)||null,base_price:base,sell_price:productKind==="prepaid"?sell(base,s):0,admin_fee:x.admin==null?null:Math.round(Number(x.admin||0)),commission:x.commission==null?null:Math.round(Number(x.commission||0)),buyer_product_status:Boolean(x.buyer_product_status),seller_product_status:Boolean(x.seller_product_status),unlimited_stock:productKind==="postpaid"?true:x.unlimited_stock!==false,stock:productKind==="postpaid"?0:Math.max(0,Math.round(Number(x.stock||0))),multi:productKind==="postpaid"?false:Boolean(x.multi),start_cut_off:safe(x.start_cut_off,30)||null,end_cut_off:safe(x.end_cut_off,30)||null,description:safe(x.desc,1200)||null,requires_extended_input:productKind==="postpaid"&&extended(rawCategory,brand,name,type,sku),raw:x,synced_at:started,updated_at:started};
+          }).filter((x:any)=>x.sku);
           for(let i=0;i<mapped.length;i+=300){const uq=await db.from("dlavie_digital_products").upsert(mapped.slice(i,i+300),{onConflict:"sku"});if(uq.error)throw uq.error}
           const stale=await db.from("dlavie_digital_products").update({buyer_product_status:false,seller_product_status:false,updated_at:started}).eq("product_kind",productKind).lt("synced_at",started);if(stale.error)throw stale.error;
         }
