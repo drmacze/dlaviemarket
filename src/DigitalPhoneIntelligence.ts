@@ -41,6 +41,10 @@ export function isTelcoCategory(category=''){
   return x==='pulsa'||x==='paket data'
 }
 
+export function isPhoneCategory(category=''){
+  return isTelcoCategory(category)
+}
+
 const phoneWalletBrands=['dana','ovo','gopay','shopeepay','linkaja','isaku','astrapay','doku','grab','indrive','maxim']
 export function isPhoneTarget(category='',brand=''){
   if(isTelcoCategory(category))return true
