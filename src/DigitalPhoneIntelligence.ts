@@ -30,15 +30,10 @@ export function detectIndonesianOperator(value=''):IndonesianOperator{
   if(['0811','0812','0813','0821','0822','0823','0851','0852','0853'].includes(p))return'Telkomsel'
   if(['0814','0815','0816','0855','0856','0857','0858'].includes(p))return'IM3'
   if(['0817','0818','0819','0877','0878'].includes(p))return'XL'
-  if(['0831','0832','0833','0838','0859'].includes(p))return'AXIS'
+  if(['0831','0832','0833','0838'].includes(p))return'AXIS'
   if(['0895','0896','0897','0898','0899'].includes(p))return'Tri'
   if(['0881','0882','0883','0884','0885','0886','0887','0888','0889'].includes(p))return'Smartfren'
   return null
-}
-
-export function isPhoneCategory(category=''){
-  const x=category.toLowerCase()
-  return x==='pulsa'||x==='paket data'||x==='e-wallet'||x.includes('wallet')
 }
 
 export function isTelcoCategory(category=''){
@@ -46,8 +41,16 @@ export function isTelcoCategory(category=''){
   return x==='pulsa'||x==='paket data'
 }
 
+const phoneWalletBrands=['dana','ovo','gopay','shopeepay','linkaja','isaku','astrapay','doku','grab','indrive','maxim']
+export function isPhoneTarget(category='',brand=''){
+  if(isTelcoCategory(category))return true
+  const c=category.toLowerCase(),b=brand.toLowerCase().replace(/[^a-z0-9]+/g,'')
+  if(c==='e-wallet'||c.includes('wallet'))return phoneWalletBrands.some(x=>b.includes(x))
+  return false
+}
+
 export function targetInputMode(category='',brand=''):'numeric'|'text'{
   const x=`${category} ${brand}`.toLowerCase()
-  if(isPhoneCategory(category)||x.includes('pln')||x.includes('bpjs')||x.includes('pdam')||x.includes('pbb')||x.includes('samsat'))return'numeric'
+  if(isPhoneTarget(category,brand)||x.includes('wallet')||x.includes('pln')||x.includes('bpjs')||x.includes('pdam')||x.includes('pbb')||x.includes('samsat')||x.includes('e-money')||x.includes('flazz')||x.includes('brizzi')||x.includes('tapcash'))return'numeric'
   return'text'
 }
