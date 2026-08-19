@@ -1,5 +1,5 @@
 {
-  "release": "digital-market-h2h-admin-ui-v18",
+  "release": "digital-market-h2h-webhook-hmac-v19",
   "built_for": "2026-08-20",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
@@ -12,13 +12,15 @@
     "H2H HCoin connection test and verification status",
     "H2H prepaid catalog order and status polling",
     "H2H PPOB catalog inquiry payment and status flow",
-    "verified callback that re-checks supplier status before wallet updates",
-    "source-filtered H2H catalog in DLavie Market",
-    "H2H Control Center inside the existing support-admin session",
-    "mobile-first H2H admin UI with compact dark controls and Safari bottom safe spacing",
-    "friendly admin error messages instead of raw backend identifiers",
+    "H2H webhook POST support for transaction events",
+    "HMAC-SHA256 verification using X-Webhook-Signature and raw request body",
+    "five-minute X-Webhook-Timestamp replay protection",
+    "Webhook Secret from H2H stored server-side in Supabase Vault",
+    "supplier status re-check before order state or wallet refund changes",
+    "legacy H2H GET callback compatibility retained",
+    "mobile-first H2H admin UI",
     "wallet reserve idempotency and automatic refund protections retained",
     "Nomor Virtual retained as an additional service"
   ],
-  "note": "v18 focuses on the H2H Control Center mobile experience: compact header and cards, dark Refresh and disabled states, improved form hierarchy, callback controls, bottom browser-safe spacing, and human-readable admin errors."
+  "note": "v19 aligns DLavie with H2H.id's signed webhook format: HMAC-SHA256(timestamp.raw_payload, secret_key), raw-body verification, five-minute timestamp tolerance, event headers, and H2H-provided Webhook Secret entry in Admin."
 }
