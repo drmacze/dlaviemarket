@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
 
 const normalize=(value='')=>value.toLowerCase().replace(/[^a-z0-9]+/g,' ')
 type CategoryIconType='phone'|'network'|'bolt'|'wallet'|'game'|'receipt'|'sim'
@@ -67,14 +67,15 @@ export function DigitalCategoryIcon({value,className=''}:{value:string;className
   receipt:<><path d="M6 3h12v18l-3-1.7-3 1.7-3-1.7L6 21z"/><path d="M9 8h6M9 12h6M9 16h4"/></>,
   sim:<><path d="M8 3h6l4 4v14H6V5a2 2 0 0 1 2-2Z"/><path d="M14 3v5h4"/><rect x="9" y="11" width="6" height="6" rx="1"/><path d="M12 11v6M9 14h6"/></>,
  }
- return <span className={`dlv-category-symbol ${className}`} aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">{paths[type]}</svg></span>
+ return <span className={`dlv-category-symbol is-${type} ${className}`} data-icon={type} aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">{paths[type]}</svg></span>
 }
 
 export default function DigitalBrandIcon({brand,category='',className=''}:{brand:string;category?:string;className?:string}){
  const domain=useMemo(()=>brandDomain(brand),[brand])
  const [failed,setFailed]=useState(false)
  const label=(brand||category||'Digital').trim()
+ useEffect(()=>setFailed(false),[domain])
  if(!domain||failed)return <span className={`dlv-brand-icon is-fallback ${className}`} title={label}><DigitalCategoryIcon value={`${category} ${brand}`}/></span>
- const src=`https://www.google.com/s2/favicons?sz=128&domain_url=https://${domain}`
- return <span className={`dlv-brand-icon ${className}`} title={label}><img src={src} alt={`${label} logo`} referrerPolicy="no-referrer" loading="lazy" onError={()=>setFailed(true)}/></span>
+ const src=`https://www.google.com/s2/favicons?sz=256&domain_url=https://${domain}`
+ return <span className={`dlv-brand-icon is-official ${className}`} title={label}><img src={src} alt={`${label} logo`} referrerPolicy="no-referrer" loading="lazy" onError={()=>setFailed(true)}/></span>
 }
