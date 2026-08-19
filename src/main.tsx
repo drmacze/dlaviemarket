@@ -8,7 +8,7 @@ import LanguageSystem from './LanguageSystem'
 import NavUtilityMenu from './NavUtilityMenu'
 import AccountSystem from './AccountSystem'
 import LegacyNokosMarket from './LegacyNokosMarket'
-import DLavieDigitalMarketV21 from './DLavieDigitalMarketV21'
+import DLavieDigitalMarketV22 from './DLavieDigitalMarketV22'
 import DigitalHomeMarket from './DigitalHomeMarket'
 import OrderCenter from './OrderCenter'
 import DigitalActivityFeed from './DigitalActivityFeed'
@@ -60,6 +60,7 @@ import './digital-market-ui-v4.css'
 import './digital-market-mobile-v5.css'
 import './digital-market-mobile-v6.css'
 import './digital-market-v21.css'
+import './digital-market-v22.css'
 import './order-center.css'
 import './service-brand-polish.css'
 import './provider-logo-card.css'
@@ -112,7 +113,7 @@ createRoot(document.getElementById('root')!).render(
     <AccountSystem />
     <LoginRedirectEnhancer />
     <LegacyNokosMarket />
-    <DLavieDigitalMarketV21 />
+    <DLavieDigitalMarketV22 />
     <DigitalHomeMarket />
     <OrderCenter />
     <DigitalActivityFeed />
