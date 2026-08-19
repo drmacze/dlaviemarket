@@ -11,13 +11,14 @@ export default function DigitalPostpaidPaymentGuard(){
  useEffect(()=>{
   const intercept=(e:MouseEvent)=>{
    const t=e.target as HTMLElement|null
-   const button=t?.closest<HTMLButtonElement>('.dlv22-result .dlv21-primary')
+   const button=t?.closest<HTMLButtonElement>('.dlv22-result .dlv21-primary, .dlv-digital-history .is-pay')
    if(!button||button.disabled||!button.textContent?.toLowerCase().includes('bayar'))return
    if(button.dataset.dlvPayApproved==='1'){delete button.dataset.dlvPayApproved;return}
    e.preventDefault();e.stopPropagation();e.stopImmediatePropagation()
-   const root=button.closest('.dlv22-result')
-   const product=root?.querySelector<HTMLElement>('.dlv21-receipt-product b')?.textContent?.trim()||'Tagihan digital'
-   const total=root?.querySelector<HTMLElement>('.dlv21-total strong')?.textContent?.trim()||'—'
+   const result=button.closest('.dlv22-result')
+   const history=button.closest('article')
+   const product=result?.querySelector<HTMLElement>('.dlv21-receipt-product b')?.textContent?.trim()||history?.querySelector<HTMLElement>('.dlv-history-copy strong')?.textContent?.trim()||'Tagihan digital'
+   const total=result?.querySelector<HTMLElement>('.dlv21-total strong')?.textContent?.trim()||history?.querySelector<HTMLElement>('.dlv-history-state b')?.textContent?.trim()||'—'
    setChecked(false);setPolicy(false);setPending({button,product,total})
   }
   document.addEventListener('click',intercept,true)
