@@ -20,6 +20,7 @@ import ActivityMetadataEnhancer from './ActivityMetadataEnhancer'
 import MidtransPaymentSystem from './MidtransPaymentSystem'
 import WalletHistoryEnhancer from './WalletHistoryEnhancer'
 import SiteDetailSystem from './SiteDetailSystem'
+import DigitalRouteContextV2 from './DigitalRouteContextV2'
 import MarketPolicies from './MarketPolicies'
 import DigitalPolicyCenterV2 from './DigitalPolicyCenterV2'
 import AccessExperience from './AccessExperience'
@@ -116,6 +117,7 @@ createRoot(document.getElementById('root')!).render(
     <MidtransPaymentSystem />
     <WalletHistoryEnhancer />
     <SiteDetailSystem />
+    <DigitalRouteContextV2 />
     <MarketPolicies />
     <DigitalPolicyCenterV2 />
     <AccessExperience />
