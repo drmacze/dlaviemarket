@@ -1,0 +1,237 @@
+/* H2H Control Center — mobile-first polish v18 */
+.dlv-h2h-admin > aside{
+  background:#0b0c0c;
+  color:#f4f5f3;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+}
+.dlv-h2h-admin > aside > header{
+  min-height:88px;
+  padding:calc(14px + env(safe-area-inset-top)) 16px 13px;
+  gap:14px;
+  background:rgba(10,11,11,.96);
+  border-bottom-color:rgba(255,255,255,.10);
+  backdrop-filter:blur(22px) saturate(125%);
+  -webkit-backdrop-filter:blur(22px) saturate(125%);
+}
+.dlv-h2h-admin > aside > header > div{min-width:0}
+.dlv-h2h-admin > aside > header span{
+  color:#9be3c4;
+  font-size:8px;
+  line-height:1.2;
+  letter-spacing:.14em;
+}
+.dlv-h2h-admin > aside > header strong{
+  margin-top:5px;
+  max-width:calc(100vw - 92px);
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:#f6f7f5;
+  font-size:13px;
+  line-height:1.25;
+}
+.dlv-h2h-admin > aside > header button{
+  flex:0 0 38px;
+  width:38px;
+  height:38px;
+  border-color:rgba(255,255,255,.13);
+  border-radius:12px;
+  background:#151717;
+  color:#f5f5f3;
+  font-size:20px;
+  line-height:1;
+}
+.dlv-h2h-admin .dlv-digi-admin-body{
+  padding:12px 12px calc(120px + env(safe-area-inset-bottom));
+  gap:10px;
+  background:#0b0c0c;
+}
+.dlv-h2h-admin .dlv-digi-admin-body > section{
+  padding:14px;
+  border-color:rgba(255,255,255,.12);
+  border-radius:18px;
+  background:#151717;
+  box-shadow:0 1px 0 rgba(255,255,255,.02) inset;
+}
+.dlv-h2h-admin .dlv-digi-admin-body h3{
+  margin:0 0 7px;
+  color:#f7f7f4;
+  font-size:12px;
+  line-height:1.25;
+  letter-spacing:-.01em;
+}
+.dlv-h2h-admin .dlv-digi-admin-body p{
+  margin:0 0 11px;
+  color:#969a96;
+  font-size:7.4px;
+  line-height:1.58;
+}
+.dlv-h2h-admin .dlv-digi-admin-body small{
+  color:#8d928e;
+  font-size:6.8px;
+  line-height:1.5;
+}
+.dlv-h2h-admin .dlv-digi-health{
+  min-height:68px;
+  padding:13px 14px!important;
+  gap:10px;
+}
+.dlv-h2h-admin .dlv-digi-health > i{
+  flex:0 0 9px;
+  width:9px;
+  height:9px;
+  background:#626662;
+}
+.dlv-h2h-admin .dlv-digi-health > i.is-on{
+  background:#71d6a9;
+  box-shadow:0 0 0 4px rgba(113,214,169,.09),0 0 14px rgba(113,214,169,.28);
+}
+.dlv-h2h-admin .dlv-digi-health > div{min-width:0;gap:4px}
+.dlv-h2h-admin .dlv-digi-health strong{
+  color:#f4f5f3;
+  font-size:10px;
+  line-height:1.25;
+}
+.dlv-h2h-admin .dlv-digi-health span{
+  display:block;
+  overflow:hidden;
+  color:#949894;
+  font-size:6.6px;
+  line-height:1.4;
+  text-overflow:ellipsis;
+}
+.dlv-h2h-admin .dlv-digi-health button{
+  flex:0 0 auto;
+  min-width:72px;
+  min-height:34px;
+  padding:0 11px;
+  border-color:rgba(255,255,255,.13);
+  border-radius:10px;
+  background:#202222;
+  color:#eff0ed;
+  box-shadow:none;
+}
+.dlv-h2h-admin .dlv-digi-admin-body form{gap:8px}
+.dlv-h2h-admin .dlv-digi-admin-body input,
+.dlv-h2h-admin .dlv-digi-admin-body select{
+  height:45px;
+  padding:0 12px;
+  border-color:rgba(255,255,255,.12);
+  border-radius:12px;
+  background:#090a0a;
+  color:#f2f3f1;
+  caret-color:#80ddb5;
+  font-size:8px;
+  box-shadow:0 1px 0 rgba(255,255,255,.02) inset;
+}
+.dlv-h2h-admin .dlv-digi-admin-body input::placeholder{color:#8b8f8b;opacity:.84}
+.dlv-h2h-admin .dlv-digi-admin-body input:focus,
+.dlv-h2h-admin .dlv-digi-admin-body select:focus{
+  border-color:rgba(112,214,169,.58);
+  box-shadow:0 0 0 3px rgba(112,214,169,.08);
+}
+.dlv-h2h-admin .dlv-digi-health button,
+.dlv-h2h-admin .dlv-digi-admin-body section > button,
+.dlv-h2h-admin .dlv-digi-row button,
+.dlv-h2h-admin .dlv-digi-admin-body form button{
+  min-height:40px;
+  border-radius:11px;
+  font-size:7.5px;
+  font-weight:850;
+  letter-spacing:.01em;
+}
+.dlv-h2h-admin .dlv-digi-admin-body form button,
+.dlv-h2h-admin .dlv-digi-admin-body section > button:not(.is-secondary){
+  border-color:#eef1ee;
+  background:#f1f3f0;
+  color:#111312;
+}
+.dlv-h2h-admin .dlv-digi-admin-body button:disabled{
+  border-color:rgba(255,255,255,.08)!important;
+  background:#242626!important;
+  color:#737773!important;
+  opacity:1;
+  box-shadow:none!important;
+}
+.dlv-h2h-admin .dlv-digi-admin-body .is-secondary{
+  margin-top:6px;
+  border-color:rgba(255,255,255,.14);
+  background:#0d0f0e;
+  color:#f0f2ef;
+}
+.dlv-h2h-admin .dlv-digi-admin-body .is-secondary:not(:disabled):active,
+.dlv-h2h-admin .dlv-digi-admin-body section > button:not(:disabled):active,
+.dlv-h2h-admin .dlv-digi-admin-body form button:not(:disabled):active{transform:translateY(1px)}
+.dlv-h2h-admin .dlv-digi-row{
+  grid-template-columns:repeat(auto-fit,minmax(132px,1fr));
+  gap:8px;
+}
+.dlv-h2h-admin .dlv-digi-url{
+  margin:8px 0;
+  padding:10px 11px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:11px;
+  background:#090a0a;
+  color:#aeb3ae;
+  font-size:6.5px;
+  line-height:1.5;
+}
+.dlv-h2h-admin .dlv-digi-secret{
+  border-color:rgba(112,214,169,.24);
+  background:rgba(112,214,169,.06);
+}
+.dlv-h2h-admin .dlv-digi-grid{gap:8px}
+.dlv-h2h-admin .dlv-digi-grid label{gap:5px}
+.dlv-h2h-admin .dlv-digi-grid label span,
+.dlv-h2h-admin .dlv-digi-check span{color:#a0a5a0}
+.dlv-h2h-admin .dlv-digi-check{
+  margin:10px 0;
+  padding:9px 10px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:11px;
+  background:#101212;
+}
+.dlv-h2h-admin .dlv-digi-check input{
+  flex:0 0 17px;
+  width:17px;
+  height:17px;
+  accent-color:#74d5aa;
+}
+.dlv-h2h-admin .dlv-digi-error,
+.dlv-h2h-admin .dlv-digi-success{
+  padding:10px 12px;
+  border-radius:12px;
+  font-size:7.2px;
+  line-height:1.45;
+}
+.dlv-h2h-admin .dlv-digi-error{
+  border-color:rgba(255,92,104,.3);
+  background:rgba(255,92,104,.09);
+  color:#ffc1c6;
+}
+.dlv-h2h-admin .dlv-digi-success{
+  border-color:rgba(112,214,169,.28);
+  background:rgba(112,214,169,.07);
+  color:#b9efd7;
+}
+
+@media (max-width:680px){
+  .dlv-admin-shell ~ .dlv-h2h-admin > aside{
+    inset:0;
+    width:100%;
+    max-width:none;
+  }
+  .dlv-h2h-admin .dlv-digi-grid{grid-template-columns:1fr}
+  .dlv-h2h-admin .dlv-digi-admin-toggle{
+    min-width:70px;
+    border-color:rgba(112,214,169,.34)!important;
+    background:#111413!important;
+    color:#f4f5f3!important;
+  }
+}
+
+@media (min-width:681px){
+  .dlv-h2h-admin > aside{width:min(500px,100%)}
+  .dlv-h2h-admin .dlv-digi-admin-body{padding-bottom:36px}
+}
