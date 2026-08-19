@@ -14,6 +14,8 @@
     "final review card before every digital purchase",
     "required user confirmation checkbox for destination product and amount accuracy",
     "required digital transaction policy acknowledgement before submit",
+    "server-side v22 guard requires confirmation context before a new H2H order can be claimed",
+    "policy version and confirmation timestamp are persisted on the digital order",
     "provider mismatch blocks telco checkout",
     "sensitive destination and SN values masked in normal result and order history views",
     "explicit private Receipt view reveals full transaction data",
@@ -24,5 +26,5 @@
     "screenshot prevention is not falsely claimed because browsers cannot guarantee it",
     "H2H sandbox remains isolated from HCoin and the real DLavie Wallet"
   ],
-  "note": "v22 adds guarded purchasing and receipt handling: phone intelligence, provider-aware catalog routing, numeric input ergonomics, mandatory final verification and policy consent, masked sensitive data, and an explicit downloadable/printable receipt center."
+  "note": "v22 adds guarded purchasing and receipt handling: phone intelligence, provider-aware catalog routing, numeric input ergonomics, mandatory final verification and policy consent with server-side evidence, masked sensitive data, and an explicit downloadable/printable receipt center."
 }
