@@ -10,6 +10,7 @@
     "phone-first Pulsa and Paket Data flow with Indonesian +62 UI",
     "automatic Telkomsel IM3 XL AXIS Tri and Smartfren prefix detection",
     "detected telco provider automatically scopes the product catalog",
+    "uncertain or unmapped phone prefixes expose an explicit manual operator fallback without changing the original phone number",
     "numeric mobile keyboards for phone PLN bill and numeric identifier inputs",
     "E-Wallet phone-number products separated from card-based Kartu E-Money targets",
     "Flazz BRIZZI TapCash and e-Money Mandiri are not forced through +62 phone formatting",
@@ -31,5 +32,5 @@
     "screenshot prevention is not falsely claimed because browsers cannot guarantee it",
     "H2H sandbox remains isolated from HCoin and the real DLavie Wallet"
   ],
-  "note": "v22 adds guarded purchasing and receipt handling: phone intelligence, provider-aware catalog routing, context-aware destination inputs, mandatory final verification and policy consent with server-side evidence, a second guard before postpaid payment, masked sensitive data, and an explicit downloadable/printable receipt center."
+  "note": "v22 adds guarded purchasing and receipt handling: phone intelligence with safe manual fallback, provider-aware catalog routing, context-aware destination inputs, mandatory final verification and policy consent with server-side evidence, a second guard before postpaid payment, masked sensitive data, and an explicit downloadable/printable receipt center."
 }
