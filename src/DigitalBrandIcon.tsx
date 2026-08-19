@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 
 const normalize=(value='')=>value.toLowerCase().replace(/[^a-z0-9]+/g,' ')
+type CategoryIconType='phone'|'network'|'bolt'|'wallet'|'game'|'receipt'|'sim'
 
 const domainRules:Array<[RegExp,string]>=[
  [/telkomsel|simpati|kartu as|loop|by u|byu/,'telkomsel.com'],
@@ -44,7 +45,7 @@ export function brandDomain(brand=''){
  return domainRules.find(([rule])=>rule.test(value))?.[1]||''
 }
 
-function iconType(value=''){
+function iconType(value=''):CategoryIconType{
  const x=normalize(value)
  if(x.includes('data')||x.includes('internet')||x.includes('kuota'))return'network'
  if(x.includes('pln')||x.includes('listrik'))return'bolt'
@@ -57,7 +58,7 @@ function iconType(value=''){
 
 export function DigitalCategoryIcon({value,className=''}:{value:string;className?:string}){
  const type=iconType(value)
- const paths={
+ const paths:Record<CategoryIconType,React.ReactNode>={
   phone:<><rect x="7" y="2.7" width="10" height="18.6" rx="2.5"/><path d="M10.5 5.5h3"/><path d="M11 18.2h2"/></>,
   network:<><path d="M4.4 9.3a11 11 0 0 1 15.2 0"/><path d="M7.2 12.3a7 7 0 0 1 9.6 0"/><path d="M10 15.2a3 3 0 0 1 4 0"/><circle cx="12" cy="18.1" r=".9" fill="currentColor" stroke="none"/></>,
   bolt:<><path d="m13.3 2.8-7 10h5l-.8 8.4 7.2-11.2h-5.1z"/></>,
@@ -65,7 +66,7 @@ export function DigitalCategoryIcon({value,className=''}:{value:string;className
   game:<><path d="M7.2 8h9.6a4 4 0 0 1 3.8 5.3l-1.5 4.1a2 2 0 0 1-3.3.8l-1.7-1.7H9.9l-1.7 1.7a2 2 0 0 1-3.3-.8l-1.5-4.1A4 4 0 0 1 7.2 8Z"/><path d="M8 11v4M6 13h4"/><circle cx="16" cy="12" r=".7" fill="currentColor" stroke="none"/><circle cx="18" cy="14" r=".7" fill="currentColor" stroke="none"/></>,
   receipt:<><path d="M6 3h12v18l-3-1.7-3 1.7-3-1.7L6 21z"/><path d="M9 8h6M9 12h6M9 16h4"/></>,
   sim:<><path d="M8 3h6l4 4v14H6V5a2 2 0 0 1 2-2Z"/><path d="M14 3v5h4"/><rect x="9" y="11" width="6" height="6" rx="1"/><path d="M12 11v6M9 14h6"/></>,
- } as const
+ }
  return <span className={`dlv-category-symbol ${className}`} aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">{paths[type]}</svg></span>
 }
 
