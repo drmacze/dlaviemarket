@@ -9,6 +9,7 @@ import NavUtilityMenu from './NavUtilityMenu'
 import AccountSystem from './AccountSystem'
 import LegacyNokosMarket from './LegacyNokosMarket'
 import DLavieDigitalMarket from './DLavieDigitalMarket'
+import DigitalMarketCatalogPreview from './DigitalMarketCatalogPreview'
 import OrderCenter from './OrderCenter'
 import DigitalActivityFeed from './DigitalActivityFeed'
 import StateBridge from './StateBridge'
@@ -97,6 +98,7 @@ createRoot(document.getElementById('root')!).render(
     <LoginRedirectEnhancer />
     <LegacyNokosMarket />
     <DLavieDigitalMarket />
+    <DigitalMarketCatalogPreview />
     <OrderCenter />
     <DigitalActivityFeed />
     <DLavieOrderEvidenceBridge />
