@@ -44,9 +44,39 @@ Meneruskan transaksi prepaid/pascabayar ke `/v1/transaction` dengan signature `m
 
 `amount` dan `year` disiapkan untuk flow khusus seperti E-Money/PBB. SAMSAT tetap menggunakan `customer_no` gabungan sesuai format supplier.
 
-## Deployment
+## Setup paling mudah — Fly.io + GitHub Actions (bisa dari iPhone)
 
-Container dapat dibangun langsung dari folder ini:
+Repo sudah memiliki:
+
+- `fly.toml` untuk region Singapore (`sin`).
+- `.github/workflows/bootstrap-digiflazz-gateway.yml` untuk bootstrap/deploy otomatis.
+
+Yang perlu dilakukan hanya sekali:
+
+1. Buat akun Fly.io dan aktifkan billing jika diminta oleh Fly.
+2. Di Fly Dashboard → Organization → Tokens, buat **Organization token** dengan masa berlaku sesingkat yang nyaman untuk bootstrap.
+3. Di DLavie Admin → Digiflazz → **Generate Gateway Secret** dan copy nilainya.
+4. Di GitHub repo → Settings → Secrets and variables → Actions, buat dua Repository secrets:
+   - `FLY_API_TOKEN` = organization token Fly.
+   - `DLAVIE_GATEWAY_SECRET` = secret dari DLavie Admin.
+5. Buka GitHub → Actions → **Bootstrap Digiflazz Gateway** → Run workflow.
+6. Default app name adalah `dlavie-digiflazz-drmacze`, default org slug `personal`. Ubah org slug jika organization Fly kamu memakai slug lain.
+7. Workflow akan:
+   - membuat Fly app bila belum ada,
+   - menyimpan gateway secret sebagai Fly secret,
+   - deploy container gateway,
+   - mengalokasikan app-scoped static egress IPv4 di Singapore bila belum ada,
+   - melakukan health check,
+   - menampilkan Gateway URL dan daftar IP pada Job Summary.
+8. Copy IPv4 egress/static yang ditampilkan workflow lalu whitelist IP itu di Pengaturan Koneksi API Digiflazz.
+9. Copy Gateway URL dari Job Summary, contoh `https://<app-name>.fly.dev`, lalu simpan pada DLavie Admin → Digiflazz → Static Egress Gateway.
+10. Tekan **Test gateway**. Jika lolos, simpan credential Buyer lalu **Sync katalog sekarang**.
+
+Setelah bootstrap berhasil, organization token Fly sebaiknya dirotasi/revoke dan CI jangka panjang dapat memakai token dengan scope yang lebih sempit bila diperlukan.
+
+## Deployment manual dengan Docker
+
+Container juga dapat dibangun langsung dari folder ini:
 
 ```bash
 docker build -t dlavie-digiflazz-gateway .
