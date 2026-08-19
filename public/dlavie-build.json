@@ -1,21 +1,22 @@
 {
-  "release": "digital-market-iak-provider-v16",
+  "release": "digital-market-h2h-provider-v17",
   "built_for": "2026-08-19",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
   "homepage_positioning": "digital-products",
-  "provider": "IAK",
+  "provider": "H2H.id",
   "features": [
-    "Digital Market routed to IAK direct API backend",
-    "IAK Sandbox and Production credentials stored in Supabase Vault",
-    "no Static Egress Gateway required for the IAK setup path",
-    "IAK prepaid catalog, topup, status check and signed callback",
-    "IAK postpaid catalog, inquiry, payment and status check",
-    "E-Money custom amount and SAMSAT identity inquiry support",
-    "source-filtered IAK catalog in DLavie Market",
-    "IAK Control Center inside the existing support-admin session",
-    "wallet reserve, idempotency and refund protections retained",
+    "Digital Market routed to H2H.id direct API backend",
+    "H2H Member ID PIN and H2H Password stored in Supabase Vault",
+    "no Static Egress Gateway required when H2H IP whitelist is empty",
+    "H2H HCoin connection test and verification status",
+    "H2H prepaid catalog order and status polling",
+    "H2H PPOB catalog inquiry payment and status flow",
+    "verified callback that re-checks supplier status before wallet updates",
+    "source-filtered H2H catalog in DLavie Market",
+    "H2H Control Center inside the existing support-admin session",
+    "wallet reserve idempotency and automatic refund protections retained",
     "Nomor Virtual retained as an additional service"
   ],
-  "note": "v16 switches the active DLavie Digital Market path from Digiflazz to IAK. Start in Testing/Sandbox, save IAK username and Sandbox API Key, test the connection, then sync the catalog before enabling live transactions."
+  "note": "v17 switches the active DLavie Digital Market path from IAK to H2H.id. Save Member ID, transaction PIN and H2H Password in Admin, test HCoin, configure callback and optional Webhook Key, sync catalog, then explicitly enable transactions."
 }
