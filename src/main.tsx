@@ -9,6 +9,7 @@ import NavUtilityMenu from './NavUtilityMenu'
 import AccountSystem from './AccountSystem'
 import LegacyNokosMarket from './LegacyNokosMarket'
 import DLavieDigitalMarket from './DLavieDigitalMarket'
+import H2HSandboxExperience from './H2HSandboxExperience'
 import DigitalHomeMarket from './DigitalHomeMarket'
 import OrderCenter from './OrderCenter'
 import DigitalActivityFeed from './DigitalActivityFeed'
@@ -59,6 +60,7 @@ import './digital-market-ui-v3-fix.css'
 import './digital-market-ui-v4.css'
 import './digital-market-mobile-v5.css'
 import './digital-market-mobile-v6.css'
+import './h2h-sandbox-v20.css'
 import './order-center.css'
 import './service-brand-polish.css'
 import './provider-logo-card.css'
@@ -112,6 +114,7 @@ createRoot(document.getElementById('root')!).render(
     <LoginRedirectEnhancer />
     <LegacyNokosMarket />
     <DLavieDigitalMarket />
+    <H2HSandboxExperience />
     <DigitalHomeMarket />
     <OrderCenter />
     <DigitalActivityFeed />
