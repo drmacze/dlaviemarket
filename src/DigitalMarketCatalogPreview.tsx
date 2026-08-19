@@ -9,10 +9,18 @@ const fallback = [
   ['TG', 'Bayar Tagihan', 'Layanan pascabayar Digiflazz'],
 ]
 
-function installPreview() {
+function syncPreview() {
   const grid = document.querySelector<HTMLElement>('.dlv-category-grid')
-  if (!grid || !grid.querySelector('.dlv-catalog-empty') || grid.querySelector('.is-digital-placeholder')) return
+  if (!grid) return
   const empty = grid.querySelector('.dlv-catalog-empty')
+  const placeholders = Array.from(grid.querySelectorAll('.is-digital-placeholder'))
+
+  if (!empty) {
+    placeholders.forEach((node) => node.remove())
+    return
+  }
+  if (placeholders.length) return
+
   fallback.forEach(([mark, name, description]) => {
     const button = document.createElement('button')
     button.type = 'button'
@@ -24,29 +32,25 @@ function installPreview() {
   })
 }
 
-function clearPreview() {
-  document.querySelectorAll('.is-digital-placeholder').forEach((node) => node.remove())
-}
-
 export default function DigitalMarketCatalogPreview() {
   useEffect(() => {
-    let timer = 0
+    let scheduled = false
     const run = () => {
-      window.clearTimeout(timer)
-      timer = window.setTimeout(() => {
-        clearPreview()
-        installPreview()
-      }, 30)
+      if (scheduled) return
+      scheduled = true
+      requestAnimationFrame(() => {
+        scheduled = false
+        syncPreview()
+      })
     }
     run()
     const observer = new MutationObserver(run)
     observer.observe(document.body, { childList: true, subtree: true })
     window.addEventListener('hashchange', run)
     return () => {
-      window.clearTimeout(timer)
       observer.disconnect()
       window.removeEventListener('hashchange', run)
-      clearPreview()
+      document.querySelectorAll('.is-digital-placeholder').forEach((node) => node.remove())
     }
   }, [])
   return null
