@@ -1,0 +1,2 @@
+.dlv-category-grid>button{position:relative}.dlv-category-grid.is-grid>button>b{justify-self:end}.dlv-product-list.is-grid>.dlv-product-empty,.dlv-product-list.is-grid>.dlv-product-loading{grid-column:1/-1}
+@media(max-width:650px){.dlv-home-market-head{gap:12px}.dlv-home-view-switch{flex:0 0 auto}.dlv-home-category.is-list{grid-template-columns:44px minmax(0,1fr) auto}.dlv-home-category.is-list .dlv-home-brand-stack{margin-top:4px}.dlv-product-head-tools .dlv-view-switch{flex:0 0 auto}}
