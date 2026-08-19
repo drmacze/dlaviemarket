@@ -62,10 +62,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          flyctl deploy gateway/digiflazz-static-egress \
-            --config gateway/digiflazz-static-egress/fly.toml \
-            --app "$APP_NAME" \
-            --remote-only
+          cd gateway/digiflazz-static-egress
+          flyctl deploy --config fly.toml --app "$APP_NAME" --remote-only
 
       - name: Allocate static egress IP once
         shell: bash
