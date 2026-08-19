@@ -36,7 +36,7 @@ import DLavieAssistantUIV2 from './DLavieAssistantUIV2'
 import DLavieAssistantFastComposer from './DLavieAssistantFastComposer'
 import DLavieAssistantReceiptPolish from './DLavieAssistantReceiptPolish'
 import DLavieAdminSupport from './DLavieAdminSupport'
-import DLavieIAKAdmin from './DLavieIAKAdmin'
+import DLavieH2HAdmin from './DLavieH2HAdmin'
 import RefundCenter from './RefundCenter'
 import DLavieRefundAdminQueue from './DLavieRefundAdminQueue'
 import DLavieOrderEvidenceBridge from './DLavieOrderEvidenceBridge'
@@ -136,7 +136,7 @@ createRoot(document.getElementById('root')!).render(
     <DLavieAssistantFastComposer />
     <DLavieAssistantReceiptPolish />
     <DLavieAdminSupport />
-    <DLavieIAKAdmin />
+    <DLavieH2HAdmin />
     <DLavieRefundAdminQueue />
     <DLavieRadio />
     <App />
