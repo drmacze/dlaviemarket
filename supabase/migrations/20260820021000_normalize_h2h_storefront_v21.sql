@@ -90,7 +90,12 @@ begin
   elsif p <> '' then new.brand := p;
   end if;
 
-  if new.product_kind='prepaid' and (coalesce(new.base_price,0) <= 0 or lower(d) ~ '(^|[^a-z])test([^a-z]|$)') then
+  if new.product_kind='prepaid' and (
+      coalesce(new.base_price,0) <= 0
+      or lower(d) ~ '(^|[^a-z])(test|cek)([^a-z]|$)'
+      or lower(d) like '%bebas nominal%'
+      or (new.product_type in ('paket_data','paket_telp_sms') and lower(d) ~ '^bayar ' and coalesce(new.base_price,0) < 2000)
+    ) then
     new.buyer_product_status := false;
   end if;
   return new;
