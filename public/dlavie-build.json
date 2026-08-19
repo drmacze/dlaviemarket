@@ -11,6 +11,9 @@
     "automatic Telkomsel IM3 XL AXIS Tri and Smartfren prefix detection",
     "detected telco provider automatically scopes the product catalog",
     "numeric mobile keyboards for phone PLN bill and numeric identifier inputs",
+    "E-Wallet phone-number products separated from card-based Kartu E-Money targets",
+    "Flazz BRIZZI TapCash and e-Money Mandiri are not forced through +62 phone formatting",
+    "context-aware numeric or text destination fields across digital product types",
     "final review card before every digital purchase",
     "required user confirmation checkbox for destination product and amount accuracy",
     "required digital transaction policy acknowledgement before submit",
@@ -26,5 +29,5 @@
     "screenshot prevention is not falsely claimed because browsers cannot guarantee it",
     "H2H sandbox remains isolated from HCoin and the real DLavie Wallet"
   ],
-  "note": "v22 adds guarded purchasing and receipt handling: phone intelligence, provider-aware catalog routing, numeric input ergonomics, mandatory final verification and policy consent with server-side evidence, masked sensitive data, and an explicit downloadable/printable receipt center."
+  "note": "v22 adds guarded purchasing and receipt handling: phone intelligence, provider-aware catalog routing, context-aware destination inputs, mandatory final verification and policy consent with server-side evidence, masked sensitive data, and an explicit downloadable/printable receipt center."
 }
