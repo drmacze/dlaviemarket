@@ -1,5 +1,5 @@
 {
-  "release": "digital-market-contributor-rail-v10",
+  "release": "digital-market-contributor-rail-v11",
   "built_for": "2026-08-19",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
@@ -11,10 +11,10 @@
     "digital-market-first Help and Legal centers",
     "unified Activity timeline for digital orders, Wallet and Virtual Number",
     "public documentation synchronized with Digital Market",
+    "resilient contributor rail mounted directly before the main site footer",
     "direct contributor rail mounting before public documentation footer",
-    "global contributor rail for member pages",
     "GitHub, Supabase, Midtrans and Digiflazz integration identities",
     "smooth infinite marquee with reduced-motion support"
   ],
-  "note": "v10 fixes the contributor rail on public/guest documentation by mounting it directly before the documentation footer instead of relying on a React portal."
+  "note": "v11 fixes the missing contributor rail on Beranda and member pages by replacing the fragile React portal anchor with a MutationObserver-backed direct footer bridge."
 }
