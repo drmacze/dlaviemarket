@@ -1,5 +1,5 @@
 {
-  "release": "digital-market-catalog-normalization-v14",
+  "release": "digital-market-admin-digiflazz-visible-v15",
   "built_for": "2026-08-19",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
@@ -16,7 +16,8 @@
     "E-Money inquiry with amount",
     "SAMSAT inquiry with payment code and identity number",
     "automatic Digiflazz category normalization for prepaid and postpaid catalog",
-    "automatic extended-input detection for PBB E-Money and SAMSAT"
+    "automatic extended-input detection for PBB E-Money and SAMSAT",
+    "Digiflazz Control Center kept above the Human Support Console on desktop and iPhone"
   ],
-  "note": "v14 normalizes Digiflazz catalog rows before they reach the Market UI. Live catalog still requires Buyer credentials plus a deployed static-IP gateway and Digiflazz IP whitelist."
+  "note": "v15 fixes the Digiflazz admin control being hidden behind the full-screen Human Support Console. The same admin session is reused; live catalog still requires Buyer credentials plus a deployed static-IP gateway and Digiflazz IP whitelist."
 }
