@@ -10,6 +10,7 @@ import AccountSystem from './AccountSystem'
 import LegacyNokosMarket from './LegacyNokosMarket'
 import DLavieDigitalMarketV22 from './DLavieDigitalMarketV22'
 import DigitalPostpaidPaymentGuard from './DigitalPostpaidPaymentGuard'
+import DigitalManualOperatorFallback from './DigitalManualOperatorFallback'
 import DigitalHomeMarket from './DigitalHomeMarket'
 import OrderCenter from './OrderCenter'
 import DigitalActivityFeed from './DigitalActivityFeed'
@@ -63,6 +64,7 @@ import './digital-market-mobile-v6.css'
 import './digital-market-v21.css'
 import './digital-market-v22.css'
 import './digital-postpaid-payguard-v22.css'
+import './digital-manual-operator-v22.css'
 import './order-center.css'
 import './service-brand-polish.css'
 import './provider-logo-card.css'
@@ -117,6 +119,7 @@ createRoot(document.getElementById('root')!).render(
     <LegacyNokosMarket />
     <DLavieDigitalMarketV22 />
     <DigitalPostpaidPaymentGuard />
+    <DigitalManualOperatorFallback />
     <DigitalHomeMarket />
     <OrderCenter />
     <DigitalActivityFeed />
