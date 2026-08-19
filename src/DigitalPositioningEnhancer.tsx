@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import DLavieContributorRail from './DLavieContributorRail'
+import DLavieContributorGuestBridge from './DLavieContributorGuestBridge'
 import './dlavie-contributor-rail.css'
 
 const replacements:Record<string,string>={
@@ -24,4 +25,4 @@ const replacements:Record<string,string>={
 }
 function docsRoute(){const r=location.hash.replace(/^#\/?/,'').split('?')[0].toLowerCase();return r.startsWith('docs/')||['help','faq','legal','terms','privacy'].includes(r)}
 function apply(){if(!docsRoute())return;const root=document.querySelector<HTMLElement>('.access-experience')||document.body;root.querySelectorAll<HTMLElement>('h1,h2,h3,p,span,strong').forEach(el=>{const t=(el.textContent||'').trim();const next=replacements[t];if(next&&el.children.length===0)el.textContent=next})}
-export default function DigitalPositioningEnhancer(){useEffect(()=>{let raf=0,t=0;const run=()=>{cancelAnimationFrame(raf);clearTimeout(t);raf=requestAnimationFrame(()=>{apply();t=window.setTimeout(apply,180)})};run();window.addEventListener('hashchange',run);return()=>{cancelAnimationFrame(raf);clearTimeout(t);window.removeEventListener('hashchange',run)}},[]);return <DLavieContributorRail/>}
+export default function DigitalPositioningEnhancer(){useEffect(()=>{let raf=0,t=0;const run=()=>{cancelAnimationFrame(raf);clearTimeout(t);raf=requestAnimationFrame(()=>{apply();t=window.setTimeout(apply,180)})};run();window.addEventListener('hashchange',run);return()=>{cancelAnimationFrame(raf);clearTimeout(t);window.removeEventListener('hashchange',run)}},[]);return <><DLavieContributorRail/><DLavieContributorGuestBridge/></>}
