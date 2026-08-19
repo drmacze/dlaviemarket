@@ -7,7 +7,7 @@ import CopyRefinement from './CopyRefinementV2'
 import LanguageSystem from './LanguageSystem'
 import NavUtilityMenu from './NavUtilityMenu'
 import AccountSystem from './AccountSystem'
-import MarketFlow from './MarketFlow'
+import LegacyNokosMarket from './LegacyNokosMarket'
 import DLavieDigitalMarket from './DLavieDigitalMarket'
 import OrderCenter from './OrderCenter'
 import DigitalActivityFeed from './DigitalActivityFeed'
@@ -94,7 +94,7 @@ createRoot(document.getElementById('root')!).render(
     <NavUtilityMenu />
     <AccountSystem />
     <LoginRedirectEnhancer />
-    <MarketFlow />
+    <LegacyNokosMarket />
     <DLavieDigitalMarket />
     <OrderCenter />
     <DigitalActivityFeed />
