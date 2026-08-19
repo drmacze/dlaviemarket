@@ -6,9 +6,9 @@
   "homepage_positioning": "digital-products",
   "provider": "H2H.id",
   "features": [
-    "H2H.id storefront normalized to 8231 currently active safe SKU",
+    "H2H.id storefront normalized to 8155 currently active safe SKU",
     "supplier codes replaced by human-readable product names from H2H keterangan fields",
-    "zero-price checker dynamic helper and TEST SKU excluded from the fixed-price storefront",
+    "checker list username TEST two-stage helper and unsupported dynamic-amount SKU excluded from the fixed-price storefront",
     "hierarchical category to brand or game to product navigation",
     "Voucher and Game separated into dedicated game boxes such as Mobile Legends Free Fire PUBG Mobile Roblox Valorant and more",
     "Paket Data Pulsa E-Wallet Voucher Operator and Streaming separated by provider or service brand",
