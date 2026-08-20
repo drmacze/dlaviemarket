@@ -1,0 +1,213 @@
+/* DLavie v29 — one animated utility orb for Music + AI Support */
+html[data-dlv-utility-orb="1"] .ambient-trigger,
+html[data-dlv-utility-orb="1"] .dlv-assistant-launcher{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+  transform:scale(.82)!important;
+}
+
+.dlv-utility-orb{
+  --orb-size:58px;
+  --orb-step:78px;
+  position:fixed;
+  z-index:54000;
+  right:max(18px,calc(env(safe-area-inset-right) + 12px));
+  bottom:max(104px,calc(env(safe-area-inset-bottom) + 88px));
+  width:var(--orb-size);
+  height:var(--orb-size);
+  color:var(--theme-ink);
+  transition:opacity .24s ease,visibility .24s ease,transform .3s cubic-bezier(.2,.8,.2,1);
+}
+.dlv-utility-orb.is-occupied,
+html[data-market-sheet] .dlv-utility-orb{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+  transform:translateY(12px) scale(.92)!important;
+}
+
+.dlv-orbit-core,.dlv-orbit-item{
+  position:absolute;
+  inset:0;
+  width:var(--orb-size);
+  height:var(--orb-size);
+  padding:0;
+  border:1px solid var(--theme-line-strong);
+  border-radius:19px;
+  color:var(--theme-ink);
+  background:color-mix(in srgb,var(--theme-panel-solid),transparent 3%);
+  box-shadow:0 18px 48px var(--theme-shadow);
+  backdrop-filter:blur(22px) saturate(115%);
+  -webkit-backdrop-filter:blur(22px) saturate(115%);
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.dlv-orbit-core{
+  z-index:5;
+  overflow:visible;
+  display:grid;
+  place-items:center;
+  border-color:color-mix(in srgb,var(--accent),var(--theme-line-strong) 74%);
+  background:
+    radial-gradient(circle at 30% 25%,color-mix(in srgb,var(--accent),transparent 78%),transparent 42%),
+    color-mix(in srgb,var(--theme-panel-solid),transparent 2%);
+  box-shadow:0 18px 50px var(--theme-shadow),0 0 0 1px color-mix(in srgb,var(--accent),transparent 91%) inset;
+  transition:transform .32s cubic-bezier(.2,.8,.2,1),border-color .24s ease,box-shadow .24s ease;
+}
+.dlv-orbit-core:active{transform:scale(.94)}
+.dlv-utility-orb.is-expanded .dlv-orbit-core{
+  transform:rotate(45deg) scale(.92);
+  border-color:color-mix(in srgb,var(--accent),transparent 42%);
+}
+.dlv-orbit-halo{
+  position:absolute;
+  inset:-7px;
+  border:1px solid color-mix(in srgb,var(--accent),transparent 76%);
+  border-radius:24px;
+  opacity:.58;
+  pointer-events:none;
+}
+.dlv-orbit-core[data-music="on"] .dlv-orbit-halo{
+  animation:dlvOrbitPulse 1.45s ease-in-out infinite;
+  box-shadow:0 0 28px color-mix(in srgb,var(--accent),transparent 70%);
+}
+@keyframes dlvOrbitPulse{50%{transform:scale(1.08);opacity:.2}}
+.dlv-orbit-mark{
+  width:30px;height:30px;
+  display:grid;place-items:center;
+  grid-template-columns:repeat(3,4px);
+  gap:3px;
+  border-radius:10px;
+  background:color-mix(in srgb,var(--accent),transparent 90%);
+  color:var(--accent);
+  transition:transform .35s cubic-bezier(.2,.8,.2,1);
+}
+.dlv-orbit-mark i{width:4px;height:13px;border-radius:999px;background:currentColor;display:block;transform-origin:50% 100%}
+.dlv-orbit-mark i:nth-child(1){height:8px}.dlv-orbit-mark i:nth-child(2){height:15px}.dlv-orbit-mark i:nth-child(3){height:10px}
+.dlv-orbit-core[data-music="on"] .dlv-orbit-mark i:nth-child(1){animation:dlvOrbEq .72s ease-in-out infinite alternate}
+.dlv-orbit-core[data-music="on"] .dlv-orbit-mark i:nth-child(2){animation:dlvOrbEq .48s ease-in-out .12s infinite alternate}
+.dlv-orbit-core[data-music="on"] .dlv-orbit-mark i:nth-child(3){animation:dlvOrbEq .86s ease-in-out .22s infinite alternate}
+@keyframes dlvOrbEq{to{transform:scaleY(.48);opacity:.65}}
+.dlv-orbit-core-label{
+  position:absolute;
+  right:calc(100% + 10px);
+  padding:6px 9px;
+  border:1px solid var(--theme-line);
+  border-radius:999px;
+  background:color-mix(in srgb,var(--theme-panel-solid),transparent 4%);
+  color:var(--theme-muted);
+  font-size:7px;
+  font-weight:850;
+  letter-spacing:.08em;
+  opacity:0;
+  transform:translateX(5px);
+  pointer-events:none;
+  transition:opacity .2s ease,transform .2s ease;
+}
+.dlv-orbit-core:hover .dlv-orbit-core-label{opacity:1;transform:none}
+
+.dlv-orbit-item{
+  z-index:2;
+  display:grid;
+  place-items:center;
+  opacity:0;
+  visibility:hidden;
+  transform:translate3d(0,0,0) scale(.34) rotate(-18deg);
+  transition:
+    transform .38s cubic-bezier(.18,.88,.24,1.12),
+    opacity .2s ease,
+    visibility .2s ease,
+    border-color .2s ease,
+    background .2s ease;
+}
+.dlv-orbit-item svg{width:21px;height:21px;transition:transform .22s ease}
+.dlv-orbit-item>span{
+  position:absolute;
+  right:calc(100% + 9px);
+  min-width:max-content;
+  padding:6px 9px;
+  border:1px solid var(--theme-line);
+  border-radius:999px;
+  background:color-mix(in srgb,var(--theme-panel-solid),transparent 3%);
+  color:var(--theme-muted);
+  box-shadow:0 10px 26px var(--theme-shadow);
+  font-size:7px;
+  font-weight:800;
+  letter-spacing:.035em;
+  opacity:0;
+  transform:translateX(5px);
+  transition:opacity .18s ease .18s,transform .18s ease .18s;
+}
+.dlv-utility-orb.is-expanded .dlv-orbit-item{
+  opacity:1;
+  visibility:visible;
+}
+.dlv-utility-orb.is-expanded .dlv-orbit-item>span{opacity:1;transform:none}
+.dlv-utility-orb.is-expanded .dlv-orbit-item.is-music{
+  transform:translate3d(0,calc(var(--orb-step) * -1),0) scale(1) rotate(0deg);
+  transition-delay:.02s;
+}
+.dlv-utility-orb.is-expanded .dlv-orbit-item.is-help{
+  transform:translate3d(0,var(--orb-step),0) scale(1) rotate(0deg);
+  transition-delay:.08s;
+}
+.dlv-utility-orb.is-expanded .dlv-orbit-item.is-close{
+  transform:translate3d(calc(var(--orb-step) * -1),0,0) scale(.88) rotate(0deg);
+  transition-delay:.05s;
+}
+.dlv-orbit-item:hover,.dlv-orbit-item:focus-visible{
+  border-color:color-mix(in srgb,var(--accent),transparent 48%);
+  background:color-mix(in srgb,var(--accent),var(--theme-panel-solid) 93%);
+}
+.dlv-orbit-item:hover svg{transform:scale(1.08)}
+.dlv-orbit-item.is-music{color:var(--accent)}
+.dlv-orbit-item.is-help{color:var(--theme-ink)}
+.dlv-orbit-item.is-close{color:var(--theme-muted)}
+.dlv-orbit-live{
+  position:absolute;
+  right:7px;top:7px;
+  width:7px;height:7px;
+  border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--accent),transparent 85%),0 0 14px var(--accent);
+}
+.dlv-orbit-unread{
+  position:absolute;
+  right:-3px;top:-3px;
+  min-width:19px;height:19px;padding:0 5px;
+  display:grid;place-items:center;
+  border:2px solid var(--theme-bg);
+  border-radius:999px;
+  background:var(--accent);
+  color:var(--accent-contrast,#fff);
+  font-size:7px;
+  font-weight:900;
+  line-height:1;
+}
+
+:root[data-theme="light"] .dlv-orbit-core,
+:root[data-theme="light"] .dlv-orbit-item,
+:root[data-theme="light"] .dlv-orbit-item>span,
+:root[data-theme="light"] .dlv-orbit-core-label{
+  background:rgba(255,255,255,.94);
+  box-shadow:0 16px 42px rgba(18,24,21,.12);
+}
+
+@media(max-width:700px){
+  .dlv-utility-orb{
+    --orb-size:54px;
+    --orb-step:72px;
+    right:16px;
+    bottom:max(106px,calc(env(safe-area-inset-bottom) + 88px));
+  }
+  .dlv-orbit-core,.dlv-orbit-item{border-radius:18px}
+  .dlv-orbit-mark{width:28px;height:28px}
+  .dlv-orbit-item>span{font-size:6.5px;padding:5px 8px}
+}
+@media(max-width:380px){
+  .dlv-utility-orb{--orb-step:66px;right:13px}
+}
+@media(prefers-reduced-motion:reduce){
+  .dlv-orbit-core,.dlv-orbit-item,.dlv-orbit-item>span,.dlv-orbit-halo,.dlv-orbit-mark i{animation:none!important;transition:none!important}
+}
