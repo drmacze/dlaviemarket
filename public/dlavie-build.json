@@ -1,5 +1,5 @@
 {
-  "release": "dlavie-professional-home-market-polish-v25",
+  "release": "dlavie-theme-coherence-v26",
   "built_for": "2026-08-20",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
@@ -7,15 +7,16 @@
   "provider": "H2H.id",
   "features": [
     "8155 safe fixed-price H2H storefront SKU retained",
-    "homepage promotional carousel no longer depends on external sprite artwork and always renders native theme-aware campaign visuals",
-    "banner copy rewritten into concise product language for business, discovery, transaction confidence, Voucher & Game and Paket Data contexts",
-    "homepage hero scale and spacing reduced so the promotional carousel and primary market message do not compete for the entire mobile viewport",
-    "Market mobile content receives a safe top offset so title and controls no longer render underneath the sticky navigation",
-    "category cards use calmer neutral surfaces with accent reserved for active and interactive states instead of green glow on every card",
-    "mobile category hierarchy, typography, spacing and icon proportions have been tightened for faster scanning",
-    "two-column Market category layout remains available while cards use more consistent height and information density",
-    "slider retains autoplay, touch swipe, arrows and dots and continues following the user's custom accent theme",
-    "existing v23 auto/manual telco discovery, checkout consent, receipt privacy and H2H sandbox behavior remain unchanged"
+    "Market colors now inherit DLavie theme tokens instead of hard-coded dark surfaces",
+    "Light mode uses coherent white and soft-neutral surfaces for hero, category cards, operator cards, search, controls and sandbox status",
+    "light-mode typography, product counts, muted copy and disabled service states have restored readable contrast",
+    "Bayar Tagihan disabled state is styled as intentionally unavailable instead of appearing visually broken",
+    "homepage and contextual banner sliders now inherit theme surfaces, ink, accent, controls and shadows in both light and dark modes",
+    "mobile Market receives stronger sticky-navigation clearance so headings do not render beneath the top navigation",
+    "mobile category cards are shorter and denser to remove unnecessary empty vertical space",
+    "homepage slider and original hero are reduced further on mobile to improve information density",
+    "DLavie Assistant launcher receives a light-mode surface and smaller mobile footprint",
+    "existing v23 automatic/manual telco discovery, checkout consent, receipt privacy and H2H sandbox behavior remain unchanged"
   ],
-  "note": "v25 addresses the visible homepage and Market presentation issues from the iPhone screenshots: blank-looking banner artwork, oversized competing hero sections, navigation overlap and overly glowing category cards."
+  "note": "v26 fixes the mixed dark/light visual system visible in the iPhone screenshots and makes Market components consistently inherit the selected DLavie theme."
 }
