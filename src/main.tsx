@@ -110,6 +110,7 @@ import './professional-polish-v25.css'
 import './theme-market-coherence-v26.css'
 import './banner-logo-polish-v27.css'
 import './transaction-banner-polish-v28.css'
+import './receipt-action-dock-v28.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
