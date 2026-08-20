@@ -1,0 +1,55 @@
+/* DLavie provider admin dock v33 — keep provider controls visible and non-overlapping. */
+.dlv-admin-shell ~ .dlv-h2h-admin,
+.dlv-admin-shell ~ .dlv-vip-admin{z-index:13020}
+.dlv-admin-shell ~ .dlv-h2h-admin>aside,
+.dlv-admin-shell ~ .dlv-vip-admin>aside{z-index:13040}
+
+.dlv-vip-admin .dlv-digi-admin-toggle{
+  border-color:color-mix(in srgb,#f0b84b 44%,var(--theme-line-strong));
+}
+.dlv-vip-admin .dlv-digi-admin-toggle b{
+  background:rgba(240,184,75,.12);
+  color:#efbb57;
+}
+.dlv-vip-admin>aside>header span{color:#efbb57}
+.dlv-vip-admin .dlv-digi-health>i.is-on{
+  background:#efbb57;
+  box-shadow:0 0 0 4px rgba(239,187,87,.09),0 0 14px rgba(239,187,87,.25);
+}
+
+@media(max-width:680px){
+  .dlv-admin-shell ~ .dlv-h2h-admin{
+    top:calc(72px + env(safe-area-inset-top));
+    right:150px;
+    bottom:auto;
+  }
+  .dlv-admin-shell ~ .dlv-vip-admin{
+    top:calc(72px + env(safe-area-inset-top));
+    right:228px;
+    bottom:auto;
+  }
+  .dlv-admin-shell ~ .dlv-h2h-admin .dlv-digi-admin-toggle,
+  .dlv-admin-shell ~ .dlv-vip-admin .dlv-digi-admin-toggle{
+    min-width:70px;
+    min-height:36px;
+    padding:0 10px;
+    background:#111413;
+    color:#f4f5f3;
+    box-shadow:0 12px 34px rgba(0,0,0,.32);
+  }
+  .dlv-admin-shell ~ .dlv-vip-admin .dlv-digi-admin-toggle{
+    border-color:rgba(239,187,87,.38);
+  }
+  .dlv-admin-shell ~ .dlv-vip-admin>aside,
+  .dlv-admin-shell ~ .dlv-h2h-admin>aside{
+    inset:0;
+    width:100%;
+    max-width:none;
+  }
+}
+
+@media(min-width:681px){
+  .dlv-admin-shell ~ .dlv-h2h-admin{right:18px;bottom:18px}
+  .dlv-admin-shell ~ .dlv-vip-admin{right:102px;bottom:18px}
+  .dlv-vip-admin>aside{width:min(500px,100%)}
+}
