@@ -1,0 +1,84 @@
+/* DLavie v27 — sticky-safe banner placement + official-domain logo treatment */
+:root{--dlv-nav-clearance:76px}
+
+/* Home banner is now mounted between header and main. Keep a real clearance from
+   the fixed/sticky site navigation instead of relying on z-index. */
+.dlv-promo-home-host{
+  position:relative!important;
+  z-index:12!important;
+  width:min(1180px,calc(100% - 32px))!important;
+  margin:calc(var(--dlv-nav-clearance) + 14px) auto 24px!important;
+  padding:0!important;
+}
+.dlv-promo-home-host[hidden],.dlv-promo-market-host[hidden]{display:none!important}
+.dlv-promo-home-host .dlv25-banner,.dlv-promo-market-host .dlv25-banner{position:relative;z-index:1}
+.dlv-promo-home-host .dlv-promo-viewport,.dlv-promo-market-host .dlv-promo-viewport{isolation:isolate}
+.dlv-promo-home-host .dlv-promo-arrow,.dlv-promo-market-host .dlv-promo-arrow,
+.dlv-promo-home-host .dlv-promo-dots,.dlv-promo-market-host .dlv-promo-dots{z-index:5!important}
+
+/* The market itself also clears the same measured nav height. */
+.dlv21-market{padding-top:calc(var(--dlv-nav-clearance) + 22px)!important}
+
+/* Official-domain marks: preserve original brand colors and silhouette. */
+.dlv-brand-icon.is-official{
+  position:relative;
+  overflow:hidden;
+  display:grid!important;
+  place-items:center!important;
+  background:#fff!important;
+  border:1px solid rgba(0,0,0,.08)!important;
+  box-shadow:0 7px 20px rgba(0,0,0,.16)!important;
+  color:#111!important;
+}
+.dlv-brand-icon.is-official img{
+  display:block!important;
+  width:76%!important;
+  height:76%!important;
+  max-width:76%!important;
+  max-height:76%!important;
+  object-fit:contain!important;
+  filter:none!important;
+  mix-blend-mode:normal!important;
+}
+.dlv-brand-icon.is-fallback{
+  background:var(--theme-soft)!important;
+  border:1px solid var(--theme-line)!important;
+  color:var(--theme-muted)!important;
+  box-shadow:none!important;
+}
+.dlv-brand-icon.is-fallback .dlv-category-symbol{
+  width:58%!important;
+  height:58%!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+
+/* Main brand hubs get a stronger official mark; product rows stay compact. */
+.dlv21-brand-grid .dlv-brand-icon.is-official,
+.dlv23-operator-grid .dlv-brand-icon.is-official,
+.dlv23-detect-state .dlv-brand-icon.is-official{border-radius:14px!important}
+.dlv21-product-grid .dlv-brand-icon.is-official,
+.dlv21-sheet-brand .dlv-brand-icon.is-official,
+.dlv21-receipt-product .dlv-brand-icon.is-official{border-radius:12px!important}
+
+:root[data-theme="light"] .dlv-brand-icon.is-official{
+  background:#fff!important;
+  border-color:rgba(0,0,0,.09)!important;
+  box-shadow:0 7px 18px rgba(18,24,21,.08)!important;
+}
+:root[data-theme="dark"] .dlv-brand-icon.is-official{
+  background:#fff!important;
+  border-color:rgba(255,255,255,.12)!important;
+}
+
+@media(max-width:700px){
+  .dlv-promo-home-host{
+    width:calc(100% - 24px)!important;
+    margin:calc(var(--dlv-nav-clearance) + 10px) auto 18px!important;
+  }
+  .dlv21-market{padding-top:calc(var(--dlv-nav-clearance) + 18px)!important}
+  .dlv-promo-market-host{margin-top:6px!important;margin-bottom:16px!important}
+  .dlv21-brand-grid .dlv-brand-icon.is-official img,
+  .dlv23-operator-grid .dlv-brand-icon.is-official img{width:78%!important;height:78%!important}
+}
