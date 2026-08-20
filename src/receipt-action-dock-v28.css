@@ -1,0 +1,12 @@
+/* DLavie v28 — keep receipt export actions reachable without covering the document. */
+.dlv28-receipt-actions{
+  position:sticky!important;
+  z-index:6!important;
+  bottom:-1px!important;
+  padding:10px 0 2px!important;
+  background:linear-gradient(180deg,transparent 0,var(--theme-panel-solid) 28%,var(--theme-panel-solid) 100%)!important;
+}
+@media(max-width:700px){
+  .dlv28-receipt-actions{padding-top:12px!important;padding-bottom:max(2px,env(safe-area-inset-bottom))!important}
+}
+@media print{.dlv28-receipt-actions{display:none!important}}
