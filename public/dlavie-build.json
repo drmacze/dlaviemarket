@@ -1,5 +1,5 @@
 {
-  "release": "dlavie-theme-coherence-v26",
+  "release": "dlavie-banner-official-logo-polish-v27",
   "built_for": "2026-08-20",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
@@ -7,16 +7,15 @@
   "provider": "H2H.id",
   "features": [
     "8155 safe fixed-price H2H storefront SKU retained",
-    "Market colors now inherit DLavie theme tokens instead of hard-coded dark surfaces",
-    "Light mode uses coherent white and soft-neutral surfaces for hero, category cards, operator cards, search, controls and sandbox status",
-    "light-mode typography, product counts, muted copy and disabled service states have restored readable contrast",
-    "Bayar Tagihan disabled state is styled as intentionally unavailable instead of appearing visually broken",
-    "homepage and contextual banner sliders now inherit theme surfaces, ink, accent, controls and shadows in both light and dark modes",
-    "mobile Market receives stronger sticky-navigation clearance so headings do not render beneath the top navigation",
-    "mobile category cards are shorter and denser to remove unnecessary empty vertical space",
-    "homepage slider and original hero are reduced further on mobile to improve information density",
-    "DLavie Assistant launcher receives a light-mode surface and smaller mobile footprint",
-    "existing v23 automatic/manual telco discovery, checkout consent, receipt privacy and H2H sandbox behavior remain unchanged"
+    "homepage promotional banner is mounted between the real site header and main content instead of inside the hero stack",
+    "banner and Market top clearance are derived from the measured site navigation height through --dlv-nav-clearance",
+    "contextual Market banners keep safe stacking and spacing below sticky navigation",
+    "official-domain logo coverage expanded for Indonesian operators, wallets, e-money cards, major games, streaming brands and verified active catalog brands",
+    "verified mappings include Maxim, KasPro, Point Blank, UniPin, Razer Gold, Wuthering Waves, Punishing Gray Raven, Undawn and other high-use catalog brands",
+    "official-domain logos preserve original brand colors on a neutral white mark surface in dark and light themes",
+    "logo renderer retries the official domain favicon before using a neutral category fallback",
+    "unverified niche brands deliberately retain a neutral fallback instead of showing a fabricated or unrelated logo",
+    "existing v23 automatic/manual telco discovery, consent, private receipt and H2H sandbox behavior remain unchanged"
   ],
-  "note": "v26 fixes the mixed dark/light visual system visible in the iPhone screenshots and makes Market components consistently inherit the selected DLavie theme."
+  "note": "v27 fixes banner overlap using real measured navigation clearance and expands conservative official-domain logo coverage without inventing logos for unverified niche brands."
 }
