@@ -12,6 +12,7 @@ import DLavieDigitalMarketV23 from './DLavieDigitalMarketV23'
 import DigitalPostpaidPaymentGuard from './DigitalPostpaidPaymentGuard'
 import DigitalHomeMarket from './DigitalHomeMarket'
 import DLaviePromoBanners from './DLaviePromoBanners'
+import DLavieFeedback from './DLavieFeedback'
 import OrderCenter from './OrderCenter'
 import DigitalActivityFeed from './DigitalActivityFeed'
 import DigitalActivityPageSync from './DigitalActivityPageSync'
@@ -130,6 +131,7 @@ createRoot(document.getElementById('root')!).render(
     <DigitalPostpaidPaymentGuard />
     <DigitalHomeMarket />
     <DLaviePromoBanners />
+    <DLavieFeedback />
     <OrderCenter />
     <DigitalActivityFeed />
     <DigitalActivityPageSync />
