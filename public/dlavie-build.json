@@ -1,16 +1,18 @@
 {
-  "release": "official-brand-logo-refresh-v32",
+  "release": "vipayment-multi-provider-v33",
   "built_for": "2026-08-20",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
   "homepage_positioning": "digital-products",
-  "provider": "H2H.id",
+  "provider": "H2H.id + VIPayment",
   "features": [
-    "brand icons now prioritize assets directly from each verified official brand domain before using secondary favicon resolution",
-    "official-domain fallback chain covers Apple touch icons, high-resolution favicons, favicon PNG/ICO and Google favicon resolution",
-    "additional verified mappings include Midtrans, Digiflazz, H2H.id, GoPay, DANA, OVO, ShopeePay, LinkAja, Gojek and other marketplace brands",
-    "Contributor Credits uses the same resilient official-domain logo fallback strategy so generic globe icons are avoided whenever a real brand mark is available",
-    "existing feedback, Utility Orb, receipt, transaction and catalog improvements remain active"
+    "VIPayment added as a server-side prepaid product provider with API credentials stored in Supabase Vault",
+    "VIPayment admin control supports credential setup, account/balance test, markup settings, production opt-in and catalog synchronization",
+    "Digital Market now reads from a multi-provider gateway that merges active H2H.id and VIPayment catalog summaries and products",
+    "VIPayment SKUs are internally namespaced to prevent collisions while keeping supplier routing invisible to customers",
+    "prepaid purchases are automatically routed to the provider that owns the selected SKU; postpaid remains on H2H.id",
+    "VIPayment supports DLavie sandbox simulation before production mode is enabled",
+    "existing official logos, feedback, Utility Orb, receipts and transaction confirmation safeguards remain active"
   ],
-  "note": "v32 refreshes brand identity rendering across the market and Contributor Credits, preferring verified official-domain assets and only falling back to neutral category marks after all valid brand sources fail."
+  "note": "v33 introduces VIPayment as an additional prepaid supplier without replacing H2H.id. Production VIPayment transactions remain opt-in and require valid credentials, catalog sync and sufficient provider balance."
 }
