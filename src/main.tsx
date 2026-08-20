@@ -42,6 +42,7 @@ import DLavieAssistantFastComposer from './DLavieAssistantFastComposer'
 import DLavieAssistantReceiptPolish from './DLavieAssistantReceiptPolish'
 import DLavieAdminSupport from './DLavieAdminSupport'
 import DLavieH2HAdmin from './DLavieH2HAdmin'
+import DLavieVIPaymentAdmin from './DLavieVIPaymentAdmin'
 import RefundCenter from './RefundCenter'
 import DLavieRefundAdminQueue from './DLavieRefundAdminQueue'
 import DLavieOrderEvidenceBridge from './DLavieOrderEvidenceBridge'
@@ -101,6 +102,7 @@ import './dlavie-admin-support.css'
 import './digiflazz-admin.css'
 import './digiflazz-admin-console-v15.css'
 import './h2h-admin-ui-v18.css'
+import './provider-admin-dock-v33.css'
 import './refund-center.css'
 import './refund-admin-queue.css'
 import './refund-investigation-v2.css'
@@ -158,6 +160,7 @@ createRoot(document.getElementById('root')!).render(
     <DLavieAssistantReceiptPolish />
     <DLavieAdminSupport />
     <DLavieH2HAdmin />
+    <DLavieVIPaymentAdmin />
     <DLavieRefundAdminQueue />
     <DLavieFeedbackAdmin />
     <DLavieRadio />
