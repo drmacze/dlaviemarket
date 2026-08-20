@@ -1,5 +1,5 @@
 {
-  "release": "digital-market-theme-aware-slider-banners-v24",
+  "release": "digital-market-theme-aware-slider-banners-v24.1",
   "built_for": "2026-08-20",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
@@ -8,20 +8,15 @@
   "features": [
     "8155 safe fixed-price H2H storefront SKU retained",
     "Pulsa and Paket Data retain equal Automatic and Manual discovery modes",
-    "homepage Digital Market now includes a three-campaign professional DLavie slider",
-    "homepage campaigns cover DLavie business positioning, digital promotions and purchase workflow",
-    "Voucher & Game category receives contextual Free Fire, Mobile Legends and Game Hub promotional banners",
-    "Paket Data category receives contextual operator and daily-usage promotional banners",
-    "banner carousel advances automatically every 6.5 seconds and supports arrows, dots and direct touch swipe",
-    "carousel pauses on hover, focus and hidden tabs while reduced-motion users do not receive autoplay",
-    "banner chrome, borders, controls and mobile captions follow the user's custom theme accent",
-    "optimized WebP sprite atlases reduce the number and weight of banner requests on mobile",
-    "mobile banner captions preserve readable titles and real clickable actions below image artwork",
-    "automatic phone flow still detects Telkomsel IM3 XL AXIS Tri and Smartfren from Indonesian prefixes",
-    "manual operator browsing, provider mismatch guard, final purchase review and policy consent remain active",
-    "masked sensitive transaction result and explicit private Receipt flow remain active",
-    "receipt PNG download and print or Save PDF remain active",
-    "H2H sandbox remains isolated from HCoin and the real DLavie Wallet"
+    "homepage slider host now mounts directly into main#top before the hero instead of relying on the catalog DOM enhancer",
+    "Voucher & Game and Paket Data sliders now discover the visible Market v23 breadcrumb and shell without the obsolete dlv21-catalog selector",
+    "category route query is used as a fallback signal for contextual market banners",
+    "homepage Digital Market includes business, promotion and purchase-workflow campaigns",
+    "Voucher & Game includes Free Fire, Mobile Legends and Game Hub campaigns",
+    "Paket Data includes operator and daily-usage campaigns",
+    "banner carousel advances automatically every 6.5 seconds and supports arrows, dots and touch swipe",
+    "banner chrome and mobile captions follow the user's custom theme accent",
+    "optimized WebP sprite atlases remain active"
   ],
-  "note": "v24 adds DLavie's theme-aware promotional slider system to the homepage and high-intent market categories while keeping the v23 checkout, operator discovery, consent and receipt protections intact."
+  "note": "v24.1 fixes the banner mounting selectors so the already bundled banner system is actually visible on the current DLavie homepage and Market v23 structure."
 }
