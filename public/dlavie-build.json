@@ -1,18 +1,16 @@
 {
-  "release": "dlavie-server-feedback-insights-v31",
+  "release": "official-brand-logo-refresh-v32",
   "built_for": "2026-08-20",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
   "homepage_positioning": "digital-products",
   "provider": "H2H.id",
   "features": [
-    "logged-in homepage users receive a polished 1-5 star feedback experience with optional topic and written feedback",
-    "feedback is now submitted to a server-side Supabase endpoint instead of relying on browser-local storage as the data source",
-    "server validates ratings, topics and message length and rate-limits repeated submissions from the same DLavie user ID",
-    "feedback database is RLS-enabled and browser database roles have no direct table access",
-    "feedback storage excludes email, password, OTP, IP address and payment information",
-    "support-admin mode now includes Feedback Insights with average rating, rating distribution, topic breakdown, low-rating count and recent comments",
-    "existing public ecosystem credits, Utility Orb, receipt, transaction and catalog improvements remain active"
+    "brand icons now prioritize assets directly from each verified official brand domain before using secondary favicon resolution",
+    "official-domain fallback chain covers Apple touch icons, high-resolution favicons, favicon PNG/ICO and Google favicon resolution",
+    "additional verified mappings include Midtrans, Digiflazz, H2H.id, GoPay, DANA, OVO, ShopeePay, LinkAja, Gojek and other marketplace brands",
+    "Contributor Credits uses the same resilient official-domain logo fallback strategy so generic globe icons are avoided whenever a real brand mark is available",
+    "existing feedback, Utility Orb, receipt, transaction and catalog improvements remain active"
   ],
-  "note": "v31 turns the feedback popup into an actionable server-backed product feedback loop with admin analytics."
+  "note": "v32 refreshes brand identity rendering across the market and Contributor Credits, preferring verified official-domain assets and only falling back to neutral category marks after all valid brand sources fail."
 }
