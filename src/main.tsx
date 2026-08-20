@@ -108,6 +108,7 @@ import './digital-context-sync-v7.css'
 import './digital-guest-doc-v8.css'
 import './professional-polish-v25.css'
 import './theme-market-coherence-v26.css'
+import './banner-logo-polish-v27.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
