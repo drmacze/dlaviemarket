@@ -1,5 +1,5 @@
 {
-  "release": "digital-market-theme-aware-slider-banners-v24.1",
+  "release": "dlavie-professional-home-market-polish-v25",
   "built_for": "2026-08-20",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
@@ -7,16 +7,15 @@
   "provider": "H2H.id",
   "features": [
     "8155 safe fixed-price H2H storefront SKU retained",
-    "Pulsa and Paket Data retain equal Automatic and Manual discovery modes",
-    "homepage slider host now mounts directly into main#top before the hero instead of relying on the catalog DOM enhancer",
-    "Voucher & Game and Paket Data sliders now discover the visible Market v23 breadcrumb and shell without the obsolete dlv21-catalog selector",
-    "category route query is used as a fallback signal for contextual market banners",
-    "homepage Digital Market includes business, promotion and purchase-workflow campaigns",
-    "Voucher & Game includes Free Fire, Mobile Legends and Game Hub campaigns",
-    "Paket Data includes operator and daily-usage campaigns",
-    "banner carousel advances automatically every 6.5 seconds and supports arrows, dots and touch swipe",
-    "banner chrome and mobile captions follow the user's custom theme accent",
-    "optimized WebP sprite atlases remain active"
+    "homepage promotional carousel no longer depends on external sprite artwork and always renders native theme-aware campaign visuals",
+    "banner copy rewritten into concise product language for business, discovery, transaction confidence, Voucher & Game and Paket Data contexts",
+    "homepage hero scale and spacing reduced so the promotional carousel and primary market message do not compete for the entire mobile viewport",
+    "Market mobile content receives a safe top offset so title and controls no longer render underneath the sticky navigation",
+    "category cards use calmer neutral surfaces with accent reserved for active and interactive states instead of green glow on every card",
+    "mobile category hierarchy, typography, spacing and icon proportions have been tightened for faster scanning",
+    "two-column Market category layout remains available while cards use more consistent height and information density",
+    "slider retains autoplay, touch swipe, arrows and dots and continues following the user's custom accent theme",
+    "existing v23 auto/manual telco discovery, checkout consent, receipt privacy and H2H sandbox behavior remain unchanged"
   ],
-  "note": "v24.1 fixes the banner mounting selectors so the already bundled banner system is actually visible on the current DLavie homepage and Market v23 structure."
+  "note": "v25 addresses the visible homepage and Market presentation issues from the iPhone screenshots: blank-looking banner artwork, oversized competing hero sections, navigation overlap and overly glowing category cards."
 }
