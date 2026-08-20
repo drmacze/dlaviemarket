@@ -1,0 +1,218 @@
+/* DLavie v26 — coherent light/dark market system + mobile density */
+
+/* Shared market tokens: stop older market layers from owning the theme. */
+.dlv21-market{
+  --v21-bg:var(--theme-bg)!important;
+  --v21-card:var(--theme-panel-solid)!important;
+  --v21-card2:color-mix(in srgb,var(--theme-panel-solid),var(--theme-ink) 2%)!important;
+  --v21-line:var(--theme-line)!important;
+  --v21-text:var(--theme-ink)!important;
+  --v21-muted:var(--theme-muted)!important;
+  --v21-green:var(--accent)!important;
+  color:var(--theme-ink)!important;
+  background:transparent!important;
+}
+.dlv21-market :is(h1,h2,h3,strong,b){color:var(--theme-ink)}
+.dlv21-market :is(p,small,em){color:var(--theme-muted)}
+
+/* Stable surfaces in both themes. */
+.dlv21-hero,
+.dlv21-kind>button,
+.dlv21-category-grid>button,
+.dlv21-brand-grid>button,
+.dlv21-product-grid>button,
+.dlv21-status,
+.dlv21-view,
+.dlv21-search input,
+.dlv21-product-tools input,
+.dlv21-product-tools>button,
+.dlv21-breadcrumb button,
+.dlv23-auto-card,
+.dlv23-manual-card,
+.dlv23-mode-switch,
+.dlv23-operator-grid>button,
+.dlv23-recipient-strip{
+  border-color:var(--theme-line)!important;
+  color:var(--theme-ink)!important;
+  box-shadow:none!important;
+}
+.dlv21-kind>button,
+.dlv21-category-grid>button,
+.dlv21-brand-grid>button,
+.dlv21-product-grid>button,
+.dlv21-status,
+.dlv21-view,
+.dlv21-search input,
+.dlv21-product-tools input,
+.dlv21-product-tools>button,
+.dlv21-breadcrumb button,
+.dlv23-mode-switch,
+.dlv23-operator-grid>button{
+  background:color-mix(in srgb,var(--theme-panel-solid),var(--theme-ink) 1.5%)!important;
+}
+.dlv21-category-grid>button:before{opacity:.16!important}
+.dlv21-category-grid>button:hover,.dlv21-category-grid>button:active,
+.dlv21-brand-grid>button:hover,.dlv21-brand-grid>button:active,
+.dlv23-operator-grid>button:hover{
+  border-color:color-mix(in srgb,var(--accent),transparent 56%)!important;
+  background:color-mix(in srgb,var(--accent),var(--theme-panel-solid) 94%)!important;
+}
+.dlv21-kind>button.is-active,
+.dlv21-view button.is-active,
+.dlv23-mode-switch button.is-active{
+  border-color:color-mix(in srgb,var(--accent),transparent 58%)!important;
+  background:color-mix(in srgb,var(--accent),var(--theme-panel-solid) 91%)!important;
+  color:var(--theme-ink)!important;
+}
+.dlv21-category-grid small,.dlv21-brand-grid small,.dlv21-kind small,
+.dlv23-mode-switch small,.dlv23-operator-grid small{color:var(--theme-muted)!important}
+.dlv21-category-grid em,.dlv21-category-grid>button>strong,.dlv21-brand-grid>button>strong{color:color-mix(in srgb,var(--accent),var(--theme-muted) 42%)!important}
+.dlv21-view button{color:var(--theme-muted)!important}.dlv21-view button.is-active{color:var(--accent)!important}
+
+/* Disabled service is still legible; it should read as unavailable, not broken. */
+.dlv21-kind>button:disabled{
+  opacity:1!important;
+  background:var(--theme-soft)!important;
+  border-style:dashed!important;
+}
+.dlv21-kind>button:disabled b{color:var(--theme-muted)!important}
+.dlv21-kind>button:disabled small{color:var(--theme-muted-2)!important}
+.dlv21-kind>button:disabled .dlv-category-symbol{filter:saturate(.55);opacity:.72}
+
+/* Sandbox/readiness rows. */
+.dlv21-status{background:var(--theme-panel-solid)!important}
+.dlv21-sandbox-inline{
+  border-color:color-mix(in srgb,var(--accent),transparent 72%)!important;
+  background:color-mix(in srgb,var(--accent),var(--theme-panel-solid) 94%)!important;
+  color:var(--theme-ink)!important;
+}
+.dlv21-sandbox-inline b{color:var(--accent)!important}
+.dlv21-sandbox-inline span{color:var(--theme-muted)!important}
+
+/* Banner uses the same design tokens, including light mode. */
+.dlv25-banner{--bnr-line:color-mix(in srgb,var(--accent),var(--theme-line) 62%);--bnr-panel:var(--theme-panel-solid)!important}
+.dlv25-banner .dlv-promo-viewport{
+  background:var(--theme-panel-solid)!important;
+  border-color:var(--bnr-line)!important;
+  box-shadow:0 18px 52px var(--theme-shadow)!important;
+}
+.dlv25-banner-card{
+  color:var(--theme-ink)!important;
+  background:
+    radial-gradient(circle at 83% 20%,color-mix(in srgb,var(--accent),transparent 84%),transparent 31%),
+    linear-gradient(135deg,var(--theme-panel-solid),color-mix(in srgb,var(--theme-panel-solid),var(--theme-ink) 2.5%))!important;
+}
+.dlv25-banner-copy small{color:color-mix(in srgb,var(--accent),var(--theme-ink) 18%)!important}
+.dlv25-banner-copy strong{color:var(--theme-ink)!important}
+.dlv25-banner-copy em{color:var(--theme-muted)!important}
+.dlv25-banner-copy>b{
+  color:var(--theme-ink)!important;
+  border-color:color-mix(in srgb,var(--accent),transparent 62%)!important;
+  background:color-mix(in srgb,var(--accent),transparent 91%)!important;
+}
+.dlv25-banner-art>i{
+  color:var(--accent-contrast,#fff)!important;
+  border-color:color-mix(in srgb,var(--accent),transparent 48%)!important;
+  background:linear-gradient(145deg,color-mix(in srgb,var(--accent),transparent 12%),color-mix(in srgb,var(--accent),#000 12%))!important;
+  box-shadow:0 22px 65px color-mix(in srgb,var(--accent),transparent 82%)!important;
+}
+.dlv25-banner .dlv-promo-arrow,
+.dlv25-banner .dlv-promo-dots{
+  color:var(--theme-ink)!important;
+  background:color-mix(in srgb,var(--theme-panel-solid),transparent 7%)!important;
+  border-color:var(--theme-line)!important;
+  box-shadow:0 8px 25px var(--theme-shadow)!important;
+}
+.dlv25-banner .dlv-promo-dots button i{background:var(--theme-muted-2)!important}
+.dlv25-banner .dlv-promo-dots button.is-active i{background:var(--accent)!important}
+
+/* Light mode: no isolated black island components. */
+:root[data-theme="light"] .dlv21-hero{
+  background:linear-gradient(145deg,#fff,color-mix(in srgb,#fff,var(--accent) 2.5%))!important;
+  border-color:rgba(0,0,0,.09)!important;
+  box-shadow:0 18px 54px rgba(18,24,21,.07)!important;
+}
+:root[data-theme="light"] .dlv21-hero aside{
+  background:color-mix(in srgb,var(--accent),#fff 95%)!important;
+  border-color:color-mix(in srgb,var(--accent),transparent 76%)!important;
+}
+:root[data-theme="light"] .dlv21-hero aside button{background:var(--theme-ink)!important;color:var(--theme-inverse)!important}
+:root[data-theme="light"] .dlv23-auto-card,
+:root[data-theme="light"] .dlv23-manual-card{
+  background:linear-gradient(155deg,#fff,#f5f6f3)!important;
+  border-color:rgba(0,0,0,.09)!important;
+  box-shadow:0 14px 44px rgba(18,24,21,.055)!important;
+}
+:root[data-theme="light"] .dlv23-auto-phone{background:#fff!important;border-color:rgba(0,0,0,.12)!important}
+:root[data-theme="light"] .dlv23-auto-phone>span{color:#2c3330!important;border-color:rgba(0,0,0,.09)!important}
+:root[data-theme="light"] .dlv23-auto-phone>input{color:#111!important}
+:root[data-theme="light"] .dlv23-detect-state{background:#f6f7f4!important;border-color:rgba(0,0,0,.11)!important}
+:root[data-theme="light"] .dlv23-detect-state.is-found{background:color-mix(in srgb,var(--accent),#fff 94%)!important;border-color:color-mix(in srgb,var(--accent),transparent 65%)!important}
+:root[data-theme="light"] .dlv23-recipient-strip{background:color-mix(in srgb,var(--accent),#fff 95%)!important}
+:root[data-theme="light"] .dlv23-recipient-strip button{background:#fff!important;color:#171b19!important;border-color:rgba(0,0,0,.11)!important}
+:root[data-theme="light"] .dlv21-category-grid>button,
+:root[data-theme="light"] .dlv21-brand-grid>button,
+:root[data-theme="light"] .dlv21-product-grid>button,
+:root[data-theme="light"] .dlv21-kind>button,
+:root[data-theme="light"] .dlv21-status,
+:root[data-theme="light"] .dlv21-view,
+:root[data-theme="light"] .dlv21-search input,
+:root[data-theme="light"] .dlv21-product-tools input,
+:root[data-theme="light"] .dlv21-product-tools>button,
+:root[data-theme="light"] .dlv21-breadcrumb button,
+:root[data-theme="light"] .dlv23-mode-switch,
+:root[data-theme="light"] .dlv23-operator-grid>button{
+  background:#fff!important;
+  border-color:rgba(0,0,0,.09)!important;
+  box-shadow:0 9px 28px rgba(21,27,24,.04)!important;
+}
+:root[data-theme="light"] .dlv21-kind>button:disabled{background:#f0f1ee!important;border-color:rgba(0,0,0,.08)!important;box-shadow:none!important}
+:root[data-theme="light"] .dlv21-sandbox-inline{background:color-mix(in srgb,var(--accent),#fff 94%)!important}
+
+/* Assistant has to belong to the selected theme too. */
+:root[data-theme="light"] .dlv-assistant-launcher{
+  background:rgba(255,255,255,.94)!important;
+  border-color:rgba(0,0,0,.12)!important;
+  color:#111!important;
+  box-shadow:0 15px 45px rgba(20,25,22,.12)!important;
+}
+
+/* Mobile: more information density and guaranteed clearance below sticky nav. */
+@media(max-width:700px){
+  .dlv21-market{padding:112px 12px 154px!important}
+  .dlv21-hero{margin-top:0!important;padding:18px!important;border-radius:21px!important}
+  .dlv21-hero h1{font-size:31px!important;line-height:.96!important}
+  .dlv21-hero p{font-size:10px!important;line-height:1.5!important}
+  .dlv21-status{margin:9px 0 13px!important}
+  .dlv21-sandbox-inline{margin:-5px 0 14px!important;padding:8px 11px!important}
+  .dlv21-head{margin-bottom:10px!important}
+  .dlv21-head h2{font-size:23px!important}
+  .dlv21-kind>button{min-height:61px!important}
+  .dlv21-category-grid{gap:8px!important}
+  .dlv21-category-grid>button{
+    min-height:112px!important;
+    padding:13px!important;
+    border-radius:18px!important;
+    align-content:start!important;
+  }
+  .dlv21-category-grid .dlv-category-symbol{width:40px!important;height:40px!important}
+  .dlv21-category-grid span>b{font-size:12.5px!important;line-height:1.16!important}
+  .dlv21-category-grid small{font-size:8px!important;line-height:1.38!important}
+  .dlv21-category-grid em{font-size:8px!important;margin-top:1px!important}
+
+  .dlv-promo-home-host{margin:10px auto 18px!important}
+  .dlv25-banner-card{min-height:210px!important;padding:21px 17px 38px!important;grid-template-columns:minmax(0,1fr) 84px!important}
+  .dlv25-banner-copy strong{font-size:28px!important;line-height:.96!important;margin:7px 0 8px!important}
+  .dlv25-banner-copy em{font-size:9.5px!important;line-height:1.45!important}
+  .dlv25-banner-copy>b{margin-top:13px!important}
+  .dlv25-banner-art>i{width:68px!important;height:68px!important;border-radius:20px!important;font-size:23px!important}
+  .dlv25-banner-art>b:nth-of-type(1){width:30px!important;height:30px!important}.dlv25-banner-art>b:nth-of-type(2){width:23px!important;height:23px!important}.dlv25-banner-art>b:nth-of-type(3){width:38px!important;height:38px!important}
+  .dlv25-banner .dlv-promo-arrow{width:32px!important;height:32px!important}
+  .dlv25-banner .dlv-promo-dots{bottom:7px!important}
+
+  main#top>.hero.shell{padding-top:42px!important;padding-bottom:52px!important}
+  main#top>.hero.shell h1{font-size:clamp(46px,13vw,68px)!important;line-height:.91!important}
+  main#top>.hero.shell p{font-size:13px!important;line-height:1.52!important}
+
+  .dlv-assistant-launcher{right:14px!important;bottom:92px!important;transform:scale(.9);transform-origin:right bottom}
+}
