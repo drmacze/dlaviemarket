@@ -1,18 +1,19 @@
 {
-  "release": "vipayment-admin-visible-v33.1",
+  "release": "dlavie-live-support-v34",
   "built_for": "2026-08-21",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
   "homepage_positioning": "digital-products",
   "provider": "H2H.id + VIPayment",
   "features": [
-    "VIPayment added as a server-side prepaid product provider with API credentials stored in Supabase Vault",
-    "VIPayment admin control is now explicitly mounted in the main React runtime",
-    "provider admin dock separates VIPayment and H2H controls on mobile and desktop so buttons do not overlap",
-    "VIPayment admin control supports credential setup, account/balance test, markup settings, production opt-in and catalog synchronization",
-    "Digital Market uses a multi-provider gateway that merges active H2H.id and VIPayment catalog summaries and products",
-    "prepaid purchases are automatically routed to the provider that owns the selected SKU; postpaid remains on H2H.id",
-    "VIPayment supports DLavie sandbox simulation before production mode is enabled"
+    "DLavie Assistant is presented to users as a clearer DLavie Support live-help experience",
+    "chat header now clearly distinguishes instant support, waiting for admin, and human admin connected states",
+    "AI chat includes a direct Hubungi admin action so users do not need to know a special phrase to request human support",
+    "human handoff keeps the existing transcript and explains that users may close and reopen the support panel while waiting",
+    "mobile live support uses a full-screen chat layout with safe-area handling and a denser conversation view",
+    "Human Support Console v34 adds queue summary, waiting/claimed/high-priority filters, search, priority sorting and relative activity age",
+    "admin threads now include quick replies, context labels, automatic scroll to latest messages, message length counter and keyboard send shortcut",
+    "mobile admin support switches between a full queue view and a full conversation view instead of stacking both panels"
   ],
-  "note": "v33.1 fixes the missing VIPayment Admin UI mount. After admin authentication, a VIP control appears beside the H2H provider control."
+  "note": "v34 focuses on the complete user-to-human live support experience while preserving the existing DLavie AI-to-admin handoff backend."
 }
