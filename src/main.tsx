@@ -13,6 +13,7 @@ import DigitalPostpaidPaymentGuard from './DigitalPostpaidPaymentGuard'
 import DigitalHomeMarket from './DigitalHomeMarket'
 import DLaviePromoBanners from './DLaviePromoBanners'
 import DLavieFeedback from './DLavieFeedback'
+import DLavieFeedbackAdmin from './DLavieFeedbackAdmin'
 import OrderCenter from './OrderCenter'
 import DigitalActivityFeed from './DigitalActivityFeed'
 import DigitalActivityPageSync from './DigitalActivityPageSync'
@@ -158,6 +159,7 @@ createRoot(document.getElementById('root')!).render(
     <DLavieAdminSupport />
     <DLavieH2HAdmin />
     <DLavieRefundAdminQueue />
+    <DLavieFeedbackAdmin />
     <DLavieRadio />
     <DLavieUtilityOrb />
     <App />
