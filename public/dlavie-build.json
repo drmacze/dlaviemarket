@@ -1,5 +1,5 @@
 {
-  "release": "dlavie-transaction-receipt-banner-polish-v28",
+  "release": "dlavie-animated-utility-orb-v29",
   "built_for": "2026-08-20",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
@@ -7,19 +7,15 @@
   "provider": "H2H.id",
   "features": [
     "8155 safe fixed-price H2H storefront SKU retained",
-    "checkout and transaction result sheets now sit above sticky navigation and use a mobile bottom-sheet layout with safe-area padding",
-    "ambient radio, theme controls and DLavie Assistant are hidden while checkout, transaction result or private receipt is open",
-    "transaction primary actions now follow the user's selected accent instead of retaining a hard-coded green button",
-    "legacy receipt action glyph replaced with a clean receipt control",
-    "private receipt redesigned with isolated document colors, status hierarchy, official brand mark, product card, total summary and compact detail rows",
-    "receipt text no longer inherits dark-theme white text on the light receipt paper",
-    "receipt PNG export uses a clearer document layout and dynamic canvas height",
-    "receipt download and print actions use consistent SVG icons and descriptive labels",
-    "category icon language expanded with distinct card, streaming/play and voucher/ticket symbols",
-    "official-domain brand icons retain conservative verified mapping and neutral fallback for unresolved niche brands",
-    "all promotional sliders now include useful context chips and slide counts while retaining autoplay, touch swipe, arrows and theme-aware styling",
-    "contextual banners now cover Voucher & Game, Paket Data, Pulsa, E-Wallet, Kartu E-Money, PLN and Streaming & Hiburan",
-    "homepage and contextual banners continue using measured navigation clearance from v27"
+    "Music and DLavie Assistant launchers are unified into one animated Utility Orb",
+    "expanded Utility Orb places Music above, Help below and Close to the left of the center control",
+    "orb expansion uses staggered scale, rotation and directional motion while respecting prefers-reduced-motion",
+    "Music playback state is reflected by a subtle animated equalizer and halo on the center orb",
+    "AI support unread count is mirrored onto the Help utility action when available",
+    "legacy Music and Assistant launcher buttons are visually suppressed while their existing engines and panels remain unchanged",
+    "Utility Orb automatically collapses and hides while Music, Assistant, checkout, transaction result or private receipt panels own the viewport",
+    "Utility Orb inherits light/dark mode and the user's custom accent theme",
+    "existing v28 receipt, icon, official-domain logo and contextual banner improvements remain active"
   ],
-  "note": "v28 addresses the visible transaction/receipt problems from the iPhone screenshots, upgrades icon hierarchy, and expands professional contextual banners across the core DLavie marketplace without generated image assets."
+  "note": "v29 replaces separate floating Music and AI launchers with one theme-aware animated utility control while preserving the existing Music and Assistant systems behind it."
 }
