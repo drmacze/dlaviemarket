@@ -18,7 +18,8 @@
     "category icon language expanded with distinct card, streaming/play and voucher/ticket symbols",
     "official-domain brand icons retain conservative verified mapping and neutral fallback for unresolved niche brands",
     "all promotional sliders now include useful context chips and slide counts while retaining autoplay, touch swipe, arrows and theme-aware styling",
+    "contextual banners now cover Voucher & Game, Paket Data, Pulsa, E-Wallet, Kartu E-Money, PLN and Streaming & Hiburan",
     "homepage and contextual banners continue using measured navigation clearance from v27"
   ],
-  "note": "v28 addresses the visible transaction/receipt problems from the iPhone screenshots and upgrades icon hierarchy plus every DLavie promotional slider without introducing generated image assets."
+  "note": "v28 addresses the visible transaction/receipt problems from the iPhone screenshots, upgrades icon hierarchy, and expands professional contextual banners across the core DLavie marketplace without generated image assets."
 }
