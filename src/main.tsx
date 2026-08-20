@@ -113,6 +113,7 @@ import './banner-logo-polish-v27.css'
 import './transaction-banner-polish-v28.css'
 import './receipt-action-dock-v28.css'
 import './dlavie-utility-orb-v29.css'
+import './dlavie-utility-orb-fix-v29-1.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
