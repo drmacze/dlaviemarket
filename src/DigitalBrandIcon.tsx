@@ -1,7 +1,35 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 
-const normalize=(value='')=>value.toLowerCase().replace(/[^a-z0-9]+/g,' ')
+const normalize=(value='')=>value.toLowerCase().replace(/[^a-z0-9]+/g,' ').trim()
 type CategoryIconType='phone'|'network'|'bolt'|'wallet'|'game'|'receipt'|'sim'
+
+/* Exact domains are only added when the brand/domain relationship is known.
+   This is intentionally conservative: an unresolved niche title gets a neutral
+   category mark instead of a fake or unrelated logo. */
+const verifiedExactDomains:Record<string,string>={
+ 'maxim':'maxim.co.id',
+ 'kaspro':'kaspro.id',
+ 'genflix':'genflix.co.id',
+ 'point blank':'pointblank.id',
+ 'unipin':'unipin.com',
+ 'razer gold':'gold.razer.com',
+ 'wuthering waves':'wutheringwaves.kurogames.com',
+ 'punishing gray raven':'pgr.kurogame.net',
+ 'undawn':'undawn.game',
+ 'stumble guys':'stumbleguys.com',
+ 'once human':'oncehuman.game',
+ 'lords mobile':'lordsmobile.igg.com',
+ 'identity v':'identityvgame.com',
+ 'state of survival':'stateofsurvival.com',
+ 'pokemon unite':'unite.pokemon.com',
+ 'sausage man':'sausageman.xd.com',
+ 'tower of fantasy':'toweroffantasy-global.com',
+ 'google play id':'play.google.com',
+ 'tapcash bni':'bni.co.id',
+ 'brizzi':'bri.co.id',
+ 'flazz bca':'bca.co.id',
+ 'e money mandiri':'bankmandiri.co.id',
+}
 
 const domainRules:Array<[RegExp,string]>=[
  [/telkomsel|simpati|kartu as|loop|by u|byu/,'telkomsel.com'],
@@ -20,6 +48,8 @@ const domainRules:Array<[RegExp,string]>=[
  [/isaku/,'isaku.id'],
  [/astrapay/,'astrapay.com'],
  [/\bdoku\b/,'doku.com'],
+ [/kaspro/,'kaspro.id'],
+ [/maxim/,'maxim.co.id'],
  [/e money mandiri|mandiri e money/,'bankmandiri.co.id'],
  [/flazz|\bbca\b/,'bca.co.id'],
  [/brizzi|\bbri\b/,'bri.co.id'],
@@ -34,7 +64,8 @@ const domainRules:Array<[RegExp,string]>=[
  [/honor of kings/,'honorofkings.com'],
  [/roblox/,'roblox.com'],
  [/valorant/,'playvalorant.com'],
- [/wild rift|league of legends|teamfight tactics|\btft\b/,'leagueoflegends.com'],
+ [/wild rift|league of legends/,'leagueoflegends.com'],
+ [/teamfight tactics|\btft\b/,'teamfighttactics.leagueoflegends.com'],
  [/genshin|honkai|zenless|hoyoverse/,'hoyoverse.com'],
  [/arena breakout/,'arenabreakout.com'],
  [/delta force/,'playdeltaforce.com'],
@@ -42,17 +73,32 @@ const domainRules:Array<[RegExp,string]>=[
  [/arena of valor/,'arenaofvalor.com'],
  [/farlight 84/,'farlight84.com'],
  [/fc mobile|ea sports fc/,'ea.com'],
+ [/point blank/,'pointblank.id'],
  [/zepeto/,'zepeto.me'],
  [/steam/,'steampowered.com'],
  [/google play/,'play.google.com'],
  [/playstation|psn/,'playstation.com'],
  [/xbox/,'xbox.com'],
  [/garena/,'garena.com'],
- [/tiktok/,'tiktok.com'],
- [/netflix/,'netflix.com'],
- [/spotify/,'spotify.com'],
+ [/unipin/,'unipin.com'],
+ [/razer gold/,'gold.razer.com'],
+ [/wuthering waves/,'wutheringwaves.kurogames.com'],
+ [/punishing gray raven/,'pgr.kurogame.net'],
+ [/undawn/,'undawn.game'],
+ [/stumble guys/,'stumbleguys.com'],
+ [/once human/,'oncehuman.game'],
+ [/lords mobile/,'lordsmobile.igg.com'],
+ [/identity v/,'identityvgame.com'],
+ [/state of survival/,'stateofsurvival.com'],
+ [/pokemon unite/,'unite.pokemon.com'],
+ [/sausage man/,'sausageman.xd.com'],
+ [/tower of fantasy/,'toweroffantasy-global.com'],
+ [/genflix/,'genflix.co.id'],
  [/vidio/,'vidio.com'],
+ [/spotify/,'spotify.com'],
+ [/netflix/,'netflix.com'],
  [/youtube/,'youtube.com'],
+ [/tiktok/,'tiktok.com'],
  [/telegram/,'telegram.org'],
  [/whatsapp/,'whatsapp.com'],
  [/discord/,'discord.com'],
@@ -63,7 +109,7 @@ const domainRules:Array<[RegExp,string]>=[
 
 export function brandDomain(brand=''){
  const value=normalize(brand)
- return domainRules.find(([rule])=>rule.test(value))?.[1]||''
+ return verifiedExactDomains[value]||domainRules.find(([rule])=>rule.test(value))?.[1]||''
 }
 
 function iconType(value=''):CategoryIconType{
@@ -93,10 +139,13 @@ export function DigitalCategoryIcon({value,className=''}:{value:string;className
 
 export default function DigitalBrandIcon({brand,category='',className=''}:{brand:string;category?:string;className?:string}){
  const domain=useMemo(()=>brandDomain(brand),[brand])
- const [failed,setFailed]=useState(false)
+ const sources=useMemo(()=>domain?[
+  `https://www.google.com/s2/favicons?sz=256&domain_url=https://${domain}`,
+  `https://${domain}/favicon.ico`,
+ ]:[],[domain])
+ const [sourceIndex,setSourceIndex]=useState(0)
  const label=(brand||category||'Digital').trim()
- useEffect(()=>setFailed(false),[domain])
- if(!domain||failed)return <span className={`dlv-brand-icon is-fallback ${className}`} title={label}><DigitalCategoryIcon value={`${category} ${brand}`}/></span>
- const src=`https://www.google.com/s2/favicons?sz=256&domain_url=https://${domain}`
- return <span className={`dlv-brand-icon is-official ${className}`} title={label} data-domain={domain}><img src={src} alt={`${label} logo`} referrerPolicy="no-referrer" loading="lazy" onError={()=>setFailed(true)}/></span>
+ useEffect(()=>setSourceIndex(0),[domain])
+ if(!domain||sourceIndex>=sources.length)return <span className={`dlv-brand-icon is-fallback ${className}`} title={label} data-logo-source="neutral-fallback"><DigitalCategoryIcon value={`${category} ${brand}`}/></span>
+ return <span className={`dlv-brand-icon is-official ${className}`} title={`${label} · ${domain}`} data-domain={domain} data-logo-source="official-domain"><img src={sources[sourceIndex]} alt={`${label} logo`} referrerPolicy="no-referrer" loading="lazy" onError={()=>setSourceIndex(i=>i+1)}/></span>
 }
