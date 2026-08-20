@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 
-type BannerContext='home'|'game'|'data'
+type BannerContext='home'|'game'|'data'|'pulsa'|'wallet'|'emoney'|'pln'|'streaming'
 type BannerSlide={id:string;label:string;title:string;body:string;cta:string;route:string;symbol:string;chips:string[];tone:'market'|'promo'|'trust'|'game'|'data'}
 
 const homeSlides:BannerSlide[]=[
@@ -17,6 +17,22 @@ const dataSlides:BannerSlide[]=[
  {id:'data-auto',label:'PAKET DATA',title:'Masukkan nomor, operator bisa terdeteksi otomatis.',body:'Tetap tersedia pilihan manual kalau kamu ingin mencari operator dan paket sendiri.',cta:'Cari paket data',route:'#/market?category=Paket%20Data',symbol:'5G',chips:['Auto detect','Pilih manual','Format +62'],tone:'data'},
  {id:'data-choice',label:'KUOTA SESUAI KEBUTUHAN',title:'Bandingkan paket sebelum memilih.',body:'Cari nominal, masa aktif, dan jenis paket dari operator yang sama dalam satu tampilan.',cta:'Lihat paket',route:'#/market?category=Paket%20Data',symbol:'↗',chips:['Masa aktif','Nominal','Jenis kuota'],tone:'data'},
 ]
+const pulsaSlides:BannerSlide[]=[
+ {id:'pulsa-number',label:'PULSA',title:'Nomor dulu, nominal kemudian.',body:'DLavie membantu mengenali operator dari nomor yang kamu masukkan. Pilihan manual tetap tersedia kapan pun.',cta:'Isi pulsa',route:'#/market?category=Pulsa',symbol:'Rp',chips:['Deteksi operator','Semua nominal','Konfirmasi nomor'],tone:'data'},
+]
+const walletSlides:BannerSlide[]=[
+ {id:'wallet-main',label:'E-WALLET',title:'Top up saldo dengan tujuan yang lebih jelas.',body:'Pilih dompet digital, masukkan nomor yang benar, lalu cek kembali nominal sebelum transaksi.',cta:'Pilih e-wallet',route:'#/market?category=E-Wallet',symbol:'W',chips:['DANA','OVO','GoPay','ShopeePay'],tone:'market'},
+]
+const emoneySlides:BannerSlide[]=[
+ {id:'emoney-card',label:'KARTU E-MONEY',title:'Nomor kartu diperlakukan berbeda dari nomor HP.',body:'Flazz, BRIZZI, TapCash, dan e-Money Mandiri memakai flow input kartu yang terpisah supaya tidak salah format.',cta:'Lihat kartu e-money',route:'#/market?category=Kartu%20E-Money',symbol:'◫',chips:['Flazz','BRIZZI','TapCash','e-Money'],tone:'trust'},
+]
+const plnSlides:BannerSlide[]=[
+ {id:'pln-token',label:'PLN',title:'Token listrik dengan pemeriksaan tujuan sebelum bayar.',body:'Pilih produk PLN, masukkan nomor meter atau ID pelanggan sesuai layanan, lalu cek kembali sebelum konfirmasi.',cta:'Lihat produk PLN',route:'#/market?category=PLN',symbol:'⚡',chips:['Token','ID pelanggan','Nomor meter'],tone:'data'},
+]
+const streamingSlides:BannerSlide[]=[
+ {id:'streaming-main',label:'STREAMING & HIBURAN',title:'Voucher hiburan dipisahkan per layanan.',body:'Cari layanan yang kamu pakai, lalu pilih paket atau voucher yang tersedia tanpa bercampur dengan game.',cta:'Lihat hiburan',route:'#/market?category=Streaming%20%26%20Hiburan',symbol:'▶',chips:['Vidio','Spotify','WeTV','Genflix'],tone:'promo'},
+]
+const slidesByContext:Record<BannerContext,BannerSlide[]>={home:homeSlides,game:gameSlides,data:dataSlides,pulsa:pulsaSlides,wallet:walletSlides,emoney:emoneySlides,pln:plnSlides,streaming:streamingSlides}
 const openRoute=(route:string)=>{window.location.hash=route.replace(/^#/,'')}
 
 function BannerSlider({slides,context}:{slides:BannerSlide[];context:BannerContext}){
@@ -28,7 +44,7 @@ function BannerSlider({slides,context}:{slides:BannerSlide[];context:BannerConte
  useEffect(()=>{if(paused||reduced||count<2)return;const id=window.setInterval(()=>setIndex(i=>(i+1)%count),6500);return()=>window.clearInterval(id)},[paused,reduced,count])
  const go=(i:number)=>setIndex((i+count)%count)
  return <section className={`dlv-promo-carousel dlv25-banner dlv28-banner is-${context}`} aria-label="Sorotan DLavie" onMouseEnter={()=>setPaused(true)} onMouseLeave={()=>setPaused(false)}>
-  <span className="dlv28-banner-count" aria-hidden="true">{String(index+1).padStart(2,'0')} / {String(count).padStart(2,'0')}</span>
+  {count>1&&<span className="dlv28-banner-count" aria-hidden="true">{String(index+1).padStart(2,'0')} / {String(count).padStart(2,'0')}</span>}
   <div className="dlv-promo-viewport" onPointerDown={e=>{pointer.current={x:e.clientX,y:e.clientY};moved.current=false}} onPointerMove={e=>{if(pointer.current&&Math.abs(e.clientX-pointer.current.x)>8)moved.current=true}} onPointerUp={e=>{const p=pointer.current;pointer.current=null;if(!p)return;const dx=e.clientX-p.x,dy=e.clientY-p.y;if(Math.abs(dx)>42&&Math.abs(dx)>Math.abs(dy)){go(index+(dx<0?1:-1));moved.current=true}}} onPointerCancel={()=>{pointer.current=null}}>
    <div className="dlv-promo-track" style={{transform:`translate3d(-${index*100}%,0,0)`}}>{slides.map(slide=><article className={`dlv-promo-slide tone-${slide.tone}`} key={slide.id}><button type="button" className="dlv25-banner-card" onClick={()=>{if(!moved.current)openRoute(slide.route);moved.current=false}}><span className="dlv25-banner-copy"><small>{slide.label}</small><strong>{slide.title}</strong><em>{slide.body}</em><span className="dlv28-banner-chips">{slide.chips.map(chip=><i key={chip}>{chip}</i>)}</span><b>{slide.cta}<i>→</i></b></span><span className="dlv25-banner-art" aria-hidden="true"><i>{slide.symbol}</i><b/><b/><b/></span></button></article>)}</div>
   </div>
@@ -47,6 +63,16 @@ export default function DLaviePromoBanners(){
    const nav=document.querySelector<HTMLElement>('.site-nav-wrap')
    const h=nav?Math.max(68,Math.ceil(nav.getBoundingClientRect().height)):76
    document.documentElement.style.setProperty('--dlv-nav-clearance',`${h}px`)
+  }
+  const detectContext=(signal:string):BannerContext|null=>{
+   if(signal.includes('voucher')&&signal.includes('game'))return'game'
+   if(signal.includes('paket data')||signal.includes('category=data'))return'data'
+   if(signal.includes('pulsa'))return'pulsa'
+   if(signal.includes('kartu e-money')||signal.includes('kartu e money'))return'emoney'
+   if(signal.includes('e-wallet')||signal.includes('e wallet'))return'wallet'
+   if(signal.includes('pln'))return'pln'
+   if(signal.includes('streaming')||signal.includes('hiburan'))return'streaming'
+   return null
   }
   const scan=()=>{
    queued=false
@@ -71,7 +97,7 @@ export default function DLaviePromoBanners(){
    const crumb=Array.from(document.querySelectorAll<HTMLElement>('.dlv21-breadcrumb')).find(x=>x.offsetParent!==null)
    const params=new URLSearchParams(raw.split('?')[1]||'')
    const signal=`${crumb?.textContent||''} ${decodeURIComponent(params.get('category')||'')}`.toLowerCase()
-   const ctx:BannerContext|null=signal.includes('voucher')||signal.includes('game')?'game':signal.includes('paket data')||signal.includes('data')?'data':null
+   const ctx=detectContext(signal)
    const shell=document.querySelector<HTMLElement>('.dlv21-market .dlv21-shell')
    const section=crumb?.closest<HTMLElement>('.dlv21-section')||shell?.querySelector<HTMLElement>('.dlv21-section')
    if(shell&&section&&ctx){const node=ensure('dlv-promo-market-host',shell,section);node.hidden=false;setMarketHost(node);setMarketContext(ctx)}else{hide('.dlv-promo-market-host');setMarketHost(null);setMarketContext(null)}
@@ -90,5 +116,6 @@ export default function DLaviePromoBanners(){
    owned.current.forEach(n=>n.remove())
   }
  },[])
- return <>{homeHost&&createPortal(<BannerSlider slides={homeSlides} context="home"/>,homeHost)}{marketHost&&marketContext==='game'&&createPortal(<BannerSlider slides={gameSlides} context="game"/>,marketHost)}{marketHost&&marketContext==='data'&&createPortal(<BannerSlider slides={dataSlides} context="data"/>,marketHost)}</>
+ const activeSlides=marketContext?slidesByContext[marketContext]:null
+ return <>{homeHost&&createPortal(<BannerSlider slides={homeSlides} context="home"/>,homeHost)}{marketHost&&marketContext&&activeSlides&&createPortal(<BannerSlider slides={activeSlides} context={marketContext}/>,marketHost)}</>
 }
