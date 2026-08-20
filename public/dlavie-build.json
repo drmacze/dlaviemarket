@@ -1,5 +1,5 @@
 {
-  "release": "dlavie-contributor-credits-banner-v30",
+  "release": "dlavie-public-ecosystem-credits-v30.1",
   "built_for": "2026-08-20",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
@@ -7,14 +7,12 @@
   "provider": "H2H.id",
   "features": [
     "8155 safe fixed-price H2H storefront SKU retained",
-    "homepage promotional carousel now includes a dedicated Contributor Credits slide",
-    "Contributor Credits highlights Midtrans, GitHub, Supabase, H2H.id, React and Vite with official-domain favicon sourcing",
-    "credits are presented as technology and integration roles instead of an abandoned contributor rail",
-    "credit marks keep original brand colors on neutral mark surfaces while the surrounding banner follows the user's custom accent theme",
-    "mobile layout switches the credit grid to a compact two-column arrangement without crowding the banner copy",
-    "logo failures fall back to clean brand initials instead of unrelated or fabricated marks",
-    "existing v29.1 Utility Orb reliability and visual polish remain active",
-    "existing v28 receipt, icon, official-domain provider logo and contextual banner improvements remain active"
+    "homepage Contributor Credits no longer exposes programming frameworks, source control or internal web architecture",
+    "credits now focus on public-facing services in the DLavie ecosystem: DANA, Midtrans, Digiflazz, H2H.id, OVO, GoPay, ShopeePay and LinkAja",
+    "credit wording avoids implying a formal partnership where none is asserted",
+    "official-domain logo sourcing and neutral initials fallback remain active",
+    "light, dark and custom accent themes remain supported",
+    "existing v29.1 Utility Orb reliability and v28 transaction/receipt improvements remain active"
   ],
-  "note": "v30 adds a professional Contributor Credits banner to the homepage carousel without reviving the previously removed contributor rail."
+  "note": "v30.1 keeps Contributor Credits user-facing and removes unnecessary technical implementation details from the public banner."
 }
