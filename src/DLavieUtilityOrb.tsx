@@ -39,14 +39,21 @@ export default function DLavieUtilityOrb(){
 
   useEffect(()=>{if(occupied)setExpanded(false)},[occupied])
 
-  const openMusic=()=>{
+  const openLegacyPanel=(triggerSelector:string,panelSelector:string)=>{
     setExpanded(false)
-    requestAnimationFrame(()=>document.querySelector<HTMLButtonElement>('.ambient-trigger')?.click())
+    let attempt=0
+    const tryOpen=()=>{
+      if(document.querySelector(panelSelector))return
+      const trigger=document.querySelector<HTMLButtonElement>(triggerSelector)
+      if(!trigger)return
+      trigger.click()
+      attempt+=1
+      if(attempt<3)window.setTimeout(()=>{if(!document.querySelector(panelSelector))tryOpen()},70)
+    }
+    window.setTimeout(tryOpen,24)
   }
-  const openHelp=()=>{
-    setExpanded(false)
-    requestAnimationFrame(()=>document.querySelector<HTMLButtonElement>('.dlv-assistant-launcher')?.click())
-  }
+  const openMusic=()=>openLegacyPanel('.ambient-trigger','.ambient-panel')
+  const openHelp=()=>openLegacyPanel('.dlv-assistant-launcher','.dlv-assistant-panel')
 
   return <nav className={`dlv-utility-orb ${expanded?'is-expanded':''} ${occupied?'is-occupied':''}`} aria-label="Akses cepat DLavie">
     <button className="dlv-orbit-item is-music" type="button" onClick={openMusic} aria-label="Buka pemutar musik">
