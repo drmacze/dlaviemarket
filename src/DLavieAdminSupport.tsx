@@ -1,160 +1,59 @@
-import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react'
+import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-type QueueItem = {
-  id: string
-  session_id: string
-  user_id: string
-  priority: 'low' | 'normal' | 'high' | 'urgent'
-  status: 'pending' | 'claimed'
-  reason: string
-  summary?: string | null
-  assigned_admin?: string | null
-  created_at: string
-  session?: { username?: string; subject?: string; category?: string; reference_id?: string; support_mode?: string; started_at?: string; last_activity_at?: string } | null
-}
-type ThreadMessage = { id: string; role: 'user' | 'assistant' | 'admin' | 'system'; content: string; metadata?: { admin?: string; kind?: string }; created_at: string }
-type ThreadData = { session?: { id: string; user_id?: string; username?: string; subject?: string; category?: string; reference_id?: string; support_mode?: string; assigned_admin?: string; started_at?: string; last_activity_at?: string }; escalation?: QueueItem | null; messages?: ThreadMessage[] }
+type QueueItem={id:string;session_id:string;user_id:string;priority:'low'|'normal'|'high'|'urgent';status:'pending'|'claimed';reason:string;summary?:string|null;assigned_admin?:string|null;created_at:string;session?:{username?:string;subject?:string;category?:string;reference_id?:string;support_mode?:string;started_at?:string;last_activity_at?:string;confidence?:number;message_count?:number;assigned_admin?:string|null}|null}
+type ThreadMessage={id:string;role:'user'|'assistant'|'admin'|'system';content:string;metadata?:{admin?:string;kind?:string};created_at:string}
+type ThreadData={session?:{id:string;user_id?:string;username?:string;subject?:string;category?:string;reference_id?:string;support_mode?:string;assigned_admin?:string;started_at?:string;last_activity_at?:string;confidence?:number;message_count?:number};escalation?:QueueItem|null;messages?:ThreadMessage[]}
+type Filter='all'|'waiting'|'claimed'|'priority'
 
-const API = 'https://ydaeukhqwishlrjyfktk.supabase.co/functions/v1/dlavie-assistant-admin'
-const TOKEN_KEY = 'dlavie-admin-support-session-v1'
+const API='https://ydaeukhqwishlrjyfktk.supabase.co/functions/v1/dlavie-assistant-admin',TOKEN_KEY='dlavie-admin-support-session-v1'
+const QUICK_REPLIES=[
+ 'Halo, saya sudah bergabung. Saya sedang membaca konteks percakapanmu.',
+ 'Terima kasih. Boleh kirim reference transaksi yang terlihat di layar?',
+ 'Saya sedang memeriksa detail kasus ini dari sisi DLavie.',
+ 'Saya sudah memahami masalahnya. Berikutnya saya akan jelaskan langkah yang paling aman.',
+]
+async function request(action:string,token:string,extra:Record<string,string>={}){const body=new URLSearchParams({action,...(token?{admin_token:token}:{}),...extra}),response=await fetch(API,{method:'POST',body}),data=await response.json().catch(()=>({}));if(!response.ok||!data.ok)throw new Error(data.error||'admin_support_error');return data}
+function time(value?:string|null){if(!value)return'—';return new Intl.DateTimeFormat('id-ID',{dateStyle:'short',timeStyle:'short'}).format(new Date(value))}
+function relative(value?:string|null){if(!value)return'—';const diff=Math.max(0,Date.now()-new Date(value).getTime()),m=Math.floor(diff/60000);if(m<1)return'baru saja';if(m<60)return`${m}m`;const h=Math.floor(m/60);if(h<24)return`${h}j`;return`${Math.floor(h/24)}h`}
+function categoryLabel(v?:string){const map:Record<string,string>={payment_wallet:'Pembayaran & wallet',order_otp:'Order & OTP',account:'Akun',technical:'Teknis',pricing_stock:'Harga & stok',documentation:'Dokumentasi',policy:'Kebijakan',other:'Lainnya'};return map[v||'']||v||'Umum'}
 
-async function request(action: string, token: string, extra: Record<string, string> = {}) {
-  const body = new URLSearchParams({ action, ...(token ? { admin_token: token } : {}), ...extra })
-  const response = await fetch(API, { method: 'POST', body })
-  const data = await response.json().catch(() => ({}))
-  if (!response.ok || !data.ok) throw new Error(data.error || 'admin_support_error')
-  return data
-}
-function time(value?: string | null) {
-  if (!value) return '—'
-  return new Intl.DateTimeFormat('id-ID', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(value))
-}
+export default function DLavieAdminSupport(){
+ const enabled=useMemo(()=>new URLSearchParams(location.search).get('support-admin')==='1',[])
+ const [token,setToken]=useState(()=>sessionStorage.getItem(TOKEN_KEY)||''),[code,setCode]=useState(''),[adminName,setAdminName]=useState('DLavie Admin'),[queue,setQueue]=useState<QueueItem[]>([]),[selected,setSelected]=useState(''),[thread,setThread]=useState<ThreadData|null>(null),[draft,setDraft]=useState(''),[busy,setBusy]=useState(false),[error,setError]=useState(''),[filter,setFilter]=useState<Filter>('all'),[query,setQuery]=useState('')
+ const messagesRef=useRef<HTMLDivElement>(null)
+ const loadQueue=useCallback(async()=>{if(!token)return;try{const data=await request('queue',token);setQueue(data.queue||[]);if(data.admin_name)setAdminName(data.admin_name);if(selected&&!(data.queue||[]).some((item:QueueItem)=>item.session_id===selected)&&thread?.session?.support_mode!=='admin')setSelected('')}catch(err){if(String(err).includes('expired')||String(err).includes('auth')){sessionStorage.removeItem(TOKEN_KEY);setToken('')}else setError(err instanceof Error?err.message:'Queue gagal dimuat.')}},[selected,thread?.session?.support_mode,token])
+ const loadThread=useCallback(async()=>{if(!token||!selected)return;try{setThread(await request('thread',token,{session_id:selected}))}catch(err){setError(err instanceof Error?err.message:'Thread gagal dimuat.')}},[selected,token])
+ useEffect(()=>{if(!enabled||!token)return;void loadQueue();const t=setInterval(()=>void loadQueue(),5000);return()=>clearInterval(t)},[enabled,loadQueue,token])
+ useEffect(()=>{if(!enabled||!token||!selected)return;void loadThread();const t=setInterval(()=>void loadThread(),2600);return()=>clearInterval(t)},[enabled,loadThread,selected,token])
+ useEffect(()=>{requestAnimationFrame(()=>{const el=messagesRef.current;if(el)el.scrollTop=el.scrollHeight})},[selected,thread?.messages?.length])
+ if(!enabled)return null
+ const login=async(e:FormEvent)=>{e.preventDefault();if(code.length!==6||busy)return;setBusy(true);setError('');try{const data=await request('login','',{access_code:code});sessionStorage.setItem(TOKEN_KEY,data.admin_token);setToken(data.admin_token);setAdminName(data.admin_name||'DLavie Admin');setCode('')}catch{setError('PIN admin tidak valid.')}finally{setBusy(false)}}
+ const claim=async()=>{if(!selected||busy)return;setBusy(true);setError('');try{await request('claim',token,{session_id:selected});await Promise.all([loadQueue(),loadThread()])}catch(err){setError(err instanceof Error?err.message:'Sesi gagal di-claim.')}finally{setBusy(false)}}
+ const send=async(e:FormEvent)=>{e.preventDefault();const text=draft.trim();if(!text||!selected||busy)return;setBusy(true);setError('');try{await request('reply',token,{session_id:selected,message:text});setDraft('');await loadThread()}catch(err){setError(err instanceof Error?err.message:'Balasan gagal dikirim.')}finally{setBusy(false)}}
+ const resolve=async()=>{if(!selected||busy)return;setBusy(true);setError('');try{await request('resolve',token,{session_id:selected});setSelected('');setThread(null);await loadQueue()}catch(err){setError(err instanceof Error?err.message:'Kasus gagal diselesaikan.')}finally{setBusy(false)}}
+ if(!token)return <div className="dlv-admin-shell is-login"><form className="dlv-admin-login" onSubmit={login}><span>DLAVIE INTERNAL</span><h1>Support Console</h1><p>Masukkan PIN admin untuk menangani live support dan antrean refund.</p><label><small>ADMIN PIN · 6 DIGIT</small><input type="password" inputMode="numeric" pattern="[0-9]*" maxLength={6} value={code} onChange={e=>setCode(e.target.value.replace(/\D/g,'').slice(0,6))} autoComplete="one-time-code" placeholder="••••••" aria-label="PIN admin 6 digit"/></label>{error&&<div className="dlv-admin-error">{error}</div>}<button disabled={busy||code.length!==6}>{busy?'Memverifikasi PIN…':'Masuk ke Support Queue'}<b>→</b></button></form></div>
 
-export default function DLavieAdminSupport() {
-  const enabled = useMemo(() => new URLSearchParams(window.location.search).get('support-admin') === '1', [])
-  const [token, setToken] = useState(() => sessionStorage.getItem(TOKEN_KEY) || '')
-  const [code, setCode] = useState('')
-  const [adminName, setAdminName] = useState('DLavie Admin')
-  const [queue, setQueue] = useState<QueueItem[]>([])
-  const [selected, setSelected] = useState('')
-  const [thread, setThread] = useState<ThreadData | null>(null)
-  const [draft, setDraft] = useState('')
-  const [busy, setBusy] = useState(false)
-  const [error, setError] = useState('')
-
-  const loadQueue = useCallback(async () => {
-    if (!token) return
-    try {
-      const data = await request('queue', token)
-      setQueue(data.queue || [])
-      if (data.admin_name) setAdminName(data.admin_name)
-      if (selected && !(data.queue || []).some((item: QueueItem) => item.session_id === selected) && thread?.session?.support_mode !== 'admin') setSelected('')
-    } catch (err) {
-      if (String(err).includes('expired') || String(err).includes('auth')) { sessionStorage.removeItem(TOKEN_KEY); setToken('') }
-      else setError(err instanceof Error ? err.message : 'Queue gagal dimuat.')
-    }
-  }, [selected, thread?.session?.support_mode, token])
-
-  const loadThread = useCallback(async () => {
-    if (!token || !selected) return
-    try { setThread(await request('thread', token, { session_id: selected })) }
-    catch (err) { setError(err instanceof Error ? err.message : 'Thread gagal dimuat.') }
-  }, [selected, token])
-
-  useEffect(() => {
-    if (!enabled || !token) return
-    void loadQueue()
-    const timer = window.setInterval(() => void loadQueue(), 5000)
-    return () => window.clearInterval(timer)
-  }, [enabled, loadQueue, token])
-
-  useEffect(() => {
-    if (!enabled || !token || !selected) return
-    void loadThread()
-    const timer = window.setInterval(() => void loadThread(), 2600)
-    return () => window.clearInterval(timer)
-  }, [enabled, loadThread, selected, token])
-
-  if (!enabled) return null
-
-  const login = async (event: FormEvent) => {
-    event.preventDefault(); if (code.length !== 6 || busy) return
-    setBusy(true); setError('')
-    try {
-      const data = await request('login', '', { access_code: code })
-      sessionStorage.setItem(TOKEN_KEY, data.admin_token)
-      setToken(data.admin_token); setAdminName(data.admin_name || 'DLavie Admin'); setCode('')
-    } catch { setError('PIN admin tidak valid.') }
-    finally { setBusy(false) }
-  }
-
-  const claim = async () => {
-    if (!selected || busy) return
-    setBusy(true); setError('')
-    try { await request('claim', token, { session_id: selected }); await Promise.all([loadQueue(), loadThread()]) }
-    catch (err) { setError(err instanceof Error ? err.message : 'Sesi gagal di-claim.') }
-    finally { setBusy(false) }
-  }
-
-  const send = async (event: FormEvent) => {
-    event.preventDefault(); const text = draft.trim(); if (!text || !selected || busy) return
-    setBusy(true); setError('')
-    try { await request('reply', token, { session_id: selected, message: text }); setDraft(''); await loadThread() }
-    catch (err) { setError(err instanceof Error ? err.message : 'Balasan gagal dikirim.') }
-    finally { setBusy(false) }
-  }
-
-  const resolve = async () => {
-    if (!selected || busy) return
-    setBusy(true); setError('')
-    try {
-      await request('resolve', token, { session_id: selected })
-      setSelected(''); setThread(null); await loadQueue()
-    } catch (err) { setError(err instanceof Error ? err.message : 'Kasus gagal diselesaikan.') }
-    finally { setBusy(false) }
-  }
-
-  if (!token) return (
-    <div className="dlv-admin-shell is-login">
-      <form className="dlv-admin-login" onSubmit={login}>
-        <span>DLAVIE INTERNAL</span><h1>Support Console</h1><p>Masukkan PIN admin untuk menangani live support dan antrean refund.</p>
-        <label><small>ADMIN PIN · 6 DIGIT</small><input type="password" inputMode="numeric" pattern="[0-9]*" maxLength={6} value={code} onChange={(event) => setCode(event.target.value.replace(/\D/g, '').slice(0, 6))} autoComplete="one-time-code" placeholder="••••••" aria-label="PIN admin 6 digit" /></label>
-        {error && <div className="dlv-admin-error">{error}</div>}
-        <button disabled={busy || code.length !== 6}>{busy ? 'Memverifikasi PIN…' : 'Masuk ke Support Queue'}<b>→</b></button>
-      </form>
-    </div>
-  )
-
-  return (
-    <div className="dlv-admin-shell">
-      <header className="dlv-admin-topbar"><div><span>DLAVIE INTERNAL</span><strong>Human Support Console</strong></div><div><i />{adminName}<button type="button" onClick={() => { sessionStorage.removeItem(TOKEN_KEY); setToken('') }}>Keluar</button></div></header>
-      <div className="dlv-admin-layout">
-        <aside className="dlv-admin-queue">
-          <div className="dlv-admin-queue-head"><span>ESCALATION QUEUE</span><strong>{queue.length} aktif</strong></div>
-          {queue.length === 0 ? <div className="dlv-admin-empty">Tidak ada sesi yang menunggu admin.</div> : queue.map((item) => (
-            <button type="button" key={item.id} onClick={() => setSelected(item.session_id)} className={selected === item.session_id ? 'is-active' : ''}>
-              <div><span className={`priority-${item.priority}`}>{item.priority}</span><small>{item.status === 'claimed' ? 'CLAIMED' : 'WAITING'}</small></div>
-              <strong>{item.session?.subject || 'Support request'}</strong><p>{item.summary || item.reason}</p>
-              <footer><span>{item.session?.username || item.user_id}</span><time>{time(item.created_at)}</time></footer>
-            </button>
-          ))}
-        </aside>
-
-        <main className="dlv-admin-thread">
-          {!selected || !thread ? <div className="dlv-admin-placeholder"><span>HUMAN HANDOFF</span><h2>Pilih sesi dari antrean.</h2><p>Transcript AI, User ID, subject, reference, dan alasan escalation akan muncul di sini.</p></div> : <>
-            <header className="dlv-admin-thread-head">
-              <div><span>{thread.session?.support_mode === 'admin' ? 'ADMIN ONLINE' : 'WAITING FOR ADMIN'}</span><h2>{thread.session?.subject || 'Support session'}</h2><p>{thread.session?.username} · {thread.session?.user_id} · {thread.session?.reference_id || 'No reference'}</p></div>
-              <div>{thread.session?.support_mode !== 'admin' ? <button type="button" className="dlv-admin-claim" onClick={() => void claim()} disabled={busy}>Claim session</button> : <button type="button" className="dlv-admin-resolve" onClick={() => void resolve()} disabled={busy}>Tandai selesai</button>}</div>
-            </header>
-            <section className="dlv-admin-case-meta"><div><small>REASON</small><strong>{thread.escalation?.reason || '—'}</strong></div><div><small>PRIORITY</small><strong>{thread.escalation?.priority || '—'}</strong></div><div><small>STARTED</small><strong>{time(thread.session?.started_at)}</strong></div><div><small>REFERENCE</small><strong>{thread.session?.reference_id || '—'}</strong></div></section>
-            <div className="dlv-admin-messages">
-              {(thread.messages || []).map((message) => <article key={message.id} className={`is-${message.role}`}><div><span>{message.role === 'assistant' ? 'DLavie Engine' : message.role === 'admin' ? (message.metadata?.admin || 'DLavie Admin') : message.role === 'user' ? (thread.session?.username || 'User') : 'System'}</span><time>{time(message.created_at)}</time></div><p>{message.content}</p></article>)}
-            </div>
-            <form className="dlv-admin-composer" onSubmit={send}><textarea value={draft} onChange={(event) => setDraft(event.target.value)} disabled={thread.session?.support_mode !== 'admin' || busy} placeholder={thread.session?.support_mode === 'admin' ? 'Balas sebagai DLavie Admin…' : 'Claim sesi terlebih dahulu…'} maxLength={1800} /><button disabled={!draft.trim() || thread.session?.support_mode !== 'admin' || busy}>Kirim <b>→</b></button></form>
-          </>}
-          {error && <div className="dlv-admin-floating-error">{error}<button onClick={() => setError('')}>×</button></div>}
-        </main>
-      </div>
-    </div>
-  )
+ const priorityRank={urgent:4,high:3,normal:2,low:1}
+ const stats={waiting:queue.filter(x=>x.status==='pending').length,claimed:queue.filter(x=>x.status==='claimed').length,priority:queue.filter(x=>x.priority==='urgent'||x.priority==='high').length}
+ const visible=queue.filter(item=>{if(filter==='waiting'&&item.status!=='pending')return false;if(filter==='claimed'&&item.status!=='claimed')return false;if(filter==='priority'&&!['urgent','high'].includes(item.priority))return false;const q=query.trim().toLowerCase();if(!q)return true;return`${item.session?.username||''} ${item.user_id} ${item.session?.subject||''} ${item.summary||''} ${item.reason||''} ${item.session?.reference_id||''}`.toLowerCase().includes(q)}).sort((a,b)=>priorityRank[b.priority]-priorityRank[a.priority]||new Date(b.session?.last_activity_at||b.created_at).getTime()-new Date(a.session?.last_activity_at||a.created_at).getTime())
+ const activeQueue=queue.find(x=>x.session_id===selected)
+ return <div className={`dlv-admin-shell is-v34${selected?' has-thread':''}`}>
+  <header className="dlv-admin-topbar"><div><span>DLAVIE INTERNAL</span><strong>Live Support Console · v34</strong></div><div><i/>{adminName}<button type="button" onClick={()=>{sessionStorage.removeItem(TOKEN_KEY);setToken('')}}>Keluar</button></div></header>
+  <div className="dlv-admin-layout">
+   <aside className="dlv-admin-queue">
+    <div className="dlv-admin-queue-tools"><div className="dlv-admin-queue-summary"><div><small>MENUNGGU</small><strong>{stats.waiting}</strong></div><div><small>DITANGANI</small><strong>{stats.claimed}</strong></div><div><small>PRIORITAS</small><strong>{stats.priority}</strong></div></div><input className="dlv-admin-queue-search" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Cari user, subject, reference…"/><div className="dlv-admin-filter-row"><button className={filter==='all'?'is-active':''} onClick={()=>setFilter('all')}>Semua {queue.length}</button><button className={filter==='waiting'?'is-active':''} onClick={()=>setFilter('waiting')}>Menunggu</button><button className={filter==='claimed'?'is-active':''} onClick={()=>setFilter('claimed')}>Ditangani</button><button className={filter==='priority'?'is-active':''} onClick={()=>setFilter('priority')}>High / Urgent</button></div></div>
+    <div className="dlv-admin-queue-list">{visible.length===0?<div className="dlv-admin-empty">Tidak ada sesi yang cocok dengan filter ini.</div>:visible.map(item=><button type="button" key={item.id} onClick={()=>{setSelected(item.session_id);setThread(null)}} className={selected===item.session_id?'is-active':''}><div className="dlv-admin-status-pair"><span className={`priority-${item.priority}`}>{item.priority}</span><small>{item.status==='claimed'?'DITANGANI':'MENUNGGU'} · {relative(item.session?.last_activity_at||item.created_at)}</small></div><strong>{item.session?.subject||'Support request'}</strong><p>{item.summary||item.reason}</p><footer><span>{item.session?.username||item.user_id}</span><time>{item.session?.reference_id||time(item.created_at)}</time></footer></button>)}</div>
+   </aside>
+   <main className="dlv-admin-thread">
+    {!selected||!thread?<div className="dlv-admin-placeholder"><span>LIVE SUPPORT</span><h2>Pilih percakapan.</h2><p>Kasus prioritas tinggi otomatis ditempatkan lebih atas. Cari berdasarkan username, reference, atau subject dari panel antrean.</p></div>:<>
+     <header className="dlv-admin-thread-head"><div><button className="dlv-admin-thread-back" type="button" onClick={()=>{setSelected('');setThread(null)}} aria-label="Kembali ke antrean">‹</button><span>{thread.session?.support_mode==='admin'?'ADMIN ONLINE':'WAITING FOR ADMIN'}</span><h2>{thread.session?.subject||'Support session'} <i className="dlv-admin-context-chip">{categoryLabel(thread.session?.category)}</i></h2><p>{thread.session?.username} · {thread.session?.user_id} · {thread.session?.reference_id||'Tanpa reference'}</p></div><div>{thread.session?.support_mode!=='admin'?<button type="button" className="dlv-admin-claim" onClick={()=>void claim()} disabled={busy}>{busy?'Mengambil…':'Claim & mulai chat'}</button>:<button type="button" className="dlv-admin-resolve" onClick={()=>void resolve()} disabled={busy}>Tandai selesai</button>}</div></header>
+     <section className="dlv-admin-case-meta is-v34"><div><small>USER</small><strong>{thread.session?.username||thread.session?.user_id||'—'}</strong></div><div><small>PRIORITAS</small><strong>{thread.escalation?.priority||activeQueue?.priority||'—'}</strong></div><div><small>DIMULAI</small><strong>{time(thread.session?.started_at)}</strong></div><div><small>AKTIVITAS</small><strong>{relative(thread.session?.last_activity_at)}</strong></div><div><small>REFERENCE</small><strong>{thread.session?.reference_id||'—'}</strong></div></section>
+     <div className="dlv-admin-messages" ref={messagesRef}>{(thread.messages||[]).map(message=><article key={message.id} className={`is-${message.role}`}><div><span>{message.role==='assistant'?'DLavie Support':message.role==='admin'?(message.metadata?.admin||'DLavie Admin'):message.role==='user'?(thread.session?.username||'User'):'System'}</span><time>{time(message.created_at)}</time></div><p>{message.content}</p></article>)}</div>
+     {thread.session?.support_mode==='admin'&&<div className="dlv-admin-quick-replies">{QUICK_REPLIES.map(text=><button type="button" key={text} onClick={()=>setDraft(text)}>{text.length>45?`${text.slice(0,45)}…`:text}</button>)}</div>}
+     <form className="dlv-admin-composer" onSubmit={send}><textarea value={draft} onChange={e=>setDraft(e.target.value)} onKeyDown={e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();e.currentTarget.form?.requestSubmit()}}} disabled={thread.session?.support_mode!=='admin'||busy} placeholder={thread.session?.support_mode==='admin'?'Balas sebagai DLavie Admin…':'Claim sesi terlebih dahulu…'} maxLength={1800}/><button disabled={!draft.trim()||thread.session?.support_mode!=='admin'||busy}>{busy?'…':'Kirim'} <b>→</b></button></form><div className="dlv-admin-composer-meta"><span>{draft.length}/1800</span><span>Ctrl/⌘ + Enter untuk kirim</span></div>
+    </>}
+    {error&&<div className="dlv-admin-floating-error">{error}<button onClick={()=>setError('')}>×</button></div>}
+   </main>
+  </div>
+ </div>
 }
