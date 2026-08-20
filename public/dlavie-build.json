@@ -1,5 +1,5 @@
 {
-  "release": "dlavie-utility-orb-reliability-polish-v29.1",
+  "release": "dlavie-contributor-credits-banner-v30",
   "built_for": "2026-08-20",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
@@ -7,16 +7,14 @@
   "provider": "H2H.id",
   "features": [
     "8155 safe fixed-price H2H storefront SKU retained",
-    "Utility Orb Help now reliably opens DLavie Assistant instead of closing while the panel remains hidden behind public documentation",
-    "Assistant and Music panels are raised above the public documentation layer when launched from the Utility Orb",
-    "hidden legacy launchers are retried briefly if their target panel has not mounted yet",
-    "Utility Orb keeps Music above, Help below and Close to the left of the center hub",
-    "expanded orbit receives a subtle theme-aware radial field and connector rail",
-    "center hub no longer rotates into a distracting diamond and the diagonal DLavie label is removed on mobile/expanded state",
-    "secondary orbit actions are visually smaller than the center hub for clearer hierarchy",
-    "labels, borders, focus states and light-mode shadows are refined for better readability and touch feedback",
-    "Music playback equalizer, unread Help badge, reduced-motion support and automatic panel-aware hiding remain active",
-    "existing v28 receipt, icon, official-domain logo and contextual banner improvements remain active"
+    "homepage promotional carousel now includes a dedicated Contributor Credits slide",
+    "Contributor Credits highlights Midtrans, GitHub, Supabase, H2H.id, React and Vite with official-domain favicon sourcing",
+    "credits are presented as technology and integration roles instead of an abandoned contributor rail",
+    "credit marks keep original brand colors on neutral mark surfaces while the surrounding banner follows the user's custom accent theme",
+    "mobile layout switches the credit grid to a compact two-column arrangement without crowding the banner copy",
+    "logo failures fall back to clean brand initials instead of unrelated or fabricated marks",
+    "existing v29.1 Utility Orb reliability and visual polish remain active",
+    "existing v28 receipt, icon, official-domain provider logo and contextual banner improvements remain active"
   ],
-  "note": "v29.1 fixes the guest-documentation z-index conflict that made Help appear to do nothing and gives the Utility Orb a calmer, more deliberate visual hierarchy."
+  "note": "v30 adds a professional Contributor Credits banner to the homepage carousel without reviving the previously removed contributor rail."
 }
