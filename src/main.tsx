@@ -17,6 +17,7 @@ import DigitalActivityFeed from './DigitalActivityFeed'
 import DigitalActivityPageSync from './DigitalActivityPageSync'
 import StateBridge from './StateBridge'
 import DLavieRadio from './DLavieRadio'
+import DLavieUtilityOrb from './DLavieUtilityOrb'
 import ActivityViewEnhancer from './ActivityViewEnhancer'
 import ActivityMetadataEnhancer from './ActivityMetadataEnhancer'
 import MidtransPaymentSystem from './MidtransPaymentSystem'
@@ -111,6 +112,7 @@ import './theme-market-coherence-v26.css'
 import './banner-logo-polish-v27.css'
 import './transaction-banner-polish-v28.css'
 import './receipt-action-dock-v28.css'
+import './dlavie-utility-orb-v29.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -154,6 +156,7 @@ createRoot(document.getElementById('root')!).render(
     <DLavieH2HAdmin />
     <DLavieRefundAdminQueue />
     <DLavieRadio />
+    <DLavieUtilityOrb />
     <App />
   </StrictMode>,
 )
