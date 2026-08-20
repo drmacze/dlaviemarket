@@ -40,6 +40,7 @@ import DLavieAssistantSessionReconciler from './DLavieAssistantSessionReconciler
 import DLavieAssistantUIV2 from './DLavieAssistantUIV2'
 import DLavieAssistantFastComposer from './DLavieAssistantFastComposer'
 import DLavieAssistantReceiptPolish from './DLavieAssistantReceiptPolish'
+import DLavieLiveSupportV34 from './DLavieLiveSupportV34'
 import DLavieAdminSupport from './DLavieAdminSupport'
 import DLavieH2HAdmin from './DLavieH2HAdmin'
 import DLavieVIPaymentAdmin from './DLavieVIPaymentAdmin'
@@ -99,6 +100,7 @@ import './dlavie-assistant-ui-v3.css'
 import './dlavie-assistant-ui-v3-links.css'
 import './dlavie-assistant-fast-composer.css'
 import './dlavie-admin-support.css'
+import './dlavie-live-support-v34.css'
 import './digiflazz-admin.css'
 import './digiflazz-admin-console-v15.css'
 import './h2h-admin-ui-v18.css'
@@ -158,6 +160,7 @@ createRoot(document.getElementById('root')!).render(
     <DLavieAssistantUIV2 />
     <DLavieAssistantFastComposer />
     <DLavieAssistantReceiptPolish />
+    <DLavieLiveSupportV34 />
     <DLavieAdminSupport />
     <DLavieH2HAdmin />
     <DLavieVIPaymentAdmin />
