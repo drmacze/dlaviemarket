@@ -1,0 +1,278 @@
+/* DLavie v28 — transaction sheets, private receipt, icon language and banner hierarchy */
+
+/* Modal state owns the viewport. Floating utilities must never sit above checkout/receipt. */
+html[data-market-sheet]{overflow:hidden!important}
+html[data-market-sheet] .ambient-player,
+html[data-market-sheet] .theme-dock,
+html[data-market-sheet] .dlv-assistant,
+html[data-market-sheet] .dlv-assistant-launcher,
+html[data-market-sheet] .dlv-assistant-toast{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+  transform:translateY(12px) scale(.96)!important;
+}
+
+/* Checkout/result bottom sheet */
+.dlv21-sheet-backdrop{
+  z-index:68000!important;
+  background:color-mix(in srgb,#020403,transparent 18%)!important;
+  backdrop-filter:blur(16px) saturate(92%)!important;
+  -webkit-backdrop-filter:blur(16px) saturate(92%)!important;
+}
+.dlv21-sheet{
+  color:var(--theme-ink)!important;
+  border-color:var(--theme-line-strong)!important;
+  background:
+    radial-gradient(circle at 15% 0,color-mix(in srgb,var(--accent),transparent 92%),transparent 34%),
+    var(--theme-panel-solid)!important;
+  box-shadow:0 38px 110px rgba(0,0,0,.46)!important;
+}
+.dlv21-sheet-close{
+  width:40px!important;height:40px!important;
+  border-radius:14px!important;
+  border-color:var(--theme-line)!important;
+  background:var(--theme-soft)!important;
+  color:var(--theme-ink)!important;
+}
+.dlv21-sheet-kicker{color:var(--accent)!important}
+.dlv21-receipt{gap:14px!important}
+.dlv21-receipt-product{
+  padding:14px!important;
+  border-color:var(--theme-line)!important;
+  background:var(--theme-soft)!important;
+}
+.dlv21-receipt-product .dlv-brand-icon{width:54px!important;height:54px!important;flex:0 0 auto}
+.dlv21-total{padding:15px 0!important;border-color:var(--theme-line)!important}
+.dlv21-total span{color:var(--theme-muted)!important}
+.dlv21-total strong{font-size:22px!important;color:var(--theme-ink)!important;letter-spacing:-.035em}
+.dlv21-desc{background:var(--theme-soft)!important;color:var(--theme-muted)!important}
+.dlv21-primary{
+  min-height:54px!important;
+  border-radius:16px!important;
+  background:var(--accent)!important;
+  color:var(--accent-contrast,#fff)!important;
+  box-shadow:0 14px 34px color-mix(in srgb,var(--accent),transparent 80%)!important;
+}
+:root[data-accent="mono"] .dlv21-primary{color:var(--theme-inverse)!important}
+
+/* Remove the legacy square glyph and use a clean receipt action. */
+.dlv22-receipt-open{
+  min-height:48px!important;
+  height:auto!important;
+  padding:0 16px!important;
+  border-radius:15px!important;
+  border-color:color-mix(in srgb,var(--accent),transparent 58%)!important;
+  background:color-mix(in srgb,var(--accent),var(--theme-panel-solid) 93%)!important;
+  color:var(--accent)!important;
+  font-size:0!important;
+  font-weight:850!important;
+}
+.dlv22-receipt-open:before{
+  content:"";
+  display:inline-block;
+  width:16px;height:16px;margin-right:9px;vertical-align:-4px;
+  border:1.7px solid currentColor;border-radius:3px;
+  box-shadow:inset 0 -4px 0 color-mix(in srgb,currentColor,transparent 88%);
+}
+.dlv22-receipt-open:after{content:"Buka struk lengkap";font-size:10px;letter-spacing:.01em}
+
+/* Private receipt overlays every site utility, including sticky navigation. */
+.dlv22-receipt-backdrop,.dlv28-receipt-backdrop{
+  z-index:90000!important;
+  padding:20px!important;
+  background:rgba(3,5,4,.88)!important;
+  backdrop-filter:blur(22px) saturate(90%)!important;
+  -webkit-backdrop-filter:blur(22px) saturate(90%)!important;
+}
+.dlv28-receipt-center{
+  width:min(650px,100%)!important;
+  max-height:calc(100dvh - 40px)!important;
+  padding:18px!important;
+  border:1px solid var(--theme-line-strong)!important;
+  border-radius:26px!important;
+  background:var(--theme-panel-solid)!important;
+  box-shadow:0 40px 130px rgba(0,0,0,.62)!important;
+  scrollbar-width:thin;
+}
+.dlv28-receipt-header{
+  position:relative;
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:18px!important;
+  margin:0 2px 15px!important;
+}
+.dlv28-receipt-header>div{min-width:0}
+.dlv28-receipt-header small{
+  display:flex;align-items:center;gap:6px;
+  color:var(--accent)!important;font-size:8px!important;font-weight:900!important;letter-spacing:.15em!important
+}
+.dlv28-receipt-header small svg{width:13px;height:13px}
+.dlv28-receipt-header h2{margin:7px 0 4px!important;color:var(--theme-ink)!important;font-size:28px!important;line-height:1!important;letter-spacing:-.045em!important}
+.dlv28-receipt-header p{margin:0!important;color:var(--theme-muted)!important;font-size:9px!important;line-height:1.45!important}
+.dlv28-receipt-header>button{
+  flex:0 0 auto;display:grid;place-items:center;width:42px!important;height:42px!important;padding:0!important;
+  border:1px solid var(--theme-line)!important;border-radius:14px!important;background:var(--theme-soft)!important;color:var(--theme-ink)!important
+}
+.dlv28-receipt-header>button svg{width:19px;height:19px}
+
+/* The receipt is a document: isolate it from global dark/light heading rules. */
+.dlv28-receipt-paper{
+  position:relative;
+  padding:25px!important;
+  overflow:hidden;
+  border:1px solid #e2e6e2!important;
+  border-radius:22px!important;
+  background:#fafaf6!important;
+  color:#15201b!important;
+  box-shadow:0 18px 55px rgba(0,0,0,.16),inset 0 1px #fff!important;
+}
+.dlv28-receipt-paper:before{
+  content:"";position:absolute;inset:0 0 auto;height:5px;
+  background:linear-gradient(90deg,#17231e,color-mix(in srgb,var(--accent),#1a6d50 35%));
+}
+.dlv28-receipt-paper :is(h1,h2,h3,strong,b,code,em){color:#15201b!important}
+.dlv28-receipt-paper :is(p,small,span){color:inherit}
+.dlv28-receipt-brand{
+  padding:4px 0 18px!important;
+  border-bottom:1px dashed #c8cfca!important;
+}
+.dlv28-receipt-brand>div b{color:#111a16!important;font-size:30px!important;letter-spacing:-.055em!important}
+.dlv28-receipt-brand>div span{color:#6c7771!important;font-size:8px!important;letter-spacing:.18em!important}
+.dlv28-paper-mark{
+  display:grid;place-items:center;width:48px;height:48px;border:1px solid #d9dfda;border-radius:14px;background:#fff;color:#1d2b24!important
+}
+.dlv28-paper-mark svg{width:22px;height:22px}
+
+.dlv28-receipt-status{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
+  padding:19px 0 16px;border-bottom:1px dashed #c8cfca
+}
+.dlv28-receipt-status>div{display:grid;gap:5px;min-width:0}
+.dlv28-receipt-status small{color:#65716b!important;font-size:7px!important;font-weight:900!important;letter-spacing:.14em!important}
+.dlv28-receipt-status strong{font-size:31px!important;line-height:1!important;letter-spacing:-.045em!important}
+.dlv28-receipt-status code{overflow:hidden;text-overflow:ellipsis;color:#68736e!important;font-size:8px!important;white-space:nowrap}
+.dlv28-receipt-status>span{
+  flex:0 0 auto;margin-top:2px;padding:7px 9px;border:1px solid #d8dfda;border-radius:999px;background:#eef2ef;
+  color:#304139!important;font-size:7px!important;font-weight:850!important;letter-spacing:.04em
+}
+.dlv28-receipt-status>span.is-success,.dlv28-receipt-status>span.is-sukses{background:#e8f4ed;border-color:#bfdcc9;color:#246343!important}
+.dlv28-receipt-status>span.is-failed,.dlv28-receipt-status>span.is-gagal{background:#f8eaea;border-color:#e7c2c2;color:#8e3939!important}
+.dlv28-receipt-status>span.is-refunded{background:#eef0f7;border-color:#cdd2e4;color:#4a557b!important}
+.dlv28-receipt-status>span.is-pending,.dlv28-receipt-status>span.is-processing{background:#f6f0df;border-color:#e5d5a8;color:#795f1d!important}
+
+.dlv28-receipt-product-card{
+  display:grid;grid-template-columns:56px minmax(0,1fr);align-items:center;gap:13px;
+  margin:18px 0 0;padding:13px;border:1px solid #dfe4e0;border-radius:17px;background:#fff
+}
+.dlv28-receipt-product-card .dlv-brand-icon{width:56px!important;height:56px!important;border-radius:15px!important}
+.dlv28-receipt-product-card>div{display:grid;gap:3px;min-width:0}
+.dlv28-receipt-product-card small{color:#78827d!important;font-size:7px!important;font-weight:850!important;letter-spacing:.1em!important;text-transform:uppercase}
+.dlv28-receipt-product-card b{font-size:14px!important;line-height:1.3!important}
+.dlv28-receipt-product-card em{color:#7c8781!important;font-size:8px!important;font-style:normal!important}
+
+.dlv28-receipt-total{
+  display:flex;align-items:end;justify-content:space-between;gap:12px;padding:18px 0 14px;border-bottom:1px solid #dde2de
+}
+.dlv28-receipt-total span{color:#6f7a74!important;font-size:8px!important;font-weight:700!important}
+.dlv28-receipt-total strong{font-size:27px!important;line-height:1!important;letter-spacing:-.04em!important;white-space:nowrap}
+.dlv28-receipt-rows p{
+  padding:11px 0!important;grid-template-columns:minmax(88px,32%) minmax(0,1fr)!important;gap:12px!important;border-bottom:1px solid #e1e5e2!important
+}
+.dlv28-receipt-rows span{color:#6f7b74!important;font-size:8px!important}
+.dlv28-receipt-rows b{color:#17211c!important;font-size:9px!important;line-height:1.4!important;text-align:right!important;overflow-wrap:anywhere}
+.dlv28-receipt-note{margin-top:14px!important;padding:13px!important;border:1px solid #dce4de;border-radius:13px!important;background:#edf2ee!important;color:#26342e!important;font-size:8px!important;line-height:1.55!important}
+.dlv28-receipt-paper footer{padding-top:18px!important}
+.dlv28-receipt-paper footer b{color:#26342e!important;font-size:9px!important}
+.dlv28-receipt-paper footer span{color:#748078!important;font-size:7px!important;line-height:1.45!important}
+
+.dlv28-receipt-actions{
+  display:grid!important;grid-template-columns:1fr 1fr!important;gap:9px!important;margin-top:11px!important
+}
+.dlv28-receipt-actions button{
+  min-height:58px!important;padding:10px 13px!important;display:grid!important;grid-template-columns:28px 1fr!important;align-items:center!important;gap:10px!important;
+  border:1px solid var(--theme-line)!important;border-radius:15px!important;background:var(--theme-soft)!important;color:var(--theme-ink)!important;text-align:left!important
+}
+.dlv28-receipt-actions button:last-child{background:var(--accent)!important;border-color:var(--accent)!important;color:var(--accent-contrast,#fff)!important}
+:root[data-accent="mono"] .dlv28-receipt-actions button:last-child{color:var(--theme-inverse)!important}
+.dlv28-receipt-actions button>svg{width:22px;height:22px}
+.dlv28-receipt-actions button>span{display:grid;gap:2px}
+.dlv28-receipt-actions button b{color:inherit!important;font-size:9px!important}
+.dlv28-receipt-actions button small{color:color-mix(in srgb,currentColor,transparent 35%)!important;font-size:7px!important;font-weight:500!important}
+.dlv28-privacy-note{display:flex;align-items:flex-start;gap:7px;margin:10px 3px 0!important;color:var(--theme-muted)!important;font-size:7px!important;line-height:1.5!important}
+.dlv28-privacy-note svg{width:13px;height:13px;flex:0 0 auto;margin-top:1px}
+
+/* Official marks stay crisp and neutral; category marks use a clearer shape language. */
+.dlv-brand-icon.is-official img{width:80%!important;height:80%!important;max-width:80%!important;max-height:80%!important}
+.dlv-category-symbol.is-card,.dlv-category-symbol.is-ticket,.dlv-category-symbol.is-play{color:currentColor}
+.dlv-category-symbol.is-card svg,.dlv-category-symbol.is-ticket svg,.dlv-category-symbol.is-play svg{width:53%!important;height:53%!important}
+
+/* Banner v28: cleaner information hierarchy and useful context chips. */
+.dlv28-banner{--promo-radius:24px}
+.dlv28-banner .dlv-promo-viewport{box-shadow:0 20px 60px color-mix(in srgb,var(--theme-shadow),transparent 8%)!important}
+.dlv28-banner .dlv25-banner-card{min-height:286px!important;padding:34px 38px 40px!important;grid-template-columns:minmax(0,1.35fr) minmax(160px,.65fr)!important}
+.dlv28-banner .dlv25-banner-copy strong{max-width:650px!important}
+.dlv28-banner-chips{display:flex!important;flex-wrap:wrap;gap:6px;margin-top:16px}
+.dlv28-banner-chips>i{
+  padding:6px 9px;border:1px solid var(--theme-line);border-radius:999px;background:color-mix(in srgb,var(--theme-panel-solid),transparent 12%);
+  color:var(--theme-muted)!important;font-size:7px!important;font-style:normal!important;font-weight:750!important;letter-spacing:.02em
+}
+.dlv28-banner .dlv25-banner-copy>b{margin-top:17px!important}
+.dlv28-banner .dlv25-banner-art>b{opacity:.58}
+.dlv28-banner-count{
+  position:absolute;z-index:7;right:17px;top:16px;padding:6px 8px;border:1px solid var(--theme-line);border-radius:999px;
+  background:color-mix(in srgb,var(--theme-panel-solid),transparent 10%);color:var(--theme-muted);font-size:7px;font-weight:850;letter-spacing:.08em;backdrop-filter:blur(12px)
+}
+.dlv-promo-market-host .dlv28-banner .dlv25-banner-card{min-height:230px!important;padding:27px 30px 36px!important}
+.dlv-promo-market-host .dlv28-banner .dlv25-banner-copy strong{font-size:clamp(27px,4vw,45px)!important}
+
+@media(max-width:700px){
+  .dlv21-sheet-backdrop{align-items:flex-end!important;justify-content:center!important;padding:0!important}
+  .dlv21-sheet{
+    width:100%!important;max-width:none!important;max-height:88dvh!important;padding:22px 18px max(24px,calc(env(safe-area-inset-bottom) + 18px))!important;
+    border-left:0!important;border-right:0!important;border-bottom:0!important;border-radius:27px 27px 0 0!important
+  }
+  .dlv21-sheet:before{
+    content:"";position:sticky;z-index:4;top:0;display:block;width:42px;height:4px;margin:-10px auto 15px;border-radius:999px;background:var(--theme-line-strong)
+  }
+  .dlv21-receipt-product .dlv-brand-icon{width:50px!important;height:50px!important}
+  .dlv22-receipt-open{min-height:50px!important}
+
+  .dlv22-receipt-backdrop,.dlv28-receipt-backdrop{align-items:flex-end!important;padding:0!important}
+  .dlv28-receipt-center{
+    width:100%!important;max-height:94dvh!important;padding:18px 14px max(18px,calc(env(safe-area-inset-bottom) + 12px))!important;
+    border-left:0!important;border-right:0!important;border-bottom:0!important;border-radius:28px 28px 0 0!important
+  }
+  .dlv28-receipt-center:before{content:"";display:block;width:44px;height:4px;margin:-6px auto 14px;border-radius:99px;background:var(--theme-line-strong)}
+  .dlv28-receipt-header h2{font-size:25px!important}.dlv28-receipt-header p{font-size:8px!important}.dlv28-receipt-header>button{width:40px!important;height:40px!important}
+  .dlv28-receipt-paper{padding:19px!important;border-radius:19px!important}
+  .dlv28-receipt-brand>div b{font-size:27px!important}.dlv28-paper-mark{width:44px;height:44px}
+  .dlv28-receipt-status{padding:17px 0 15px}.dlv28-receipt-status strong{font-size:28px!important}.dlv28-receipt-status>span{font-size:6.5px!important;padding:6px 8px}
+  .dlv28-receipt-product-card{grid-template-columns:50px minmax(0,1fr);padding:11px;margin-top:15px}.dlv28-receipt-product-card .dlv-brand-icon{width:50px!important;height:50px!important}
+  .dlv28-receipt-total{padding:16px 0 13px}.dlv28-receipt-total strong{font-size:24px!important}
+  .dlv28-receipt-rows p{grid-template-columns:82px minmax(0,1fr)!important;padding:10px 0!important}
+  .dlv28-receipt-actions{grid-template-columns:1fr!important}.dlv28-receipt-actions button{min-height:54px!important}
+
+  .dlv28-banner{--promo-radius:21px}
+  .dlv28-banner .dlv25-banner-card{min-height:222px!important;padding:22px 17px 40px!important;grid-template-columns:minmax(0,1fr) 78px!important}
+  .dlv28-banner .dlv25-banner-copy strong{font-size:27px!important;line-height:.97!important}
+  .dlv28-banner .dlv25-banner-copy em{font-size:9px!important;line-height:1.45!important}
+  .dlv28-banner-chips{gap:5px;margin-top:12px}.dlv28-banner-chips>i{padding:5px 7px;font-size:6.5px!important}
+  .dlv28-banner .dlv25-banner-copy>b{margin-top:13px!important}
+  .dlv28-banner-count{right:11px;top:11px;font-size:6px;padding:5px 7px}
+  .dlv28-banner .dlv25-banner-art>i{width:64px!important;height:64px!important;font-size:21px!important}
+  .dlv-promo-market-host .dlv28-banner .dlv25-banner-card{min-height:205px!important;padding:20px 16px 36px!important}
+  .dlv-promo-market-host .dlv28-banner .dlv25-banner-copy strong{font-size:24px!important}
+}
+
+@media(max-width:390px){
+  .dlv28-banner-chips>i:nth-child(n+4){display:none}
+  .dlv28-receipt-paper{padding:17px!important}
+  .dlv28-receipt-rows p{grid-template-columns:74px minmax(0,1fr)!important}
+}
+
+@media print{
+  html[data-dlavie-print-receipt] .dlv28-receipt-paper{border:0!important;box-shadow:none!important;border-radius:0!important}
+  html[data-dlavie-print-receipt] .dlv28-receipt-paper:before{display:none!important}
+}
