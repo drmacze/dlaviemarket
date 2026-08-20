@@ -1,0 +1,165 @@
+/* DLavie v29.1 — Utility Orb reliability + visual polish */
+
+/* Guest documentation is a fixed layer at z-index 4100. Panels opened from the
+   orb must live above it, otherwise the orb closes while the panel stays hidden. */
+html[data-dlv-utility-orb="1"] .dlv-assistant.is-open{
+  z-index:57500!important;
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+}
+html[data-dlv-utility-orb="1"] .dlv-assistant.is-open .dlv-assistant-panel{
+  position:relative!important;
+  z-index:1!important;
+  box-shadow:0 34px 110px color-mix(in srgb,var(--theme-shadow),transparent 0%)!important;
+}
+html[data-dlv-utility-orb="1"] .ambient-player{
+  z-index:57000!important;
+}
+html[data-dlv-utility-orb="1"] .ambient-panel{
+  position:relative!important;
+  z-index:1!important;
+  box-shadow:0 30px 96px color-mix(in srgb,var(--theme-shadow),transparent 0%)!important;
+}
+
+/* More composed orbit geometry. */
+.dlv-utility-orb{
+  --orb-size:58px!important;
+  --orb-step:74px!important;
+}
+.dlv-utility-orb:before{
+  content:"";
+  position:absolute;
+  z-index:-2;
+  left:50%;top:50%;
+  width:190px;height:190px;
+  translate:-50% -50%;
+  border-radius:50%;
+  background:radial-gradient(circle,color-mix(in srgb,var(--accent),transparent 90%) 0,transparent 62%);
+  opacity:0;
+  transform:scale(.72);
+  transition:opacity .28s ease,transform .38s cubic-bezier(.2,.8,.2,1);
+  pointer-events:none;
+}
+.dlv-utility-orb:after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  left:calc(50% - .5px);
+  top:calc(var(--orb-step) * -1 + 25px);
+  width:1px;
+  height:calc((var(--orb-step) * 2) + 8px);
+  background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--accent),transparent 72%) 18%,color-mix(in srgb,var(--accent),transparent 80%) 50%,color-mix(in srgb,var(--accent),transparent 72%) 82%,transparent);
+  opacity:0;
+  transform:scaleY(.45);
+  transition:opacity .22s ease,transform .38s cubic-bezier(.2,.8,.2,1);
+  transform-origin:center;
+  pointer-events:none;
+}
+.dlv-utility-orb.is-expanded:before{opacity:1;transform:scale(1)}
+.dlv-utility-orb.is-expanded:after{opacity:1;transform:scaleY(1)}
+
+.dlv-orbit-core{
+  border-radius:20px!important;
+  background:
+    radial-gradient(circle at 27% 20%,color-mix(in srgb,var(--accent),transparent 72%),transparent 42%),
+    linear-gradient(145deg,color-mix(in srgb,var(--theme-panel-solid),white 3%),var(--theme-panel-solid))!important;
+  box-shadow:0 20px 52px var(--theme-shadow),0 0 0 1px color-mix(in srgb,var(--accent),transparent 90%) inset!important;
+}
+.dlv-utility-orb.is-expanded .dlv-orbit-core{
+  transform:scale(.92)!important;
+  border-color:color-mix(in srgb,var(--accent),transparent 38%)!important;
+}
+.dlv-utility-orb.is-expanded .dlv-orbit-core-label{opacity:0!important;transform:translateX(6px)!important}
+.dlv-utility-orb.is-expanded .dlv-orbit-mark{transform:rotate(90deg) scale(.92)}
+
+/* Action buttons are smaller than the hub so the hierarchy is obvious. */
+.dlv-orbit-item{
+  inset:4px auto auto 4px!important;
+  width:50px!important;
+  height:50px!important;
+  border-radius:17px!important;
+  box-shadow:0 15px 38px var(--theme-shadow)!important;
+}
+.dlv-orbit-item.is-close{
+  inset:7px auto auto 7px!important;
+  width:44px!important;
+  height:44px!important;
+  border-radius:15px!important;
+}
+.dlv-orbit-item.is-close:after{
+  content:"";
+  position:absolute;
+  left:100%;top:50%;
+  width:30px;height:1px;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--accent),transparent 72%),transparent);
+  opacity:.7;
+  pointer-events:none;
+}
+.dlv-orbit-item svg{width:20px!important;height:20px!important}
+.dlv-orbit-item.is-close svg{width:17px!important;height:17px!important}
+.dlv-orbit-item>span{
+  padding:6px 10px!important;
+  border-radius:999px!important;
+  color:var(--theme-ink)!important;
+  background:color-mix(in srgb,var(--theme-panel-solid),transparent 2%)!important;
+  font-size:7.5px!important;
+  font-weight:850!important;
+  letter-spacing:.025em!important;
+  box-shadow:0 10px 28px var(--theme-shadow)!important;
+}
+.dlv-orbit-item.is-music{
+  background:linear-gradient(145deg,color-mix(in srgb,var(--accent),var(--theme-panel-solid) 91%),var(--theme-panel-solid))!important;
+}
+.dlv-orbit-item.is-help{
+  background:linear-gradient(145deg,color-mix(in srgb,var(--theme-ink),var(--theme-panel-solid) 96%),var(--theme-panel-solid))!important;
+}
+.dlv-orbit-item.is-close{background:var(--theme-soft)!important}
+
+/* Better touch feedback without flashy movement. */
+.dlv-orbit-item:active{filter:brightness(.96);transition-duration:.08s!important}
+.dlv-orbit-core:focus-visible,.dlv-orbit-item:focus-visible{
+  outline:2px solid color-mix(in srgb,var(--accent),transparent 28%);
+  outline-offset:3px;
+}
+
+/* The open assistant/music panels should feel connected to the orb visually. */
+html[data-dlv-utility-orb="1"] .dlv-assistant.is-open .dlv-assistant-panel,
+html[data-dlv-utility-orb="1"] .ambient-panel{
+  border-color:color-mix(in srgb,var(--accent),var(--theme-line-strong) 82%)!important;
+}
+
+:root[data-theme="light"] .dlv-orbit-core,
+:root[data-theme="light"] .dlv-orbit-item{
+  border-color:rgba(20,28,24,.12)!important;
+  box-shadow:0 15px 38px rgba(18,24,21,.12)!important;
+}
+:root[data-theme="light"] .dlv-orbit-item>span{
+  background:rgba(255,255,255,.96)!important;
+  border-color:rgba(20,28,24,.10)!important;
+  box-shadow:0 9px 24px rgba(18,24,21,.10)!important;
+}
+
+@media(max-width:700px){
+  .dlv-utility-orb{--orb-size:56px!important;--orb-step:70px!important;right:16px!important}
+  .dlv-orbit-item{inset:4px auto auto 4px!important;width:48px!important;height:48px!important;border-radius:16px!important}
+  .dlv-orbit-item.is-close{inset:7px auto auto 7px!important;width:42px!important;height:42px!important}
+  .dlv-orbit-core{border-radius:19px!important}
+  .dlv-orbit-core-label{display:none!important}
+  .dlv-orbit-item>span{font-size:7px!important;padding:5px 8px!important}
+  html[data-dlv-utility-orb="1"] .dlv-assistant.is-open{
+    right:12px!important;
+    bottom:max(16px,calc(env(safe-area-inset-bottom) + 10px))!important;
+  }
+  html[data-dlv-utility-orb="1"] .dlv-assistant.is-open .dlv-assistant-panel{
+    width:min(410px,calc(100vw - 24px))!important;
+    height:min(690px,calc(100dvh - 96px))!important;
+  }
+  html[data-dlv-utility-orb="1"] .ambient-player{
+    right:14px!important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .dlv-utility-orb:before,.dlv-utility-orb:after,.dlv-orbit-mark{transition:none!important}
+}
