@@ -38,8 +38,56 @@ function BannerSlider({slides,context}:{slides:BannerSlide[];context:BannerConte
 export default function DLaviePromoBanners(){
  const [homeHost,setHomeHost]=useState<HTMLElement|null>(null),[marketHost,setMarketHost]=useState<HTMLElement|null>(null),[marketContext,setMarketContext]=useState<BannerContext|null>(null)
  const owned=useRef<HTMLElement[]>([])
- useEffect(()=>{let queued=false;const ensure=(cls:string,parent:HTMLElement,before:Element|null)=>{let node=parent.querySelector<HTMLElement>(`:scope > .${cls}`);if(!node){node=document.createElement('div');node.className=cls;parent.insertBefore(node,before);owned.current.push(node)}return node};const hide=(s:string)=>document.querySelectorAll<HTMLElement>(s).forEach(n=>n.hidden=true)
-  const scan=()=>{queued=false;const raw=location.hash.replace(/^#\/?/,'');const inMarket=raw.toLowerCase().startsWith('market');if(!inMarket){const main=document.querySelector<HTMLElement>('main#top,main');if(main){const node=ensure('dlv-promo-home-host',main,main.firstElementChild);node.hidden=false;setHomeHost(node)}hide('.dlv-promo-market-host');setMarketHost(null);setMarketContext(null);return}hide('.dlv-promo-home-host');setHomeHost(null);const crumb=Array.from(document.querySelectorAll<HTMLElement>('.dlv21-breadcrumb')).find(x=>x.offsetParent!==null);const params=new URLSearchParams(raw.split('?')[1]||'');const signal=`${crumb?.textContent||''} ${decodeURIComponent(params.get('category')||'')}`.toLowerCase();const ctx:BannerContext|null=signal.includes('voucher')||signal.includes('game')?'game':signal.includes('paket data')||signal.includes('data')?'data':null;const shell=document.querySelector<HTMLElement>('.dlv21-market .dlv21-shell');const section=crumb?.closest<HTMLElement>('.dlv21-section')||shell?.querySelector<HTMLElement>('.dlv21-section');if(shell&&section&&ctx){const node=ensure('dlv-promo-market-host',shell,section);node.hidden=false;setMarketHost(node);setMarketContext(ctx)}else{hide('.dlv-promo-market-host');setMarketHost(null);setMarketContext(null)}}
-  const queue=()=>{if(!queued){queued=true;requestAnimationFrame(scan)}};const ob=new MutationObserver(queue);ob.observe(document.body,{childList:true,subtree:true,characterData:true});addEventListener('hashchange',queue);queue();return()=>{ob.disconnect();removeEventListener('hashchange',queue);owned.current.forEach(n=>n.remove())}},[])
+ useEffect(()=>{
+  let queued=false
+  const ensure=(cls:string,parent:HTMLElement,before:Element|null)=>{let node=parent.querySelector<HTMLElement>(`:scope > .${cls}`);if(!node){node=document.createElement('div');node.className=cls;parent.insertBefore(node,before);owned.current.push(node)}return node}
+  const hide=(s:string)=>document.querySelectorAll<HTMLElement>(s).forEach(n=>n.hidden=true)
+  const syncNavClearance=()=>{
+   const nav=document.querySelector<HTMLElement>('.site-nav-wrap')
+   const h=nav?Math.max(68,Math.ceil(nav.getBoundingClientRect().height)):76
+   document.documentElement.style.setProperty('--dlv-nav-clearance',`${h}px`)
+  }
+  const scan=()=>{
+   queued=false
+   syncNavClearance()
+   const raw=location.hash.replace(/^#\/?/,'')
+   const inMarket=raw.toLowerCase().startsWith('market')
+   if(!inMarket){
+    const app=document.querySelector<HTMLElement>('.app')
+    const main=document.querySelector<HTMLElement>('main#top,main')
+    if(app&&main){
+     const node=ensure('dlv-promo-home-host',app,main)
+     node.hidden=false
+     setHomeHost(node)
+    }
+    hide('.dlv-promo-market-host')
+    setMarketHost(null)
+    setMarketContext(null)
+    return
+   }
+   hide('.dlv-promo-home-host')
+   setHomeHost(null)
+   const crumb=Array.from(document.querySelectorAll<HTMLElement>('.dlv21-breadcrumb')).find(x=>x.offsetParent!==null)
+   const params=new URLSearchParams(raw.split('?')[1]||'')
+   const signal=`${crumb?.textContent||''} ${decodeURIComponent(params.get('category')||'')}`.toLowerCase()
+   const ctx:BannerContext|null=signal.includes('voucher')||signal.includes('game')?'game':signal.includes('paket data')||signal.includes('data')?'data':null
+   const shell=document.querySelector<HTMLElement>('.dlv21-market .dlv21-shell')
+   const section=crumb?.closest<HTMLElement>('.dlv21-section')||shell?.querySelector<HTMLElement>('.dlv21-section')
+   if(shell&&section&&ctx){const node=ensure('dlv-promo-market-host',shell,section);node.hidden=false;setMarketHost(node);setMarketContext(ctx)}else{hide('.dlv-promo-market-host');setMarketHost(null);setMarketContext(null)}
+  }
+  const queue=()=>{if(!queued){queued=true;requestAnimationFrame(scan)}}
+  const ob=new MutationObserver(queue)
+  ob.observe(document.body,{childList:true,subtree:true,characterData:true})
+  addEventListener('hashchange',queue)
+  addEventListener('resize',queue,{passive:true})
+  queue()
+  return()=>{
+   ob.disconnect()
+   removeEventListener('hashchange',queue)
+   removeEventListener('resize',queue)
+   document.documentElement.style.removeProperty('--dlv-nav-clearance')
+   owned.current.forEach(n=>n.remove())
+  }
+ },[])
  return <>{homeHost&&createPortal(<BannerSlider slides={homeSlides} context="home"/>,homeHost)}{marketHost&&marketContext==='game'&&createPortal(<BannerSlider slides={gameSlides} context="game"/>,marketHost)}{marketHost&&marketContext==='data'&&createPortal(<BannerSlider slides={dataSlides} context="data"/>,marketHost)}</>
 }
