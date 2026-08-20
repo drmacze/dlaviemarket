@@ -1,13 +1,25 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
+import './contributor-banner-v30.css'
 
 type BannerContext='home'|'game'|'data'|'pulsa'|'wallet'|'emoney'|'pln'|'streaming'
-type BannerSlide={id:string;label:string;title:string;body:string;cta:string;route:string;symbol:string;chips:string[];tone:'market'|'promo'|'trust'|'game'|'data'}
+type CreditMark={name:string;domain:string;role:string;initials:string}
+type BannerSlide={id:string;label:string;title:string;body:string;cta?:string;route?:string;symbol?:string;chips:string[];credits?:CreditMark[];tone:'market'|'promo'|'trust'|'game'|'data'|'credits'}
+
+const contributorCredits:CreditMark[]=[
+ {name:'Midtrans',domain:'midtrans.com',role:'Payments',initials:'M'},
+ {name:'GitHub',domain:'github.com',role:'Source & Pages',initials:'GH'},
+ {name:'Supabase',domain:'supabase.com',role:'Backend & Data',initials:'S'},
+ {name:'H2H.id',domain:'h2h.id',role:'Digital Catalog',initials:'H2H'},
+ {name:'React',domain:'react.dev',role:'Interface',initials:'R'},
+ {name:'Vite',domain:'vite.dev',role:'Build System',initials:'V'},
+]
 
 const homeSlides:BannerSlide[]=[
  {id:'home-market',label:'DLAVIE DIGITAL MARKET',title:'Kebutuhan digital, dalam satu alur.',body:'Pulsa, paket data, PLN, e-wallet, voucher game, dan layanan digital lain dari satu wallet.',cta:'Buka market',route:'#/market',symbol:'D',chips:['Pulsa','Paket Data','PLN','Voucher'],tone:'market'},
  {id:'home-promo',label:'TEMUKAN LEBIH CEPAT',title:'Pilih produk tanpa menghafal kode supplier.',body:'Cari berdasarkan kategori, operator, game, brand, atau kebutuhan. Harga dan detail tetap ditampilkan sebelum checkout.',cta:'Jelajahi produk',route:'#/market',symbol:'⌕',chips:['Cari brand','Filter kategori','Harga jelas'],tone:'promo'},
  {id:'home-trust',label:'TRANSAKSI DLAVIE',title:'Periksa dulu. Bayar setelah yakin.',body:'Tujuan, produk, nominal, dan persetujuan ditampilkan kembali sebelum transaksi dikirim.',cta:'Lihat cara kerja',route:'#/market',symbol:'✓',chips:['Periksa data','Konfirmasi','Struk privat'],tone:'trust'},
+ {id:'home-credits',label:'CONTRIBUTOR CREDITS',title:'Dibangun di atas teknologi yang kami percaya.',body:'DLavie menggabungkan layanan pembayaran, backend, katalog digital, source control, dan frontend modern dalam satu pengalaman yang konsisten.',chips:['Payments','Backend','Source & Deploy','Catalog','Frontend'],credits:contributorCredits,tone:'credits'},
 ]
 const gameSlides:BannerSlide[]=[
  {id:'game-free-fire',label:'FREE FIRE',title:'Top up diamond tanpa mencari SKU.',body:'Pilih Free Fire, tentukan nominal, lalu periksa Player ID sebelum bayar.',cta:'Lihat Free Fire',route:'#/market?category=Voucher%20%26%20Game',symbol:'FF',chips:['Diamond','Membership','Player ID'],tone:'game'},
@@ -34,6 +46,26 @@ const streamingSlides:BannerSlide[]=[
 ]
 const slidesByContext:Record<BannerContext,BannerSlide[]>={home:homeSlides,game:gameSlides,data:dataSlides,pulsa:pulsaSlides,wallet:walletSlides,emoney:emoneySlides,pln:plnSlides,streaming:streamingSlides}
 const openRoute=(route:string)=>{window.location.hash=route.replace(/^#/,'')}
+const officialIcon=(domain:string)=>`https://www.google.com/s2/favicons?sz=128&domain_url=${encodeURIComponent(`https://${domain}`)}`
+
+function CreditLogo({credit}:{credit:CreditMark}){
+ const [failed,setFailed]=useState(false)
+ return <span className="dlv30-credit" role="listitem" title={`${credit.name} · ${credit.role}`}>
+  <span className="dlv30-credit-mark">{failed?<b>{credit.initials}</b>:<img src={officialIcon(credit.domain)} alt="" loading="lazy" referrerPolicy="no-referrer" onError={()=>setFailed(true)}/>}</span>
+  <span><strong>{credit.name}</strong><small>{credit.role}</small></span>
+ </span>
+}
+
+function BannerVisual({slide}:{slide:BannerSlide}){
+ if(slide.credits)return <span className="dlv30-credits-art" role="list" aria-label="Teknologi dan integrasi DLavie">{slide.credits.map(credit=><CreditLogo credit={credit} key={credit.name}/>)}</span>
+ return <span className="dlv25-banner-art" aria-hidden="true"><i>{slide.symbol}</i><b/><b/><b/></span>
+}
+
+function SlideSurface({slide,moved}:{slide:BannerSlide;moved:React.MutableRefObject<boolean>}){
+ const children:ReactNode=<><span className="dlv25-banner-copy"><small>{slide.label}</small><strong>{slide.title}</strong><em>{slide.body}</em><span className="dlv28-banner-chips">{slide.chips.map(chip=><i key={chip}>{chip}</i>)}</span>{slide.cta&&<b>{slide.cta}<i>→</i></b>}</span><BannerVisual slide={slide}/></>
+ if(slide.route)return <button type="button" className="dlv25-banner-card" onClick={()=>{if(!moved.current)openRoute(slide.route!);moved.current=false}}>{children}</button>
+ return <div className="dlv25-banner-card dlv30-static-banner">{children}</div>
+}
 
 function BannerSlider({slides,context}:{slides:BannerSlide[];context:BannerContext}){
  const [index,setIndex]=useState(0),[paused,setPaused]=useState(false)
@@ -46,7 +78,7 @@ function BannerSlider({slides,context}:{slides:BannerSlide[];context:BannerConte
  return <section className={`dlv-promo-carousel dlv25-banner dlv28-banner is-${context}`} aria-label="Sorotan DLavie" onMouseEnter={()=>setPaused(true)} onMouseLeave={()=>setPaused(false)}>
   {count>1&&<span className="dlv28-banner-count" aria-hidden="true">{String(index+1).padStart(2,'0')} / {String(count).padStart(2,'0')}</span>}
   <div className="dlv-promo-viewport" onPointerDown={e=>{pointer.current={x:e.clientX,y:e.clientY};moved.current=false}} onPointerMove={e=>{if(pointer.current&&Math.abs(e.clientX-pointer.current.x)>8)moved.current=true}} onPointerUp={e=>{const p=pointer.current;pointer.current=null;if(!p)return;const dx=e.clientX-p.x,dy=e.clientY-p.y;if(Math.abs(dx)>42&&Math.abs(dx)>Math.abs(dy)){go(index+(dx<0?1:-1));moved.current=true}}} onPointerCancel={()=>{pointer.current=null}}>
-   <div className="dlv-promo-track" style={{transform:`translate3d(-${index*100}%,0,0)`}}>{slides.map(slide=><article className={`dlv-promo-slide tone-${slide.tone}`} key={slide.id}><button type="button" className="dlv25-banner-card" onClick={()=>{if(!moved.current)openRoute(slide.route);moved.current=false}}><span className="dlv25-banner-copy"><small>{slide.label}</small><strong>{slide.title}</strong><em>{slide.body}</em><span className="dlv28-banner-chips">{slide.chips.map(chip=><i key={chip}>{chip}</i>)}</span><b>{slide.cta}<i>→</i></b></span><span className="dlv25-banner-art" aria-hidden="true"><i>{slide.symbol}</i><b/><b/><b/></span></button></article>)}</div>
+   <div className="dlv-promo-track" style={{transform:`translate3d(-${index*100}%,0,0)`}}>{slides.map(slide=><article className={`dlv-promo-slide tone-${slide.tone}`} key={slide.id}><SlideSurface slide={slide} moved={moved}/></article>)}</div>
   </div>
   {count>1&&<><button className="dlv-promo-arrow is-prev" type="button" aria-label="Banner sebelumnya" onClick={()=>go(index-1)}>‹</button><button className="dlv-promo-arrow is-next" type="button" aria-label="Banner berikutnya" onClick={()=>go(index+1)}>›</button><div className="dlv-promo-dots">{slides.map((s,i)=><button type="button" className={i===index?'is-active':''} onClick={()=>go(i)} key={s.id} aria-label={`Banner ${i+1}`}><i/></button>)}</div></>}
  </section>
