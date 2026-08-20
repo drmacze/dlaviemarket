@@ -1,71 +1,34 @@
-import { FormEvent, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import './dlavie-feedback.css'
 
 const API='https://ydaeukhqwishlrjyfktk.supabase.co/functions/v1/dlavie-feedback'
-const SESSION_KEY='dlavie-account-session-v1'
-const PROFILE_KEY='dlavie-account-profile-v1'
-const FEEDBACK_KEY='dlavie-feedback-v1'
-const SNOOZE_KEY='dlavie-feedback-snooze-v1'
-const topics=['Kemudahan penggunaan','Tampilan & navigasi','Katalog produk','Proses transaksi','Kecepatan website','Bantuan & dukungan']
-
-type Profile={id?:string;username?:string}
-type Stage='prompt'|'form'
-
+const SESSION_KEY='dlavie-account-session-v1',PROFILE_KEY='dlavie-account-profile-v1',FEEDBACK_KEY='dlavie-feedback-v1',SNOOZE_KEY='dlavie-feedback-snooze-v1'
+type Profile={id?:string;username?:string}; type Stage='prompt'|'survey'|'thanks'
+type Answers={overall:number;ease:number;navigation:number;catalog:number;trust:number;speed:number;checkout:number;support:number;returnIntent:number;recommend:number;priority:string;message:string}
+const initial:Answers={overall:0,ease:0,navigation:0,catalog:0,trust:0,speed:0,checkout:0,support:0,returnIntent:0,recommend:0,priority:'',message:''}
+const pages=[
+ {title:'Kesan pertama',copy:'Mulai dari pengalamanmu secara keseluruhan.',qs:[['overall','Seberapa puas kamu dengan DLavie secara keseluruhan?'],['ease','Seberapa mudah DLavie digunakan tanpa perlu banyak berpikir?']]},
+ {title:'Menemukan yang kamu butuhkan',copy:'Kami ingin tahu apakah struktur Market sudah terasa jelas.',qs:[['navigation','Seberapa mudah berpindah menu dan menemukan fitur?'],['catalog','Seberapa mudah menemukan produk yang tepat di katalog?']]},
+ {title:'Rasa aman & performa',copy:'Kepercayaan dan kecepatan sama pentingnya dengan tampilan.',qs:[['trust','Seberapa yakin kamu dengan informasi, harga, dan proses transaksi?'],['speed','Bagaimana kecepatan dan respons website di perangkatmu?']]},
+ {title:'Saat butuh bantuan',copy:'Nilai bagian yang paling terasa ketika benar-benar menggunakan layanan.',qs:[['checkout','Seberapa jelas alur pembelian hingga konfirmasi transaksi?'],['support','Seberapa mudah memahami bantuan atau mencari solusi saat ada masalah?']]},
+ {title:'Apakah kamu akan kembali?',copy:'Jawaban ini membantu kami mengukur apakah pengalaman DLavie benar-benar bernilai.',qs:[['returnIntent','Seberapa besar kemungkinan kamu menggunakan DLavie lagi?'],['recommend','Seberapa besar kemungkinan kamu merekomendasikan DLavie?']]}
+] as const
+const labels=['','Sangat kurang','Kurang','Cukup','Baik','Sangat baik']
 function StarMark(){return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3.3 2.55 5.17 5.7.83-4.12 4.02.97 5.68L12 16.32 6.9 19l.97-5.68L3.75 9.3l5.7-.83L12 3.3Z"/></svg>}
-
+function Scale({value,onChange}:{value:number,onChange:(n:number)=>void}){return <div className="dlv-scale">{[1,2,3,4,5].map(n=><button type="button" key={n} className={value===n?'active':''} onClick={()=>onChange(n)}><b>{n}</b><span>{n===1?'Kurang':n===5?'Sangat baik':''}</span></button>)}</div>}
 export default function DLavieFeedback(){
- const [open,setOpen]=useState(false),[stage,setStage]=useState<Stage>('prompt'),[rating,setRating]=useState(0),[hover,setHover]=useState(0),[topic,setTopic]=useState(''),[message,setMessage]=useState(''),[submitted,setSubmitted]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState('')
- useEffect(()=>{
-  const eligible=()=>{
-   const signedIn=sessionStorage.getItem(SESSION_KEY)==='active'
-   const route=location.hash.replace(/^#\/?/,'').toLowerCase()
-   const mainMenu=!route||route==='home'||route==='beranda'
-   const snooze=Number(localStorage.getItem(SNOOZE_KEY)||0)
-   const last=Number(localStorage.getItem(`${FEEDBACK_KEY}:last`)||0)
-   return signedIn&&mainMenu&&Date.now()>snooze&&Date.now()-last>1000*60*60*24*30
-  }
-  let timer=0
-  const check=()=>{window.clearTimeout(timer);if(eligible())timer=window.setTimeout(()=>{setStage('prompt');setOpen(true)},1600)}
-  check();addEventListener('hashchange',check)
-  return()=>{window.clearTimeout(timer);removeEventListener('hashchange',check)}
- },[])
- const close=()=>{if(busy)return;setOpen(false);setStage('prompt');localStorage.setItem(SNOOZE_KEY,String(Date.now()+1000*60*60*24*7))}
- const submit=async(e:FormEvent)=>{
-  e.preventDefault();if(!rating||busy)return
-  let profile:Profile={};try{profile=JSON.parse(localStorage.getItem(PROFILE_KEY)||'{}')}catch{}
-  if(!profile.id){setError('Sesi akun tidak terbaca. Coba login ulang terlebih dahulu.');return}
-  setBusy(true);setError('')
-  try{
-   const response=await fetch(API,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({action:'submit',user_id:profile.id,username:profile.username||null,rating,topic:topic||null,message:message.trim()||null,route:location.hash||'#home'})})
-   const data=await response.json().catch(()=>({}))
-   if(!response.ok||!data.ok)throw new Error(data.message||data.error||'Feedback belum dapat dikirim.')
-   localStorage.setItem(`${FEEDBACK_KEY}:last`,String(Date.now()));localStorage.removeItem(SNOOZE_KEY);setSubmitted(true)
-   window.setTimeout(()=>setOpen(false),1800)
-  }catch(err){setError(err instanceof Error?err.message:'Feedback belum dapat dikirim. Coba lagi sebentar.')}
-  finally{setBusy(false)}
- }
+ const [open,setOpen]=useState(false),[stage,setStage]=useState<Stage>('prompt'),[page,setPage]=useState(0),[a,setA]=useState<Answers>(initial),[busy,setBusy]=useState(false),[error,setError]=useState('')
+ useEffect(()=>{const eligible=()=>{const signedIn=sessionStorage.getItem(SESSION_KEY)==='active',route=location.hash.replace(/^#\/?/,'').toLowerCase(),main=!route||route==='home'||route==='beranda',snooze=Number(localStorage.getItem(SNOOZE_KEY)||0),last=Number(localStorage.getItem(`${FEEDBACK_KEY}:last`)||0);return signedIn&&main&&Date.now()>snooze&&Date.now()-last>2592000000};let timer=0;const check=()=>{clearTimeout(timer);if(eligible())timer=window.setTimeout(()=>{setStage('prompt');setOpen(true)},1600)};check();addEventListener('hashchange',check);return()=>{clearTimeout(timer);removeEventListener('hashchange',check)}},[])
+ const close=()=>{if(busy)return;setOpen(false);setStage('prompt');setPage(0);localStorage.setItem(SNOOZE_KEY,String(Date.now()+604800000))}
+ const set=(k:keyof Answers,v:number|string)=>setA(x=>({...x,[k]:v}))
+ const current=pages[page], valid=current.qs.every(([k])=>(a[k] as number)>0)
+ const next=()=>{if(!valid)return;if(page<pages.length-1)setPage(p=>p+1);else setPage(5)}
+ const submit=async()=>{if(busy||!a.priority)return;let profile:Profile={};try{profile=JSON.parse(localStorage.getItem(PROFILE_KEY)||'{}')}catch{};if(!profile.id){setError('Sesi akun tidak terbaca. Coba login ulang terlebih dahulu.');return}setBusy(true);setError('');try{const response=await fetch(API,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({action:'submit',user_id:profile.id,username:profile.username||null,rating:a.overall,topic:a.priority,message:JSON.stringify({survey_version:2,...a}),route:location.hash||'#home'})});const data=await response.json().catch(()=>({}));if(!response.ok||!data.ok)throw new Error(data.message||data.error||'Feedback belum dapat dikirim.');localStorage.setItem(`${FEEDBACK_KEY}:last`,String(Date.now()));localStorage.removeItem(SNOOZE_KEY);setStage('thanks')}catch(err){setError(err instanceof Error?err.message:'Feedback belum dapat dikirim.')}finally{setBusy(false)}}
  if(!open)return null
- return <div className="dlv-feedback-layer" role="dialog" aria-modal="true" aria-labelledby="dlv-feedback-title">
-  <button className="dlv-feedback-backdrop" aria-label="Tutup feedback" onClick={close}/>
-  <section className={`dlv-feedback-card is-${stage}`}>
-   <button className="dlv-feedback-close" onClick={close} aria-label="Tutup">×</button>
-   {submitted?<div className="dlv-feedback-thanks"><span>✓</span><small>FEEDBACK TERKIRIM</small><h2>Terima kasih.</h2><p>Masukanmu membantu kami menentukan bagian DLavie yang perlu dibuat lebih baik.</p></div>:stage==='prompt'?<div className="dlv-feedback-prompt">
-    <div className="dlv-feedback-prompt-top"><span className="dlv-feedback-mark"><StarMark/></span><span className="dlv-feedback-badge">DLAVIE FEEDBACK</span></div>
-    <h2 id="dlv-feedback-title">Bagaimana pengalamanmu di DLavie?</h2>
-    <p>Feedback singkat darimu membantu kami membuat Market lebih nyaman, jelas, dan mudah digunakan.</p>
-    <div className="dlv-feedback-preview-stars" aria-hidden="true">{[1,2,3,4,5].map(n=><span key={n}>★</span>)}</div>
-    <button className="dlv-feedback-start" type="button" onClick={()=>setStage('form')}>Beri feedback <span>→</span></button>
-    <button className="dlv-feedback-later" type="button" onClick={close}>Nanti saja</button>
-   </div>:<form onSubmit={submit}>
-    <button type="button" className="dlv-feedback-back" onClick={()=>setStage('prompt')} disabled={busy}>← Kembali</button>
-    <small className="dlv-feedback-eyebrow">PENGALAMAN DLAVIE</small><h2 id="dlv-feedback-title">Ceritakan pengalamanmu.</h2><p className="dlv-feedback-lead">Nilai pengalamanmu dan pilih bagian yang paling ingin kamu beri masukan.</p>
-    <fieldset className="dlv-feedback-stars"><legend>Nilai pengalamanmu</legend><div>{[1,2,3,4,5].map(n=><button key={n} type="button" className={n<=(hover||rating)?'active':''} onMouseEnter={()=>setHover(n)} onMouseLeave={()=>setHover(0)} onClick={()=>setRating(n)} aria-label={`${n} dari 5 bintang`}>★</button>)}</div><span>{rating?['','Kurang baik','Perlu diperbaiki','Cukup baik','Baik','Sangat baik'][rating]:'Pilih 1–5 bintang'}</span></fieldset>
-    <label className="dlv-feedback-label">Bagian yang ingin kamu nilai<select value={topic} onChange={e=>setTopic(e.target.value)}><option value="">Pilih bagian (opsional)</option>{topics.map(x=><option key={x}>{x}</option>)}</select></label>
-    <label className="dlv-feedback-label">Masukanmu<textarea value={message} onChange={e=>setMessage(e.target.value.slice(0,700))} placeholder="Apa yang bisa kami buat lebih nyaman, jelas, atau cepat?" rows={4}/><span className="dlv-feedback-count">{message.length}/700</span></label>
-    {error&&<div className="dlv-feedback-error">{error}</div>}
-    <div className="dlv-feedback-actions"><button type="button" className="secondary" onClick={close} disabled={busy}>Nanti saja</button><button type="submit" className="primary" disabled={!rating||busy}>{busy?'Mengirim…':'Kirim feedback'} {!busy&&<span>→</span>}</button></div>
-    <p className="dlv-feedback-note">Jangan sertakan PIN, password, OTP, atau informasi pembayaran.</p>
-   </form>}
-  </section>
- </div>
+ const progress=stage==='survey'?Math.round(((page+1)/6)*100):0
+ return <div className="dlv-feedback-layer" role="dialog" aria-modal="true"><button className="dlv-feedback-backdrop" aria-label="Tutup" onClick={close}/><section className={`dlv-feedback-card is-${stage}`}><button className="dlv-feedback-close" onClick={close}>×</button>
+ {stage==='prompt'?<div className="dlv-feedback-prompt"><div className="dlv-feedback-prompt-top"><span className="dlv-feedback-mark"><StarMark/></span><span className="dlv-feedback-badge">DLAVIE FEEDBACK</span></div><h2>Pengalamanmu membantu DLavie berkembang.</h2><p>Luangkan sekitar 2 menit. Jawabanmu membantu kami menentukan apa yang benar-benar perlu diperbaiki berikutnya.</p><div className="dlv-feedback-preview-stars">★★★★★</div><button className="dlv-feedback-start" onClick={()=>{setStage('survey');setPage(0)}}>Mulai feedback <span>→</span></button><button className="dlv-feedback-later" onClick={close}>Nanti saja</button></div>:
+ stage==='thanks'?<div className="dlv-feedback-thanks"><span>✓</span><small>FEEDBACK TERKIRIM</small><h2>Terima kasih sudah membantu.</h2><p>Jawabanmu sudah tersimpan. Kami akan menggunakannya untuk menentukan prioritas peningkatan pengalaman DLavie.</p><button className="dlv-feedback-start" onClick={()=>setOpen(false)}>Selesai</button></div>:
+ <div className="dlv-survey"><header><small>FEEDBACK DLAVIE · {page+1}/6</small><div className="dlv-progress"><i style={{width:`${progress}%`}}/></div></header>{page<5?<><h2>{current.title}</h2><p className="dlv-feedback-lead">{current.copy}</p><div className="dlv-question-list">{current.qs.map(([k,q],i)=><section className="dlv-question" key={k}><span>0{page*2+i+1}</span><h3>{q}</h3><Scale value={a[k] as number} onChange={n=>set(k,n)}/>{a[k] as number>0&&<small>{labels[a[k] as number]}</small>}</section>)}</div><div className="dlv-feedback-actions"><button className="secondary" onClick={()=>page?setPage(p=>p-1):setStage('prompt')}>Kembali</button><button className="primary" disabled={!valid} onClick={next}>Lanjut <span>→</span></button></div></>:<><h2>Satu hal terakhir.</h2><p className="dlv-feedback-lead">Dari semua jawabanmu, apa yang paling layak kami prioritaskan?</p><label className="dlv-feedback-label">Prioritas utama<select value={a.priority} onChange={e=>set('priority',e.target.value)}><option value="">Pilih satu</option><option>Navigasi & kemudahan</option><option>Katalog & pencarian produk</option><option>Kecepatan & stabilitas</option><option>Transaksi & pembayaran</option><option>Kepercayaan & keamanan</option><option>Bantuan pelanggan</option><option>Visual & tampilan</option><option>Fitur baru</option></select></label><label className="dlv-feedback-label">Apa satu perubahan yang paling ingin kamu lihat?<textarea value={a.message} onChange={e=>set('message',e.target.value.slice(0,900))} placeholder="Ceritakan dengan bahasamu sendiri…" rows={5}/><span className="dlv-feedback-count">{a.message.length}/900</span></label>{error&&<div className="dlv-feedback-error">{error}</div>}<div className="dlv-feedback-actions"><button className="secondary" onClick={()=>setPage(4)}>Kembali</button><button className="primary" disabled={!a.priority||busy} onClick={submit}>{busy?'Mengirim…':'Kirim feedback'} <span>→</span></button></div><p className="dlv-feedback-note">Jangan sertakan PIN, password, OTP, atau informasi pembayaran.</p></>}</div>}
+ </section></div>
 }
