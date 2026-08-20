@@ -3,18 +3,18 @@ import { createPortal } from 'react-dom'
 import './contributor-banner-v30.css'
 
 type BannerContext='home'|'game'|'data'|'pulsa'|'wallet'|'emoney'|'pln'|'streaming'
-type CreditMark={name:string;domain:string;role:string;initials:string;logo:string}
+type CreditMark={name:string;domain:string;role:string;initials:string}
 type BannerSlide={id:string;label:string;title:string;body:string;cta?:string;route?:string;symbol?:string;chips:string[];credits?:CreditMark[];tone:'market'|'promo'|'trust'|'game'|'data'|'credits'}
 
 const contributorCredits:CreditMark[]=[
- {name:'DANA',domain:'dana.id',role:'E-Wallet',initials:'D',logo:'https://cdn.simpleicons.org/dana'},
- {name:'Midtrans',domain:'midtrans.com',role:'Payment Gateway',initials:'M',logo:'https://cdn.simpleicons.org/midtrans'},
- {name:'Digiflazz',domain:'digiflazz.com',role:'Digital Services',initials:'DF',logo:'https://www.google.com/s2/favicons?sz=256&domain_url=https%3A%2F%2Fdigiflazz.com'},
- {name:'H2H.id',domain:'h2h.id',role:'Digital Services',initials:'H2H',logo:'https://www.google.com/s2/favicons?sz=256&domain_url=https%3A%2F%2Fh2h.id'},
- {name:'OVO',domain:'ovo.id',role:'E-Wallet',initials:'O',logo:'https://cdn.simpleicons.org/ovo'},
- {name:'GoPay',domain:'gopay.co.id',role:'E-Wallet',initials:'G',logo:'https://cdn.simpleicons.org/gopay'},
- {name:'ShopeePay',domain:'shopeepay.co.id',role:'E-Wallet',initials:'SP',logo:'https://www.google.com/s2/favicons?sz=256&domain_url=https%3A%2F%2Fshopeepay.co.id'},
- {name:'LinkAja',domain:'linkaja.id',role:'E-Wallet',initials:'LA',logo:'https://www.google.com/s2/favicons?sz=256&domain_url=https%3A%2F%2Flinkaja.id'},
+ {name:'DANA',domain:'dana.id',role:'E-Wallet',initials:'D'},
+ {name:'Midtrans',domain:'midtrans.com',role:'Payment Gateway',initials:'M'},
+ {name:'Digiflazz',domain:'digiflazz.com',role:'Digital Services',initials:'DF'},
+ {name:'H2H.id',domain:'h2h.id',role:'Digital Services',initials:'H2H'},
+ {name:'OVO',domain:'ovo.id',role:'E-Wallet',initials:'O'},
+ {name:'GoPay',domain:'gopay.co.id',role:'E-Wallet',initials:'G'},
+ {name:'ShopeePay',domain:'shopeepay.co.id',role:'E-Wallet',initials:'SP'},
+ {name:'LinkAja',domain:'linkaja.id',role:'E-Wallet',initials:'LA'},
 ]
 const homeSlides:BannerSlide[]=[
  {id:'home-market',label:'DLAVIE DIGITAL MARKET',title:'Kebutuhan digital, dalam satu alur.',body:'Pulsa, paket data, PLN, e-wallet, voucher game, dan layanan digital lain dari satu wallet.',cta:'Buka market',route:'#/market',symbol:'D',chips:['Pulsa','Paket Data','PLN','Voucher'],tone:'market'},
@@ -31,7 +31,18 @@ const plnSlides:BannerSlide[]=[{id:'pln-token',label:'PLN',title:'Token listrik 
 const streamingSlides:BannerSlide[]=[{id:'streaming-main',label:'STREAMING & HIBURAN',title:'Voucher hiburan dipisahkan per layanan.',body:'Cari layanan yang kamu pakai, lalu pilih paket atau voucher yang tersedia tanpa bercampur dengan game.',cta:'Lihat hiburan',route:'#/market?category=Streaming%20%26%20Hiburan',symbol:'▶',chips:['Vidio','Spotify','WeTV','Genflix'],tone:'promo'}]
 const slidesByContext:Record<BannerContext,BannerSlide[]>={home:homeSlides,game:gameSlides,data:dataSlides,pulsa:pulsaSlides,wallet:walletSlides,emoney:emoneySlides,pln:plnSlides,streaming:streamingSlides}
 const openRoute=(route:string)=>{window.location.hash=route.replace(/^#/,'')}
-function CreditLogo({credit}:{credit:CreditMark}){const [failed,setFailed]=useState(false);return <span className="dlv30-credit" role="listitem" title={`${credit.name} · ${credit.role}`}><span className="dlv30-credit-mark">{failed?<b>{credit.initials}</b>:<img src={credit.logo} alt={`${credit.name} logo`} loading="lazy" referrerPolicy="no-referrer" onError={()=>setFailed(true)}/>}</span><span><strong>{credit.name}</strong><small>{credit.role}</small></span></span>}
+const creditSources=(domain:string)=>[
+ `https://${domain}/apple-touch-icon.png`,
+ `https://${domain}/apple-touch-icon-precomposed.png`,
+ `https://${domain}/favicon-192x192.png`,
+ `https://${domain}/favicon-96x96.png`,
+ `https://${domain}/favicon-32x32.png`,
+ `https://${domain}/favicon.png`,
+ `https://${domain}/favicon.ico`,
+ `https://www.google.com/s2/favicons?sz=256&domain=${encodeURIComponent(domain)}`,
+ `https://www.google.com/s2/favicons?sz=256&domain_url=${encodeURIComponent(`https://${domain}`)}`,
+]
+function CreditLogo({credit}:{credit:CreditMark}){const sources=useMemo(()=>creditSources(credit.domain),[credit.domain]),[sourceIndex,setSourceIndex]=useState(0);useEffect(()=>setSourceIndex(0),[credit.domain]);const failed=sourceIndex>=sources.length;return <span className="dlv30-credit" role="listitem" title={`${credit.name} · ${credit.role}`}><span className="dlv30-credit-mark">{failed?<b>{credit.initials}</b>:<img src={sources[sourceIndex]} alt={`${credit.name} logo`} loading="lazy" referrerPolicy="no-referrer" onError={()=>setSourceIndex(i=>i+1)}/>}</span><span><strong>{credit.name}</strong><small>{credit.role}</small></span></span>}
 function BannerVisual({slide}:{slide:BannerSlide}){if(slide.credits)return <span className="dlv30-credits-art" role="list" aria-label="Layanan dalam ekosistem DLavie">{slide.credits.map(c=><CreditLogo credit={c} key={c.name}/>)}</span>;return <span className="dlv25-banner-art" aria-hidden="true"><i>{slide.symbol}</i><b/><b/><b/></span>}
 function SlideSurface({slide,moved}:{slide:BannerSlide;moved:React.MutableRefObject<boolean>}){const children:ReactNode=<><span className="dlv25-banner-copy"><small>{slide.label}</small><strong>{slide.title}</strong><em>{slide.body}</em><span className="dlv28-banner-chips">{slide.chips.map(chip=><i key={chip}>{chip}</i>)}</span>{slide.cta&&<b>{slide.cta}<i>→</i></b>}</span><BannerVisual slide={slide}/></>;return slide.route?<button type="button" className="dlv25-banner-card" onClick={()=>{if(!moved.current)openRoute(slide.route!);moved.current=false}}>{children}</button>:<div className="dlv25-banner-card dlv30-static-banner">{children}</div>}
 function BannerSlider({slides,context}:{slides:BannerSlide[];context:BannerContext}){const [index,setIndex]=useState(0),[paused,setPaused]=useState(false);const pointer=useRef<{x:number;y:number}|null>(null),moved=useRef(false);const reduced=useMemo(()=>typeof window!=='undefined'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches,[]),count=slides.length;useEffect(()=>setIndex(0),[context]);useEffect(()=>{if(paused||reduced||count<2)return;const id=window.setInterval(()=>setIndex(i=>(i+1)%count),6500);return()=>clearInterval(id)},[paused,reduced,count]);const go=(i:number)=>setIndex((i+count)%count);return <section className={`dlv-promo-carousel dlv25-banner dlv28-banner is-${context}`} aria-label="Sorotan DLavie" onMouseEnter={()=>setPaused(true)} onMouseLeave={()=>setPaused(false)}>{count>1&&<span className="dlv28-banner-count">{String(index+1).padStart(2,'0')} / {String(count).padStart(2,'0')}</span>}<div className="dlv-promo-viewport" onPointerDown={e=>{pointer.current={x:e.clientX,y:e.clientY};moved.current=false}} onPointerMove={e=>{if(pointer.current&&Math.abs(e.clientX-pointer.current.x)>8)moved.current=true}} onPointerUp={e=>{const p=pointer.current;pointer.current=null;if(!p)return;const dx=e.clientX-p.x,dy=e.clientY-p.y;if(Math.abs(dx)>42&&Math.abs(dx)>Math.abs(dy)){go(index+(dx<0?1:-1));moved.current=true}}}><div className="dlv-promo-track" style={{transform:`translate3d(-${index*100}%,0,0)`}}>{slides.map(slide=><article className={`dlv-promo-slide tone-${slide.tone}`} key={slide.id}><SlideSurface slide={slide} moved={moved}/></article>)}</div></div>{count>1&&<><button className="dlv-promo-arrow is-prev" type="button" aria-label="Banner sebelumnya" onClick={()=>go(index-1)}>‹</button><button className="dlv-promo-arrow is-next" type="button" aria-label="Banner berikutnya" onClick={()=>go(index+1)}>›</button><div className="dlv-promo-dots">{slides.map((s,i)=><button type="button" className={i===index?'is-active':''} onClick={()=>go(i)} key={s.id} aria-label={`Banner ${i+1}`}><i/></button>)}</div></>}</section>}
