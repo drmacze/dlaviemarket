@@ -1,18 +1,18 @@
 {
-  "release": "vipayment-multi-provider-v33",
-  "built_for": "2026-08-20",
+  "release": "vipayment-admin-visible-v33.1",
+  "built_for": "2026-08-21",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
   "homepage_positioning": "digital-products",
   "provider": "H2H.id + VIPayment",
   "features": [
     "VIPayment added as a server-side prepaid product provider with API credentials stored in Supabase Vault",
+    "VIPayment admin control is now explicitly mounted in the main React runtime",
+    "provider admin dock separates VIPayment and H2H controls on mobile and desktop so buttons do not overlap",
     "VIPayment admin control supports credential setup, account/balance test, markup settings, production opt-in and catalog synchronization",
-    "Digital Market now reads from a multi-provider gateway that merges active H2H.id and VIPayment catalog summaries and products",
-    "VIPayment SKUs are internally namespaced to prevent collisions while keeping supplier routing invisible to customers",
+    "Digital Market uses a multi-provider gateway that merges active H2H.id and VIPayment catalog summaries and products",
     "prepaid purchases are automatically routed to the provider that owns the selected SKU; postpaid remains on H2H.id",
-    "VIPayment supports DLavie sandbox simulation before production mode is enabled",
-    "existing official logos, feedback, Utility Orb, receipts and transaction confirmation safeguards remain active"
+    "VIPayment supports DLavie sandbox simulation before production mode is enabled"
   ],
-  "note": "v33 introduces VIPayment as an additional prepaid supplier without replacing H2H.id. Production VIPayment transactions remain opt-in and require valid credentials, catalog sync and sufficient provider balance."
+  "note": "v33.1 fixes the missing VIPayment Admin UI mount. After admin authentication, a VIP control appears beside the H2H provider control."
 }
