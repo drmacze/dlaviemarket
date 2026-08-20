@@ -1,168 +1,45 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 
-type Sprite='a'|'b'
-type Frame=0|1|2|3
-type BannerSlide={id:string;sprite:Sprite;frame:Frame;label:string;title:string;cta:string;route:string}
 type BannerContext='home'|'game'|'data'
+type BannerSlide={id:string;label:string;title:string;body:string;cta:string;route:string;symbol:string;tone:'market'|'promo'|'trust'|'game'|'data'}
 
 const homeSlides:BannerSlide[]=[
- {id:'home-market',sprite:'a',frame:0,label:'DLAVIE DIGITAL MARKET',title:'Satu wallet untuk kebutuhan digital harian.',cta:'Jelajahi market',route:'#/market'},
- {id:'home-promo',sprite:'a',frame:1,label:'PROMO DLAVIE',title:'Promo digital yang terasa lebih jelas.',cta:'Lihat Digital Market',route:'#/market'},
- {id:'home-workflow',sprite:'a',frame:2,label:'DLAVIE WORKFLOW',title:'Transaksi lebih tenang, dari pilih produk sampai bukti pembelian.',cta:'Pelajari alurnya',route:'#/market'},
+ {id:'home-market',label:'DLAVIE DIGITAL MARKET',title:'Kebutuhan digital, dalam satu alur.',body:'Pulsa, paket data, PLN, e-wallet, voucher game, dan layanan digital lain dari satu wallet.',cta:'Buka market',route:'#/market',symbol:'D',tone:'market'},
+ {id:'home-promo',label:'PILIHAN MINGGU INI',title:'Lebih mudah menemukan produk yang tepat.',body:'Cari berdasarkan kategori, operator, game, atau brand tanpa harus menghafal kode produk.',cta:'Jelajahi produk',route:'#/market',symbol:'%',tone:'promo'},
+ {id:'home-trust',label:'TRANSAKSI DLAVIE',title:'Periksa dulu. Bayar setelah yakin.',body:'Tujuan, produk, nominal, dan persetujuan ditampilkan kembali sebelum transaksi dikirim.',cta:'Lihat cara kerja',route:'#/market',symbol:'✓',tone:'trust'},
 ]
 const gameSlides:BannerSlide[]=[
- {id:'game-free-fire',sprite:'a',frame:3,label:'VOUCHER GAME',title:'Top up Free Fire lebih ringkas.',cta:'Buka Voucher Game',route:'#/market?category=Voucher%20%26%20Game'},
- {id:'game-mobile-legends',sprite:'b',frame:0,label:'VOUCHER GAME',title:'Diamond Mobile Legends, tampil lebih jelas.',cta:'Buka Voucher Game',route:'#/market?category=Voucher%20%26%20Game'},
- {id:'game-hub',sprite:'b',frame:1,label:'GAME HUB',title:'Voucher game populer dalam satu tempat.',cta:'Lihat semua game',route:'#/market?category=Voucher%20%26%20Game'},
+ {id:'game-free-fire',label:'FREE FIRE',title:'Top up diamond tanpa mencari SKU.',body:'Pilih Free Fire, tentukan nominal, lalu periksa Player ID sebelum bayar.',cta:'Lihat Free Fire',route:'#/market?category=Voucher%20%26%20Game',symbol:'FF',tone:'game'},
+ {id:'game-hub',label:'VOUCHER & GAME',title:'Game populer dipisahkan per judul.',body:'Mobile Legends, PUBG Mobile, Valorant, Roblox, Free Fire, dan lainnya tampil sebagai koleksi tersendiri.',cta:'Lihat semua game',route:'#/market?category=Voucher%20%26%20Game',symbol:'✦',tone:'game'},
 ]
 const dataSlides:BannerSlide[]=[
- {id:'data-operators',sprite:'b',frame:2,label:'PAKET DATA',title:'Kuota semua operator, lebih mudah dibandingkan.',cta:'Cari paket data',route:'#/market?category=Paket%20Data'},
- {id:'data-daily',sprite:'b',frame:3,label:'KUOTA HARIAN',title:'Untuk chat, streaming, kerja, dan gaming.',cta:'Lihat pilihan kuota',route:'#/market?category=Paket%20Data'},
+ {id:'data-auto',label:'PAKET DATA',title:'Masukkan nomor, operator bisa terdeteksi otomatis.',body:'Tetap tersedia pilihan manual jika kamu ingin mencari operator dan paket sendiri.',cta:'Cari paket data',route:'#/market?category=Paket%20Data',symbol:'5G',tone:'data'},
+ {id:'data-choice',label:'KUOTA SESUAI KEBUTUHAN',title:'Bandingkan paket sebelum memilih.',body:'Cari nominal, masa aktif, dan jenis paket dari operator yang sama dalam satu tampilan.',cta:'Lihat paket',route:'#/market?category=Paket%20Data',symbol:'↗',tone:'data'},
 ]
-const frameY=['0%','33.3333%','66.6667%','100%'] as const
-const spriteUrl=(sprite:Sprite)=>`${import.meta.env.BASE_URL}banners/dlavie-banner-sprite-${sprite}.webp`
 const openRoute=(route:string)=>{window.location.hash=route.replace(/^#/,'')}
 
 function BannerSlider({slides,context}:{slides:BannerSlide[];context:BannerContext}){
- const [index,setIndex]=useState(0)
- const [paused,setPaused]=useState(false)
- const [timerKey,setTimerKey]=useState(0)
- const pointer=useRef<{x:number;y:number}|null>(null)
- const moved=useRef(false)
+ const [index,setIndex]=useState(0),[paused,setPaused]=useState(false)
+ const pointer=useRef<{x:number;y:number}|null>(null),moved=useRef(false)
  const reduced=useMemo(()=>typeof window!=='undefined'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches,[])
  const count=slides.length
-
- useEffect(()=>{setIndex(0);setTimerKey(k=>k+1)},[context])
- useEffect(()=>{
-  if(paused||reduced||count<2)return
-  const id=window.setInterval(()=>setIndex(i=>(i+1)%count),6500)
-  return()=>window.clearInterval(id)
- },[paused,reduced,count,timerKey])
- useEffect(()=>{
-  const visibility=()=>setPaused(document.hidden)
-  document.addEventListener('visibilitychange',visibility)
-  return()=>document.removeEventListener('visibilitychange',visibility)
- },[])
-
- const go=(nextIndex:number)=>{setIndex((nextIndex+count)%count);setTimerKey(k=>k+1)}
- const next=()=>go(index+1),prev=()=>go(index-1)
- const down=(e:React.PointerEvent)=>{pointer.current={x:e.clientX,y:e.clientY};moved.current=false}
- const move=(e:React.PointerEvent)=>{if(!pointer.current)return;if(Math.abs(e.clientX-pointer.current.x)>8)moved.current=true}
- const up=(e:React.PointerEvent)=>{
-  const start=pointer.current;pointer.current=null
-  if(!start)return
-  const dx=e.clientX-start.x,dy=e.clientY-start.y
-  if(Math.abs(dx)>44&&Math.abs(dx)>Math.abs(dy)){dx<0?next():prev();moved.current=true}
- }
- const activate=(slide:BannerSlide)=>{if(!moved.current)openRoute(slide.route);moved.current=false}
-
- return <section className={`dlv-promo-carousel is-${context}`} aria-label={context==='home'?'Sorotan DLavie':context==='game'?'Sorotan Voucher Game':'Sorotan Paket Data'} onMouseEnter={()=>setPaused(true)} onMouseLeave={()=>setPaused(false)} onFocusCapture={()=>setPaused(true)} onBlurCapture={()=>setPaused(false)}>
-  <div className="dlv-promo-viewport" onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={()=>{pointer.current=null}}>
-   <div className="dlv-promo-track" style={{transform:`translate3d(-${index*100}%,0,0)`}}>
-    {slides.map(slide=><article className="dlv-promo-slide" key={slide.id} aria-hidden={slides[index].id!==slide.id}>
-     <button type="button" className="dlv-promo-art" aria-label={`${slide.title} — ${slide.cta}`} onClick={()=>activate(slide)}>
-      <span className="dlv-promo-sprite" aria-hidden="true" style={{backgroundImage:`url(${spriteUrl(slide.sprite)})`,backgroundPosition:`center ${frameY[slide.frame]}`}}/>
-      <span className="dlv-promo-theme-wash" aria-hidden="true"/>
-     </button>
-     <div className="dlv-promo-mobile-caption">
-      <span>{slide.label}</span><strong>{slide.title}</strong><button type="button" onClick={()=>openRoute(slide.route)}>{slide.cta}<b>→</b></button>
-     </div>
-    </article>)}
-   </div>
+ useEffect(()=>setIndex(0),[context])
+ useEffect(()=>{if(paused||reduced||count<2)return;const id=window.setInterval(()=>setIndex(i=>(i+1)%count),6500);return()=>window.clearInterval(id)},[paused,reduced,count])
+ const go=(i:number)=>setIndex((i+count)%count)
+ return <section className={`dlv-promo-carousel dlv25-banner is-${context}`} aria-label="Sorotan DLavie" onMouseEnter={()=>setPaused(true)} onMouseLeave={()=>setPaused(false)}>
+  <div className="dlv-promo-viewport" onPointerDown={e=>{pointer.current={x:e.clientX,y:e.clientY};moved.current=false}} onPointerMove={e=>{if(pointer.current&&Math.abs(e.clientX-pointer.current.x)>8)moved.current=true}} onPointerUp={e=>{const p=pointer.current;pointer.current=null;if(!p)return;const dx=e.clientX-p.x,dy=e.clientY-p.y;if(Math.abs(dx)>42&&Math.abs(dx)>Math.abs(dy)){go(index+(dx<0?1:-1));moved.current=true}}}>
+   <div className="dlv-promo-track" style={{transform:`translate3d(-${index*100}%,0,0)`}}>{slides.map(slide=><article className={`dlv-promo-slide tone-${slide.tone}`} key={slide.id}><button type="button" className="dlv25-banner-card" onClick={()=>{if(!moved.current)openRoute(slide.route);moved.current=false}}><span className="dlv25-banner-copy"><small>{slide.label}</small><strong>{slide.title}</strong><em>{slide.body}</em><b>{slide.cta}<i>→</i></b></span><span className="dlv25-banner-art" aria-hidden="true"><i>{slide.symbol}</i><b/><b/><b/></span></button></article>)}</div>
   </div>
-  {count>1&&<>
-   <button className="dlv-promo-arrow is-prev" type="button" aria-label="Banner sebelumnya" onClick={prev}>‹</button>
-   <button className="dlv-promo-arrow is-next" type="button" aria-label="Banner berikutnya" onClick={next}>›</button>
-   <div className="dlv-promo-dots" role="tablist" aria-label="Pilih banner">{slides.map((slide,i)=><button type="button" role="tab" aria-selected={i===index} aria-label={`Banner ${i+1}: ${slide.title}`} className={i===index?'is-active':''} onClick={()=>go(i)} key={slide.id}><i/></button>)}</div>
-   {!reduced&&<div className="dlv-promo-progress" aria-hidden="true" key={`${index}-${timerKey}`}><i style={{animationPlayState:paused?'paused':'running'}}/></div>}
-  </>}
+  {count>1&&<><button className="dlv-promo-arrow is-prev" type="button" aria-label="Banner sebelumnya" onClick={()=>go(index-1)}>‹</button><button className="dlv-promo-arrow is-next" type="button" aria-label="Banner berikutnya" onClick={()=>go(index+1)}>›</button><div className="dlv-promo-dots">{slides.map((s,i)=><button type="button" className={i===index?'is-active':''} onClick={()=>go(i)} key={s.id} aria-label={`Banner ${i+1}`}><i/></button>)}</div></>}
  </section>
 }
 
 export default function DLaviePromoBanners(){
- const [homeHost,setHomeHost]=useState<HTMLElement|null>(null)
- const [marketHost,setMarketHost]=useState<HTMLElement|null>(null)
- const [marketContext,setMarketContext]=useState<BannerContext|null>(null)
+ const [homeHost,setHomeHost]=useState<HTMLElement|null>(null),[marketHost,setMarketHost]=useState<HTMLElement|null>(null),[marketContext,setMarketContext]=useState<BannerContext|null>(null)
  const owned=useRef<HTMLElement[]>([])
-
- useEffect(()=>{
-  let queued=false
-  const host=(className:string,parent:HTMLElement,before:Element|null,extraClass='')=>{
-   let node=parent.querySelector<HTMLElement>(`:scope > .${className}`)
-   if(!node){
-    node=document.createElement('div')
-    node.className=`${className}${extraClass?` ${extraClass}`:''}`
-    parent.insertBefore(node,before)
-    owned.current.push(node)
-   }
-   return node
-  }
-  const hide=(selector:string)=>document.querySelectorAll<HTMLElement>(selector).forEach(node=>{node.hidden=true})
-
-  const scan=()=>{
-   queued=false
-   const raw=window.location.hash.replace(/^#\/?/,'')
-   const inMarket=raw.toLowerCase().startsWith('market')
-
-   if(!inMarket){
-    const main=document.querySelector<HTMLElement>('main#top')
-    if(main){
-     const hero=main.querySelector<HTMLElement>(':scope > .hero.shell')||main.firstElementChild
-     const node=host('dlv-promo-home-host',main,hero,'shell dlv-promo-home-top')
-     node.hidden=false
-     setHomeHost(prev=>prev===node?prev:node)
-    }
-    hide('.dlv-promo-market-host')
-    setMarketHost(prev=>prev?null:prev)
-    setMarketContext(prev=>prev?null:prev)
-    return
-   }
-
-   hide('.dlv-promo-home-host')
-   setHomeHost(prev=>prev?null:prev)
-
-   const breadcrumbs=Array.from(document.querySelectorAll<HTMLElement>('.dlv21-breadcrumb'))
-   const breadcrumb=breadcrumbs.find(el=>el.offsetParent!==null)||breadcrumbs[0]||null
-   const breadcrumbText=breadcrumb?.textContent||''
-   const queryString=raw.includes('?')?raw.slice(raw.indexOf('?')+1):''
-   const requested=new URLSearchParams(queryString).get('category')||''
-   const signal=`${breadcrumbText} ${requested}`.toLowerCase()
-   const context:BannerContext|null=(signal.includes('voucher')&&signal.includes('game'))?'game':(signal.includes('paket data')||signal.includes('category=data'))?'data':null
-   const section=breadcrumb?.closest<HTMLElement>('.dlv21-section')||null
-   const shell=document.querySelector<HTMLElement>('.dlv21-market .dlv21-shell')
-
-   if(shell&&context){
-    const before=section&&section.parentElement===shell?section:shell.querySelector<HTMLElement>('.dlv21-section')
-    const node=host('dlv-promo-market-host',shell,before)
-    node.hidden=false
-    setMarketHost(prev=>prev===node?prev:node)
-    setMarketContext(prev=>prev===context?prev:context)
-   }else{
-    hide('.dlv-promo-market-host')
-    setMarketHost(prev=>prev?null:prev)
-    setMarketContext(prev=>prev?null:prev)
-   }
-  }
-
-  const queue=()=>{if(queued)return;queued=true;requestAnimationFrame(scan)}
-  const observer=new MutationObserver(queue)
-  observer.observe(document.body,{childList:true,subtree:true,characterData:true})
-  window.addEventListener('hashchange',queue)
-  window.addEventListener('resize',queue,{passive:true})
-  queue()
-  return()=>{
-   observer.disconnect()
-   window.removeEventListener('hashchange',queue)
-   window.removeEventListener('resize',queue)
-   owned.current.forEach(node=>node.remove())
-   owned.current=[]
-  }
- },[])
-
- return <>
-  {homeHost&&createPortal(<BannerSlider slides={homeSlides} context="home"/>,homeHost)}
-  {marketHost&&marketContext==='game'&&createPortal(<BannerSlider slides={gameSlides} context="game"/>,marketHost)}
-  {marketHost&&marketContext==='data'&&createPortal(<BannerSlider slides={dataSlides} context="data"/>,marketHost)}
- </>
+ useEffect(()=>{let queued=false;const ensure=(cls:string,parent:HTMLElement,before:Element|null)=>{let node=parent.querySelector<HTMLElement>(`:scope > .${cls}`);if(!node){node=document.createElement('div');node.className=cls;parent.insertBefore(node,before);owned.current.push(node)}return node};const hide=(s:string)=>document.querySelectorAll<HTMLElement>(s).forEach(n=>n.hidden=true)
+  const scan=()=>{queued=false;const raw=location.hash.replace(/^#\/?/,'');const inMarket=raw.toLowerCase().startsWith('market');if(!inMarket){const main=document.querySelector<HTMLElement>('main#top,main');if(main){const node=ensure('dlv-promo-home-host',main,main.firstElementChild);node.hidden=false;setHomeHost(node)}hide('.dlv-promo-market-host');setMarketHost(null);setMarketContext(null);return}hide('.dlv-promo-home-host');setHomeHost(null);const crumb=Array.from(document.querySelectorAll<HTMLElement>('.dlv21-breadcrumb')).find(x=>x.offsetParent!==null);const params=new URLSearchParams(raw.split('?')[1]||'');const signal=`${crumb?.textContent||''} ${decodeURIComponent(params.get('category')||'')}`.toLowerCase();const ctx:BannerContext|null=signal.includes('voucher')||signal.includes('game')?'game':signal.includes('paket data')||signal.includes('data')?'data':null;const shell=document.querySelector<HTMLElement>('.dlv21-market .dlv21-shell');const section=crumb?.closest<HTMLElement>('.dlv21-section')||shell?.querySelector<HTMLElement>('.dlv21-section');if(shell&&section&&ctx){const node=ensure('dlv-promo-market-host',shell,section);node.hidden=false;setMarketHost(node);setMarketContext(ctx)}else{hide('.dlv-promo-market-host');setMarketHost(null);setMarketContext(null)}}
+  const queue=()=>{if(!queued){queued=true;requestAnimationFrame(scan)}};const ob=new MutationObserver(queue);ob.observe(document.body,{childList:true,subtree:true,characterData:true});addEventListener('hashchange',queue);queue();return()=>{ob.disconnect();removeEventListener('hashchange',queue);owned.current.forEach(n=>n.remove())}},[])
+ return <>{homeHost&&createPortal(<BannerSlider slides={homeSlides} context="home"/>,homeHost)}{marketHost&&marketContext==='game'&&createPortal(<BannerSlider slides={gameSlides} context="game"/>,marketHost)}{marketHost&&marketContext==='data'&&createPortal(<BannerSlider slides={dataSlides} context="data"/>,marketHost)}</>
 }
