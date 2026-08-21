@@ -1,19 +1,19 @@
 {
-  "release": "dlavie-live-support-v34",
+  "release": "dlavie-market-polish-v35",
   "built_for": "2026-08-21",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
   "homepage_positioning": "digital-products",
   "provider": "H2H.id + VIPayment",
   "features": [
-    "DLavie Assistant is presented to users as a clearer DLavie Support live-help experience",
-    "chat header now clearly distinguishes instant support, waiting for admin, and human admin connected states",
-    "AI chat includes a direct Hubungi admin action so users do not need to know a special phrase to request human support",
-    "human handoff keeps the existing transcript and explains that users may close and reopen the support panel while waiting",
-    "mobile live support uses a full-screen chat layout with safe-area handling and a denser conversation view",
-    "Human Support Console v34 adds queue summary, waiting/claimed/high-priority filters, search, priority sorting and relative activity age",
-    "admin threads now include quick replies, context labels, automatic scroll to latest messages, message length counter and keyboard send shortcut",
-    "mobile admin support switches between a full queue view and a full conversation view instead of stacking both panels"
+    "pre-session live support removes duplicated progress, capability cards and technical meta blocks for a cleaner first screen",
+    "live support header, status bar, messages and composer are denser and more consistent on mobile",
+    "support progress appears after a session actually starts instead of competing with the initial call to action",
+    "homepage promotional carousel is constrained to marketplace-sized banner proportions instead of behaving like a second hero section",
+    "mobile banner headline, body, chips, artwork, arrows and dots are reduced to keep product content visible above the fold",
+    "Contributor Credits uses a compact four-column ecosystem logo matrix on mobile and desktop",
+    "category-specific market banners are shorter than homepage banners for better product browsing density",
+    "v34 human handoff, admin queue filtering and live support workflow remain active"
   ],
-  "note": "v34 focuses on the complete user-to-human live support experience while preserving the existing DLavie AI-to-admin handoff backend."
+  "note": "v35 focuses on visual hierarchy and density: cleaner live support and smaller professional marketplace banners without generated imagery."
 }
