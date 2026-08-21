@@ -121,6 +121,7 @@ import './receipt-action-dock-v28.css'
 import './dlavie-utility-orb-v29.css'
 import './dlavie-utility-orb-fix-v29-1.css'
 import './dlavie-market-polish-v35.css'
+import './dlavie-market-polish-v35-1.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
