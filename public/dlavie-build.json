@@ -1,19 +1,19 @@
 {
-  "release": "dlavie-market-polish-v35",
+  "release": "dlavie-market-polish-v35.1",
   "built_for": "2026-08-21",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
   "homepage_positioning": "digital-products",
   "provider": "H2H.id + VIPayment",
   "features": [
-    "pre-session live support removes duplicated progress, capability cards and technical meta blocks for a cleaner first screen",
-    "live support header, status bar, messages and composer are denser and more consistent on mobile",
-    "support progress appears after a session actually starts instead of competing with the initial call to action",
-    "homepage promotional carousel is constrained to marketplace-sized banner proportions instead of behaving like a second hero section",
-    "mobile banner headline, body, chips, artwork, arrows and dots are reduced to keep product content visible above the fold",
-    "Contributor Credits uses a compact four-column ecosystem logo matrix on mobile and desktop",
-    "category-specific market banners are shorter than homepage banners for better product browsing density",
-    "v34 human handoff, admin queue filtering and live support workflow remain active"
+    "restores measured sticky navigation clearance so homepage promotional banners no longer hide behind the navbar",
+    "mobile homepage banner height is reduced again to a compact marketplace strip",
+    "Contributor Credits is reduced to a dense 4x2 brand matrix and no longer uses generic Google favicon fallback that could show question-mark icons",
+    "official-domain favicon/logo attempts fall back to clean brand initials instead of broken or generic placeholder marks",
+    "homepage hero headline and vertical spacing are reduced so product-market actions appear sooner above the fold",
+    "pre-session DLavie Support is now a compact centered mobile card instead of an oversized empty full-screen sheet",
+    "Indonesian support opening copy now uses Bantuan Privat, Ada yang bisa kami bantu, and Mulai sesi",
+    "active live chat can still use the full mobile viewport after the support session begins"
   ],
-  "note": "v35 focuses on visual hierarchy and density: cleaner live support and smaller professional marketplace banners without generated imagery."
+  "note": "v35.1 is a screenshot-driven correction pass for navbar overlap, unstable contributor marks, oversized homepage hierarchy and the pre-session support layout. No generated imagery is used."
 }
