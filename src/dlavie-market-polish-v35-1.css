@@ -1,0 +1,132 @@
+/* DLavie v35.1 — screenshot-driven mobile cleanup */
+
+/* Restore measured sticky-nav clearance that v35 accidentally overrode. */
+.dlv-promo-home-host{
+  margin:calc(var(--dlv-nav-clearance) + 8px) auto 14px!important;
+}
+
+/* Contributor logo cards: never show third-party generic favicon placeholders. */
+.dlv30-credit-mark.is-fallback{background:color-mix(in srgb,var(--theme-soft),#fff 72%)!important;border-color:var(--theme-line)!important;box-shadow:none!important}
+.dlv30-credit-mark.is-fallback>b{display:grid!important;place-items:center!important;width:100%!important;height:100%!important;color:color-mix(in srgb,var(--accent),var(--theme-ink) 38%)!important;font-weight:900!important;letter-spacing:-.03em!important}
+
+/* The homepage hero should read like a marketplace entry point, not a second giant campaign hero. */
+main#top>.hero.shell{min-height:0!important;padding-top:34px!important;padding-bottom:42px!important}
+main#top>.hero.shell h1{max-width:760px!important;font-size:clamp(46px,6.4vw,76px)!important;line-height:.92!important;letter-spacing:-.058em!important}
+main#top>.hero.shell p{max-width:650px!important;font-size:14px!important;line-height:1.5!important}
+
+/* Live Support opening is a compact modal; active chat may still use the full mobile viewport. */
+.dlv-assistant[data-live-support="v34"] .dlv-assistant-panel,
+.dlv-assistant[data-live-support="v34"] .dlv-assistant-header{background:var(--theme-panel-solid)!important}
+.dlv-assistant[data-live-support="v34"] .dlv-assistant-panel[data-ui-stage="ready"]{height:auto!important;min-height:0!important}
+.dlv-assistant[data-live-support="v34"] .dlv-assistant-panel[data-ui-stage="ready"] .dlv-assistant-body{overflow:visible!important}
+.dlv-assistant[data-live-support="v34"] .dlv-assistant-panel[data-ui-stage="ready"] .dlv-assistant-ready{min-height:0!important;justify-content:flex-start!important}
+.dlv-assistant[data-live-support="v34"] .dlv-assistant-panel[data-ui-stage="ready"] .dlv-assistant-ready h3{overflow-wrap:anywhere!important}
+
+/* Compact carousel proportions. */
+.dlv-promo-home-host .dlv25-banner-card{height:224px!important}
+.dlv-promo-home-host .tone-credits .dlv25-banner-card{height:242px!important}
+.dlv-promo-market-host .dlv25-banner-card{height:176px!important}
+
+@media(max-width:700px){
+  .dlv-promo-home-host{
+    width:calc(100% - 20px)!important;
+    margin:calc(var(--dlv-nav-clearance) + 7px) auto 12px!important;
+  }
+
+  /* Main slides: compact marketplace strip. */
+  .dlv-promo-home-host .dlv25-banner-card{
+    height:174px!important;
+    padding:17px 15px 31px!important;
+    grid-template-columns:minmax(0,1fr) 54px!important;
+    gap:7px!important;
+  }
+  .dlv-promo-home-host .dlv25-banner-copy>small{font-size:6px!important;letter-spacing:.14em!important}
+  .dlv-promo-home-host .dlv25-banner-copy>strong{font-size:clamp(21px,6.2vw,27px)!important;line-height:.97!important;max-width:255px!important;margin:5px 0 5px!important}
+  .dlv-promo-home-host .dlv25-banner-copy>em{font-size:7.4px!important;line-height:1.38!important;max-width:260px!important;-webkit-line-clamp:2!important}
+  .dlv-promo-home-host .dlv28-banner-chips{margin-top:6px!important;max-height:19px!important}
+  .dlv-promo-home-host .dlv28-banner-chips>i{font-size:5px!important;padding:3px 5px!important}
+  .dlv-promo-home-host .dlv25-banner-copy>b{margin-top:7px!important;padding:6px 8px!important;font-size:6.4px!important}
+  .dlv-promo-home-host .dlv25-banner-art>i{width:48px!important;height:48px!important;border-radius:15px!important;font-size:17px!important}
+  .dlv-promo-home-host .dlv28-banner-count{top:7px!important;right:8px!important;font-size:5.5px!important;padding:4px 6px!important}
+  .dlv-promo-home-host .dlv-promo-arrow{width:25px!important;height:25px!important;bottom:6px!important;font-size:15px!important}
+  .dlv-promo-home-host .dlv-promo-dots{bottom:7px!important;padding:3px 5px!important}
+
+  /* Contributor slide: compact 4x2 matrix and no hidden title behind the nav. */
+  .dlv-promo-home-host .tone-credits .dlv25-banner-card{
+    height:206px!important;
+    padding:14px 14px 30px!important;
+  }
+  .dlv-promo-home-host .tone-credits .dlv25-banner-copy>small{font-size:5.7px!important}
+  .dlv-promo-home-host .tone-credits .dlv25-banner-copy>strong{font-size:clamp(18px,5.4vw,23px)!important;line-height:.98!important;max-width:320px!important;margin:4px 0!important}
+  .dlv-promo-home-host .tone-credits .dlv25-banner-copy>em{font-size:6.8px!important;line-height:1.3!important;max-width:320px!important;-webkit-line-clamp:1!important}
+  .dlv-promo-home-host .tone-credits .dlv30-credits-art{margin-top:8px!important;gap:4px!important}
+  .dlv-promo-home-host .tone-credits .dlv30-credit{min-height:47px!important;height:47px!important;padding:5px!important;gap:4px!important;border-radius:9px!important}
+  .dlv-promo-home-host .tone-credits .dlv30-credit-mark{width:23px!important;height:23px!important;border-radius:7px!important}
+  .dlv-promo-home-host .tone-credits .dlv30-credit strong{font-size:6px!important;line-height:1!important}
+  .dlv-promo-home-host .tone-credits .dlv30-credit small{font-size:4.6px!important;line-height:1.05!important}
+
+  .dlv-promo-market-host .dlv25-banner-card{height:148px!important;padding:14px 13px 27px!important;grid-template-columns:minmax(0,1fr) 49px!important}
+  .dlv-promo-market-host .dlv25-banner-copy>strong{font-size:19px!important}
+  .dlv-promo-market-host .dlv25-banner-art>i{width:45px!important;height:45px!important;font-size:16px!important}
+
+  /* Homepage hero density. */
+  main#top>.hero.shell{padding-top:30px!important;padding-bottom:38px!important}
+  main#top>.hero.shell h1{font-size:clamp(40px,11.2vw,56px)!important;line-height:.92!important;max-width:520px!important}
+  main#top>.hero.shell p{font-size:11px!important;line-height:1.48!important;max-width:480px!important;margin-top:18px!important}
+  main#top>.hero.shell .hero-copy{min-height:0!important}
+
+  /* Ready state = centered card, not an empty full-screen white page. */
+  .dlv-assistant[data-live-support="v34"].is-open:has(.dlv-assistant-panel[data-ui-stage="ready"]){
+    inset:0!important;
+    display:grid!important;
+    place-items:center!important;
+    padding:12px!important;
+    background:rgba(8,12,10,.22)!important;
+    backdrop-filter:blur(9px)!important;
+    -webkit-backdrop-filter:blur(9px)!important;
+    pointer-events:auto!important;
+  }
+  .dlv-assistant[data-live-support="v34"] .dlv-assistant-panel[data-ui-stage="ready"]{
+    width:min(420px,calc(100vw - 24px))!important;
+    height:auto!important;
+    max-height:calc(100dvh - 130px)!important;
+    border:1px solid var(--theme-line-strong)!important;
+    border-radius:24px!important;
+    box-shadow:0 28px 78px rgba(0,0,0,.24)!important;
+    overflow:hidden!important;
+  }
+  .dlv-assistant[data-live-support="v34"] .dlv-assistant-panel[data-ui-stage="ready"] .dlv-assistant-header{
+    min-height:62px!important;
+    padding:max(8px,env(safe-area-inset-top)) 11px 8px!important;
+  }
+  .dlv-assistant[data-live-support="v34"] .dlv-assistant-panel[data-ui-stage="ready"] .dlv-assistant-body{
+    padding:24px 22px 25px!important;
+  }
+  .dlv-assistant[data-live-support="v34"] .dlv-assistant-panel[data-ui-stage="ready"] .dlv-assistant-ready{
+    padding:0!important;
+    margin:0!important;
+  }
+  .dlv-assistant[data-live-support="v34"] .dlv-assistant-panel[data-ui-stage="ready"] .dlv-assistant-ready h3{
+    font-size:clamp(28px,8.2vw,36px)!important;
+    line-height:.98!important;
+    max-width:310px!important;
+    margin:8px 0 9px!important;
+  }
+  .dlv-assistant[data-live-support="v34"] .dlv-assistant-panel[data-ui-stage="ready"] .dlv-assistant-ready>p{
+    font-size:10px!important;
+    line-height:1.5!important;
+    max-width:315px!important;
+  }
+  .dlv-assistant[data-live-support="v34"] .dlv-assistant-panel[data-ui-stage="ready"] .dlv-assistant-start{
+    margin-top:19px!important;
+    height:48px!important;
+  }
+  .dlv-assistant[data-live-support="v34"] .dlv-assistant-panel[data-ui-stage="ready"] .dlv-ui-trustline{margin-top:8px!important}
+}
+
+@media(max-width:380px){
+  .dlv-promo-home-host .dlv25-banner-card{height:168px!important}
+  .dlv-promo-home-host .tone-credits .dlv25-banner-card{height:202px!important}
+  .dlv-promo-home-host .tone-credits .dlv30-credit{min-height:45px!important;height:45px!important}
+  main#top>.hero.shell h1{font-size:39px!important}
+}
