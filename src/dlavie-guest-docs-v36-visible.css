@@ -1,0 +1,15 @@
+/* v36 visible renderer bridge — keep existing sidebar/topbar, replace page body only */
+html[data-guest-docs-v36="overview"] .dlv-doc-main>.dlv-doc-hero,
+html[data-guest-docs-v36="overview"] .dlv-doc-main>.dlv-doc-status,
+html[data-guest-docs-v36="overview"] .dlv-doc-main>.dlv-doc-sections,
+html[data-guest-docs-v36="overview"] .dlv-doc-main>.dlv-doc-footer,
+html[data-guest-docs-v36="faq"] .dlv-doc-main>.dlv-doc-hero,
+html[data-guest-docs-v36="faq"] .dlv-doc-main>.dlv-doc-status,
+html[data-guest-docs-v36="faq"] .dlv-doc-main>.dlv-doc-sections,
+html[data-guest-docs-v36="faq"] .dlv-doc-main>.dlv-doc-footer{display:none!important}
+html[data-guest-docs-v36="overview"] .dlv-doc-main,
+html[data-guest-docs-v36="faq"] .dlv-doc-main{max-width:none!important;padding-right:clamp(28px,5vw,72px)!important}
+html[data-guest-docs-v36="overview"] .dlv36-doc-host,
+html[data-guest-docs-v36="faq"] .dlv36-doc-host{display:block!important}
+@media(max-width:820px){html[data-guest-docs-v36="overview"] .dlv-doc-main,html[data-guest-docs-v36="faq"] .dlv-doc-main{padding-left:18px!important;padding-right:18px!important}}
+@media(max-width:560px){html[data-guest-docs-v36="overview"] .dlv-doc-main,html[data-guest-docs-v36="faq"] .dlv-doc-main{padding:calc(88px + env(safe-area-inset-top)) 14px calc(36px + env(safe-area-inset-bottom))!important}}
