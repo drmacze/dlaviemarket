@@ -30,6 +30,7 @@ import MarketPolicies from './MarketPolicies'
 import DigitalPolicyCenterV2 from './DigitalPolicyCenterV2'
 import AccessExperience from './AccessExperience'
 import DigitalGuestDocumentationV2 from './DigitalGuestDocumentationV2'
+import DLavieGuestDocsV36 from './DLavieGuestDocsV36'
 import DigitalPositioningEnhancer from './DigitalPositioningEnhancer'
 import LoginRedirectEnhancer from './LoginRedirectEnhancer'
 import './DLavieAssistantEndpointV9'
@@ -123,6 +124,7 @@ import './dlavie-utility-orb-fix-v29-1.css'
 import './dlavie-market-polish-v35.css'
 import './dlavie-market-polish-v35-1.css'
 import './dlavie-live-support-intake-v35-2.css'
+import './dlavie-guest-docs-v36-visible.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -154,6 +156,7 @@ createRoot(document.getElementById('root')!).render(
     <DigitalPolicyCenterV2 />
     <AccessExperience />
     <DigitalGuestDocumentationV2 />
+    <DLavieGuestDocsV36 />
     <DigitalPositioningEnhancer />
     <RefundCenter />
     <DLavieAssistant />
