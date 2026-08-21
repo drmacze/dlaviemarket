@@ -91,7 +91,7 @@ export default function DLavieGuestDocsV36(){
  useEffect(()=>{
   let owned:HTMLElement|null=null
   const ensure=()=>{
-   const main=document.querySelector<HTMLElement>('.guest-doc-main')
+   const main=document.querySelector<HTMLElement>('.dlv-doc-main')
    if(!main){setHost(null);return}
    let node=main.querySelector<HTMLElement>(':scope > .dlv36-doc-host')
    if(!node){node=document.createElement('div');node.className='dlv36-doc-host';main.appendChild(node);owned=node}
