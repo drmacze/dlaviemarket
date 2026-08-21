@@ -1,20 +1,20 @@
 {
-  "release": "dlavie-guest-documentation-v36",
-  "built_for": "2026-08-21",
+  "release": "dlavie-guest-documentation-v36.1",
+  "built_for": "2026-08-22",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
   "homepage_positioning": "digital-products",
   "provider": "H2H.id + VIPayment",
   "features": [
     "logged-out visitors continue to land on the public DLavie documentation experience before transactional access",
-    "documentation overview is redesigned as a focused digital-market introduction while the existing documentation sidebar remains available",
+    "documentation overview keeps the existing documentation sidebar and marketplace-focused guest layout",
     "Kunjungi Marketplace opens the existing DLavie login/register flow instead of exposing the market to guests",
     "Join Telegram links to https://t.me/DlavieOfficial",
-    "overview includes product-based facts instead of fabricated download or active-user marketing counters",
-    "Digital Market feature card and documentation shortcuts explain the product before account creation",
-    "FAQ is redesigned as a compact accordion guide with marketplace and Telegram actions",
-    "existing documentation pages, login onboarding and policy-consent flow remain intact",
-    "v35.2 live-support intake and v35.1 marketplace visual polish remain active"
+    "documentation statistics now show live aggregate Active Users, Total Users and Overall Products from the backend",
+    "active users are measured from Supabase sign-ins during the last 30 days",
+    "overall product count reads the complete synchronized digital product catalog rather than only storefront-active SKUs",
+    "public statistics expose aggregate counts only and do not expose user records or credentials",
+    "existing documentation pages, login onboarding and policy-consent flow remain intact"
   ],
-  "note": "v36 refreshes the guest-facing DLavie documentation and login entry experience while preserving the existing sidebar and authentication/onboarding system. No generated imagery is used."
+  "note": "v36.1 replaces generic marketplace facts with backend-driven aggregate user and catalog statistics. No generated imagery is used."
 }
