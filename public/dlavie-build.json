@@ -1,19 +1,18 @@
 {
-  "release": "dlavie-market-polish-v35.1",
+  "release": "dlavie-live-support-intake-v35.2",
   "built_for": "2026-08-21",
   "expected_market_route": "#/market",
   "legacy_nokos_route": "#/market?mode=nokos",
   "homepage_positioning": "digital-products",
   "provider": "H2H.id + VIPayment",
   "features": [
-    "restores measured sticky navigation clearance so homepage promotional banners no longer hide behind the navbar",
-    "mobile homepage banner height is reduced again to a compact marketplace strip",
-    "Contributor Credits is reduced to a dense 4x2 brand matrix and no longer uses generic Google favicon fallback that could show question-mark icons",
-    "official-domain favicon/logo attempts fall back to clean brand initials instead of broken or generic placeholder marks",
-    "homepage hero headline and vertical spacing are reduced so product-market actions appear sooner above the fold",
-    "pre-session DLavie Support is now a compact centered mobile card instead of an oversized empty full-screen sheet",
-    "Indonesian support opening copy now uses Bantuan Privat, Ada yang bisa kami bantu, and Mulai sesi",
-    "active live chat can still use the full mobile viewport after the support session begins"
+    "live support context intake is compacted for mobile and no longer resembles a long administrative form",
+    "session metadata and the four-step support flow use less vertical space during the context stage",
+    "impact and started-when fields are displayed side by side on mobile",
+    "select controls and inputs use compact touch-safe heights while the scenario textarea is reduced substantially",
+    "the context submit action stays close to the final field to reduce scrolling",
+    "assistant transcript bubbles shown above intake are denser so the form appears sooner",
+    "v35.1 navbar clearance, compact marketplace banners, contributor logo fallback and compact support opening remain active"
   ],
-  "note": "v35.1 is a screenshot-driven correction pass for navbar overlap, unstable contributor marks, oversized homepage hierarchy and the pre-session support layout. No generated imagery is used."
+  "note": "v35.2 is a screenshot-driven refinement of the context/intake step in DLavie Live Support. No generated imagery is used."
 }
