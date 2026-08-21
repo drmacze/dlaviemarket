@@ -50,6 +50,20 @@ export default function DLavieLiveSupportV34(){
     else if(pending)headerStatus.innerHTML=`<i></i> ${en?'Waiting for human support':'Menunggu admin'}`
     else headerStatus.innerHTML=`<i></i> ${en?'Instant help available':'Bantuan instan tersedia'}`
    }
+   const ready=panel.querySelector<HTMLElement>('.dlv-assistant-ready')
+   if(ready){
+    const eyebrow=ready.querySelector<HTMLElement>(':scope > span')
+    const heading=ready.querySelector<HTMLElement>('h3')
+    const intro=ready.querySelector<HTMLElement>(':scope > p')
+    const start=ready.querySelector<HTMLButtonElement>('.dlv-assistant-start')
+    const startText=start?.querySelector<HTMLElement>('span')
+    const trust=ready.querySelector<HTMLElement>('.dlv-ui-trustline span')
+    if(eyebrow)eyebrow.textContent=en?'PRIVATE SUPPORT':'BANTUAN PRIVAT'
+    if(heading)heading.textContent=en?'How can we help?':'Ada yang bisa kami bantu?'
+    if(intro)intro.textContent=en?'Ask about payments, wallet, orders, OTP, policies, or a problem you are experiencing.':'Tanyakan pembayaran, wallet, order, OTP, kebijakan, atau kendala yang sedang kamu alami.'
+    if(startText&&!start?.disabled)startText.textContent=en?'Start support':'Mulai sesi'
+    if(trust)trust.textContent=en?'Private to this account · session protected':'Khusus akun ini · sesi terlindungi'
+   }
    if(header&&!panel.querySelector('.dlv34-support-state')){
     const state=make('div','dlv34-support-state')
     header.insertAdjacentElement('afterend',state)
