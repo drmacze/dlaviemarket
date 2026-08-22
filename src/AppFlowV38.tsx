@@ -62,7 +62,7 @@ export default function AppFlowV38() {
   const [profile, setProfile] = useState<Profile | null>(readProfile)
 
   useEffect(() => {
-    document.documentElement.dataset.dlvLayout = 'app-v38'
+    document.documentElement.dataset.dlvFlow = 'v38'
     const syncRoute = () => setPage(normalizePage())
     const syncState = () => {
       setBalance(readBalance())
@@ -80,6 +80,7 @@ export default function AppFlowV38() {
       window.removeEventListener('storage', syncState)
       window.removeEventListener('focus', syncState)
       window.clearInterval(timer)
+      delete document.documentElement.dataset.dlvFlow
     }
   }, [])
 
