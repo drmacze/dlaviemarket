@@ -63,12 +63,16 @@ html[data-access="onboarding"] .account-backdrop {
 }
 
 @media (max-width: 820px) {
-  .dlv-doc-topbar,
-  .dlv-doc-sidebar,
-  .dlv-doc-main,
-  .dlv36-doc-host {
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
+  /* Never override the sidebar's translateX with translateZ(0): doing that
+     forces the drawer to stay visible even after its open class is removed. */
+  .dlv-doc-sidebar:not(.open) {
+    -webkit-transform: translateX(-105%) !important;
+    transform: translateX(-105%) !important;
+  }
+
+  .dlv-doc-sidebar.open {
+    -webkit-transform: translateX(0) !important;
+    transform: translateX(0) !important;
   }
 
   .dlv-doc-topbar button,
