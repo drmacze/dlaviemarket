@@ -48,6 +48,7 @@ import DLavieVIPaymentAdmin from './DLavieVIPaymentAdmin'
 import RefundCenter from './RefundCenter'
 import DLavieRefundAdminQueue from './DLavieRefundAdminQueue'
 import DLavieOrderEvidenceBridge from './DLavieOrderEvidenceBridge'
+import GoPayInspiredShell from './GoPayInspiredShell'
 import './styles.css'
 import './brand-logos.css'
 import './mobile-polish.css'
@@ -125,6 +126,7 @@ import './dlavie-market-polish-v35.css'
 import './dlavie-market-polish-v35-1.css'
 import './dlavie-live-support-intake-v35-2.css'
 import './dlavie-guest-docs-v36-visible.css'
+import './gopay-inspired-v37.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -175,5 +177,6 @@ createRoot(document.getElementById('root')!).render(
     <DLavieRadio />
     <DLavieUtilityOrb />
     <App />
+    <GoPayInspiredShell />
   </StrictMode>,
 )
