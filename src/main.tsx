@@ -51,6 +51,7 @@ import DLavieOrderEvidenceBridge from './DLavieOrderEvidenceBridge'
 import GoPayInspiredShell from './GoPayInspiredShell'
 import AppFlowV38 from './AppFlowV38'
 import AppExperienceV39 from './AppExperienceV39'
+import AppExperienceV40 from './AppExperienceV40'
 import './styles.css'
 import './brand-logos.css'
 import './mobile-polish.css'
@@ -131,6 +132,8 @@ import './dlavie-guest-docs-v36-visible.css'
 import './gopay-inspired-v37.css'
 import './app-flow-v38.css'
 import './app-experience-v39.css'
+import './app-experience-v40.css'
+import './app-experience-v40-polish.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -184,5 +187,6 @@ createRoot(document.getElementById('root')!).render(
     <GoPayInspiredShell />
     <AppFlowV38 />
     <AppExperienceV39 />
+    <AppExperienceV40 />
   </StrictMode>,
 )

@@ -1,0 +1,5 @@
+html.dlv40-mask-balance .dlv37-wallet-card>strong,html.dlv40-mask-balance .dlv39-profile-stats>div:first-child strong{filter:blur(7px);user-select:none}
+html[data-dlv-experience40="true"] .dlv40-adaptive-home button,html[data-dlv-experience40="true"] .dlv40-sheet button,html[data-dlv-experience40="true"] .dlv40-settings-entry{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+html[data-dlv-experience40="true"] .dlv40-adaptive-home button:active,html[data-dlv-experience40="true"] .dlv40-sheet button:active,html[data-dlv-experience40="true"] .dlv40-settings-entry:active{transform:scale(.985)}
+html[data-dlv-experience40="true"] .dlv40-adaptive-home button:focus-visible,html[data-dlv-experience40="true"] .dlv40-sheet button:focus-visible,html[data-dlv-experience40="true"] .dlv40-settings-entry:focus-visible{outline:2px solid var(--accent,#8b5cf6);outline-offset:2px}
+@media(hover:none){html[data-dlv-experience40="true"] .dlv40-status-strip button:hover,html[data-dlv-experience40="true"] .dlv40-suggestion-row>button:hover{transform:none}}
