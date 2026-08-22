@@ -8,6 +8,7 @@ import LanguageSystem from './LanguageSystem'
 import NavUtilityMenu from './NavUtilityMenu'
 import AccountSystem from './AccountSystem'
 import GuestAuthBridge from './GuestAuthBridge'
+import GuestInteractionRecovery from './GuestInteractionRecovery'
 import LegacyNokosMarket from './LegacyNokosMarket'
 import DLavieDigitalMarketV23 from './DLavieDigitalMarketV23'
 import DigitalPostpaidPaymentGuard from './DigitalPostpaidPaymentGuard'
@@ -135,6 +136,7 @@ import './app-flow-v38.css'
 import './app-experience-v39.css'
 import './app-experience-v40.css'
 import './app-experience-v40-polish.css'
+import './guest-interaction-recovery.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -146,6 +148,7 @@ createRoot(document.getElementById('root')!).render(
     <NavUtilityMenu />
     <AccountSystem />
     <GuestAuthBridge />
+    <GuestInteractionRecovery />
     <LoginRedirectEnhancer />
     <LegacyNokosMarket />
     <DLavieDigitalMarketV23 />
