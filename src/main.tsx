@@ -133,6 +133,7 @@ import './gopay-inspired-v37.css'
 import './app-flow-v38.css'
 import './app-experience-v39.css'
 import './app-experience-v40.css'
+import './app-experience-v40-polish.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
