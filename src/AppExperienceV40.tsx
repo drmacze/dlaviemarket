@@ -108,9 +108,11 @@ export default function AppExperienceV40() {
   }, [])
 
   useEffect(() => {
-    document.documentElement.classList.toggle('dlv40-compact-home', preferences.compactHome)
-    document.documentElement.classList.toggle('dlv40-reduce-effects', preferences.reduceEffects)
-    document.documentElement.classList.toggle('dlv40-mask-balance', preferences.maskBalance)
+    const root = document.documentElement
+    root.classList.toggle('dlv40-compact-home', preferences.compactHome)
+    root.classList.toggle('dlv40-reduce-effects', preferences.reduceEffects)
+    root.classList.toggle('dlv40-mask-balance', preferences.maskBalance)
+    return () => root.classList.remove('dlv40-compact-home', 'dlv40-reduce-effects', 'dlv40-mask-balance')
   }, [preferences])
 
   useEffect(() => {
@@ -155,6 +157,15 @@ export default function AppExperienceV40() {
     window.dispatchEvent(new CustomEvent(STATE_EVENT))
   }
 
+  const activateSuggestion = (item: Suggestion) => {
+    if (item.id === 'low-balance') {
+      route('#/home')
+      window.setTimeout(() => document.querySelector<HTMLButtonElement>('.balance-pill')?.click(), 80)
+      return
+    }
+    route(item.route)
+  }
+
   const refresh = () => {
     if (isRefreshing) return
     setIsRefreshing(true)
@@ -176,7 +187,7 @@ export default function AppExperienceV40() {
         <button type="button" onClick={() => setInsightsOpen(true)}><span>Favorit</span><strong>{favorites.length}</strong><small>layanan</small></button>
         <button type="button" onClick={() => setSettingsOpen(true)}><span>Saldo</span><strong className="dlv40-sensitive">{rupiah.format(balance)}</strong><small>tersedia</small></button>
       </div>
-      {preferences.smartSuggestions && <div className="dlv40-suggestion-row">{suggestions.map((item) => <button type="button" key={item.id} onClick={() => route(item.route)}><i>{item.symbol}</i><span><small>{item.reason}</small><b>{item.title}</b><em>{item.body}</em></span><strong>›</strong></button>)}</div>}
+      {preferences.smartSuggestions && <div className="dlv40-suggestion-row">{suggestions.map((item) => <button type="button" key={item.id} onClick={() => activateSuggestion(item)}><i>{item.symbol}</i><span><small>{item.reason}</small><b>{item.title}</b><em>{item.body}</em></span><strong>›</strong></button>)}</div>}
     </section>
   )
 
@@ -196,7 +207,7 @@ export default function AppExperienceV40() {
           <article><small>Pesanan aktif</small><strong>{activeOrders.length}</strong><span>menunggu atau OTP diterima</span></article>
           <article><small>Layanan favorit</small><strong>{favorites.length}</strong><span>shortcut personal tersimpan</span></article>
         </div>
-        <div className="dlv40-next-actions"><h3>Lanjut dari sini</h3>{suggestions.map((item) => <button type="button" key={item.id} onClick={() => { setInsightsOpen(false); route(item.route) }}><i>{item.symbol}</i><span><b>{item.title}</b><small>{item.body}</small></span><strong>›</strong></button>)}</div>
+        <div className="dlv40-next-actions"><h3>Lanjut dari sini</h3>{suggestions.map((item) => <button type="button" key={item.id} onClick={() => { setInsightsOpen(false); activateSuggestion(item) }}><i>{item.symbol}</i><span><b>{item.title}</b><small>{item.body}</small></span><strong>›</strong></button>)}</div>
       </section>
     </div>}
 
