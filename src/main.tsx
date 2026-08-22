@@ -7,6 +7,7 @@ import CopyRefinement from './CopyRefinementV2'
 import LanguageSystem from './LanguageSystem'
 import NavUtilityMenu from './NavUtilityMenu'
 import AccountSystem from './AccountSystem'
+import GuestAuthBridge from './GuestAuthBridge'
 import LegacyNokosMarket from './LegacyNokosMarket'
 import DLavieDigitalMarketV23 from './DLavieDigitalMarketV23'
 import DigitalPostpaidPaymentGuard from './DigitalPostpaidPaymentGuard'
@@ -144,6 +145,7 @@ createRoot(document.getElementById('root')!).render(
     <LanguageSystem />
     <NavUtilityMenu />
     <AccountSystem />
+    <GuestAuthBridge />
     <LoginRedirectEnhancer />
     <LegacyNokosMarket />
     <DLavieDigitalMarketV23 />
