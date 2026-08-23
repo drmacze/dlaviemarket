@@ -1,0 +1,181 @@
+/* DLavie v41 — mobile Home stability layer.
+   Keeps v37/v39/v40 functionality, but prevents old Home surfaces and portal rows
+   from creating horizontal page scroll or conflicting light/dark surfaces. */
+
+html[data-dlv-layout="app-v37"][data-page="home"],
+html[data-dlv-layout="app-v37"][data-page="home"] body {
+  max-width: 100%;
+  overflow-x: clip !important;
+}
+
+html[data-dlv-layout="app-v37"][data-page="home"] .app > .dlv-promo-home-host {
+  display: none !important;
+}
+
+html[data-dlv-layout="app-v37"][data-page="home"] .dlv-app-home-v37,
+html[data-dlv-layout="app-v37"][data-page="home"] .dlv37-home-grid,
+html[data-dlv-layout="app-v37"][data-page="home"] .dlv37-primary-column,
+html[data-dlv-layout="app-v37"][data-page="home"] .dlv37-side-column,
+html[data-dlv-layout="app-v37"][data-page="home"] .dlv39-home-quick-host,
+html[data-dlv-layout="app-v37"][data-page="home"] .dlv39-favorites-card,
+html[data-dlv-layout="app-v37"][data-page="home"] .dlv40-adaptive-home {
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.dlv40-adaptive-home,
+.dlv40-sheet {
+  --theme-surface: var(--theme-panel-solid);
+  --theme-surface-2: color-mix(in srgb, var(--theme-panel-solid), var(--theme-ink) 3%);
+  --theme-text: var(--theme-ink);
+  --theme-border: var(--theme-line);
+}
+
+.dlv40-adaptive-home {
+  width: 100% !important;
+  margin: 0 !important;
+  color: var(--theme-ink) !important;
+  border-color: var(--theme-line) !important;
+  background:
+    radial-gradient(circle at 92% 4%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 38%),
+    var(--theme-panel-solid) !important;
+  box-shadow: 0 14px 38px color-mix(in srgb, var(--theme-shadow), transparent 58%) !important;
+}
+
+.dlv40-status-strip button,
+.dlv40-suggestion-row > button,
+.dlv40-settings-entry {
+  color: var(--theme-ink) !important;
+  background: var(--theme-soft) !important;
+  border-color: var(--theme-line) !important;
+}
+
+@media (max-width: 720px) {
+  html[data-dlv-layout="app-v37"][data-page="home"] .dlv-app-home-v37 {
+    width: calc(100vw - 20px) !important;
+    margin-inline: auto !important;
+    padding-top: 92px !important;
+    padding-bottom: calc(112px + env(safe-area-inset-bottom)) !important;
+  }
+
+  html[data-dlv-layout="app-v37"][data-page="home"] .dlv37-welcome {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    align-items: start !important;
+    gap: 13px !important;
+    width: 100% !important;
+    margin: 2px 0 16px !important;
+  }
+
+  html[data-dlv-layout="app-v37"][data-page="home"] .dlv37-welcome > div:first-child {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+
+  html[data-dlv-layout="app-v37"][data-page="home"] .dlv37-welcome h1,
+  html[data-dlv-layout="app-v37"][data-page="home"] .dlv37-welcome p {
+    max-width: min(100%, 340px) !important;
+  }
+
+  html[data-dlv-layout="app-v37"][data-page="home"] .dlv39-home-tools-host {
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+  }
+
+  html[data-dlv-layout="app-v37"][data-page="home"] .dlv39-utility-row {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 7px !important;
+  }
+
+  html[data-dlv-layout="app-v37"][data-page="home"] .dlv39-utility-row > button {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 50px !important;
+    padding: 5px 4px !important;
+    border-radius: 14px !important;
+  }
+
+  html[data-dlv-layout="app-v37"][data-page="home"] .dlv39-home-quick-host {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  html[data-dlv-layout="app-v37"][data-page="home"] .dlv39-favorites-card {
+    width: 100% !important;
+    padding: 15px !important;
+    border-radius: 20px !important;
+  }
+
+  html[data-dlv-layout="app-v37"][data-page="home"] .dlv39-favorite-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 7px !important;
+  }
+
+  html[data-dlv-layout="app-v37"][data-page="home"] .dlv39-favorite-row > button {
+    min-height: 88px !important;
+    padding: 9px !important;
+  }
+
+  html[data-dlv-layout="app-v37"][data-page="home"] .dlv37-service-row,
+  html[data-dlv-layout="app-v37"][data-page="home"] .dlv39-recent-line {
+    max-width: 100% !important;
+    overscroll-behavior-inline: contain;
+  }
+
+  html[data-dlv-layout="app-v37"][data-page="home"] .dlv40-adaptive-home {
+    padding: 15px !important;
+    border-radius: 21px !important;
+    overflow: hidden !important;
+  }
+
+  html[data-dlv-layout="app-v37"][data-page="home"] .dlv40-status-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 7px !important;
+    margin-top: 14px !important;
+  }
+
+  html[data-dlv-layout="app-v37"][data-page="home"] .dlv40-status-strip button {
+    min-height: 78px !important;
+    padding: 11px 12px !important;
+    border-radius: 16px !important;
+  }
+
+  html[data-dlv-layout="app-v37"][data-page="home"] .dlv40-suggestion-row {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+    margin: 8px 0 0 !important;
+    padding: 0 !important;
+    scroll-snap-type: none !important;
+  }
+
+  html[data-dlv-layout="app-v37"][data-page="home"] .dlv40-suggestion-row > button {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    flex: none !important;
+    padding: 11px !important;
+    border-radius: 16px !important;
+  }
+
+  .dlv37-bottom-nav {
+    max-width: calc(100vw - 16px) !important;
+  }
+}
+
+@media (max-width: 390px) {
+  html[data-dlv-layout="app-v37"][data-page="home"] .dlv39-favorite-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  html[data-dlv-layout="app-v37"][data-page="home"] .dlv39-utility-row > button {
+    height: 48px !important;
+  }
+}

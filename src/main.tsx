@@ -137,6 +137,7 @@ import './app-experience-v39.css'
 import './app-experience-v40.css'
 import './app-experience-v40-polish.css'
 import './guest-interaction-recovery.css'
+import './home-mobile-stability-v41.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
