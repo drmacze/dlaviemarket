@@ -32,8 +32,8 @@ jobs:
       - name: Install dependencies
         run: npm install --no-audit --no-fund
 
-      - name: Build Vite app
-        run: npx vite build
+      - name: Typecheck and build
+        run: npm run build
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
