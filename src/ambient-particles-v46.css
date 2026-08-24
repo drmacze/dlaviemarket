@@ -69,7 +69,7 @@ html[data-access="member"] .dlv46-ambient-particles{opacity:1}
   100%{transform:translate3d(18px,-18px,0) rotate(9deg);opacity:.15}
 }
 
-/* Home popular services now use the bundled official brand SVGs instead of initials. */
+/* Home popular services use bundled official brand SVGs instead of initials. */
 .dlv37-service-logo{
   overflow:hidden;
   display:grid!important;
@@ -84,9 +84,14 @@ html[data-access="member"] .dlv46-ambient-particles{opacity:1}
   filter:drop-shadow(0 3px 7px rgba(0,0,0,.12));
 }
 
-/* v39 utility/category glyphs are vector icons rather than text/emoji placeholders. */
+/* Function/category placeholders become neutral vector UI icons. Brand logos stay brand assets. */
 .dlv39-icon svg,
-.dlv39-route-utilities svg{
+.dlv39-route-utilities svg,
+.dlv39-global-search>span>svg,
+.dlv39-favorite-row>button>span>svg,
+.dlv39-search-favorites>button>span>svg,
+.dlv39-result-main>span>svg,
+.dlv39-profile-menu>button>span>svg{
   width:16px;
   height:16px;
   display:block;
@@ -97,6 +102,12 @@ html[data-access="member"] .dlv46-ambient-particles{opacity:1}
   stroke-linejoin:round;
 }
 .dlv39-utility-row .dlv39-icon svg{width:15px;height:15px}
+.dlv39-route-utilities>button>svg{width:15px;height:15px;margin:auto}
+.dlv39-global-search>span>svg{width:18px;height:18px}
+.dlv39-favorite-row>button>span>svg,
+.dlv39-search-favorites>button>span>svg,
+.dlv39-result-main>span>svg,
+.dlv39-profile-menu>button>span>svg{width:18px;height:18px;margin:auto}
 
 @media(max-width:720px){
   .dlv46-particle{opacity:.13}
