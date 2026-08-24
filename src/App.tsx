@@ -148,10 +148,11 @@ function App() {
 
   useEffect(() => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const touchDevice = window.matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0
     let lenis: Lenis | null = null
     let ticker: ((time: number) => void) | null = null
 
-    if (!reduceMotion) {
+    if (!reduceMotion && !touchDevice) {
       lenis = new Lenis({ duration: 1.05, smoothWheel: true, wheelMultiplier: 0.92, touchMultiplier: 1.1 })
       lenis.on('scroll', ScrollTrigger.update)
       ticker = (time: number) => lenis?.raf(time * 1000)
