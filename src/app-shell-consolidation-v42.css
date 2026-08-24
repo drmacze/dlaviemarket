@@ -1,0 +1,130 @@
+/* DLavie v42 — app shell consolidation.
+   This intentionally removes visual layout contribution from the legacy landing <App />
+   when the authenticated app-v37 shell is active, while preserving its fixed navbar
+   and modal/payment/account triggers. */
+
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]),
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden !important;
+  overscroll-behavior-x: none;
+}
+
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .app {
+  min-height: 0 !important;
+  height: 0 !important;
+  max-height: 0 !important;
+  overflow: visible !important;
+  position: relative;
+  z-index: 2;
+}
+
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .app > .noise,
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .app > .ambient,
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .app > main,
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .app > footer,
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .app > .dlv-promo-home-host {
+  display: none !important;
+}
+
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .site-nav-wrap {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 156 !important;
+  pointer-events: none;
+}
+
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .site-nav-wrap .site-nav {
+  pointer-events: auto;
+}
+
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .dlv-app-home-v37 {
+  min-height: auto !important;
+  display: grid;
+  gap: 14px;
+  padding-top: calc(92px + env(safe-area-inset-top)) !important;
+}
+
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"])[data-page="home"] .dlv37-welcome {
+  margin-top: 0 !important;
+}
+
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .dlv37-home-grid,
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .dlv39-home-quick-host,
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .dlv39-favorites-card,
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .dlv40-adaptive-home,
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .dlv37-wallet-card,
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .dlv37-quick-actions,
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .dlv37-section,
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .dlv37-activity-card,
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .dlv21-market,
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .dlv38-route-shell {
+  box-sizing: border-box;
+  max-width: 100% !important;
+  min-width: 0 !important;
+}
+
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .dlv37-bottom-nav {
+  z-index: 180 !important;
+}
+
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .dlv-utility-orb,
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .dlavie-utility-orb,
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .dlv29-utility-orb,
+html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) [class*="utility-orb"] {
+  right: max(14px, env(safe-area-inset-right)) !important;
+  bottom: calc(100px + env(safe-area-inset-bottom)) !important;
+  z-index: 145 !important;
+}
+
+@media (max-width: 720px) {
+  html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .dlv-app-home-v37 {
+    width: calc(100vw - 20px) !important;
+    padding-top: calc(88px + env(safe-area-inset-top)) !important;
+    padding-bottom: calc(132px + env(safe-area-inset-bottom)) !important;
+  }
+
+  html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .dlv37-welcome h1 {
+    font-size: clamp(28px, 10vw, 42px) !important;
+    line-height: .98 !important;
+    letter-spacing: -.065em !important;
+  }
+
+  html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .dlv37-wallet-card {
+    min-height: 168px !important;
+  }
+
+  html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .dlv37-service-row {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    overflow: visible !important;
+  }
+
+  html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .dlv37-service-card {
+    width: 100% !important;
+    flex: none !important;
+  }
+
+  html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .dlv39-utility-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+
+  html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .dlv39-utility-row > button {
+    min-width: 0 !important;
+    overflow: hidden;
+  }
+
+  html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .dlv21-market,
+  html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .dlv38-route-shell {
+    padding-bottom: calc(134px + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+@media (max-width: 390px) {
+  html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .dlv37-service-row {
+    grid-template-columns: 1fr !important;
+  }
+}
