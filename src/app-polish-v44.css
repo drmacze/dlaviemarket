@@ -1,0 +1,316 @@
+/* DLavie v44 — mobile member-shell polish.
+   Loaded last so it can reconcile the accumulated v37-v43 layers without
+   changing wallet, order, auth, supplier, payment, or support logic. */
+
+html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] {
+  --dlv44-nav-height: 58px;
+  scroll-padding-top: calc(88px + env(safe-area-inset-top));
+}
+
+html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .site-nav,
+html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv38-routebar,
+html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv37-bottom-nav {
+  border-color: color-mix(in srgb, var(--theme-line), transparent 8%) !important;
+  box-shadow: 0 14px 38px color-mix(in srgb, var(--theme-shadow), transparent 30%) !important;
+}
+
+html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv37-wallet-card,
+html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv37-quick-actions,
+html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv37-section,
+html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv37-activity-card,
+html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv39-favorites-card,
+html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv21-hero,
+html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv21-section {
+  box-shadow: 0 12px 30px color-mix(in srgb, var(--theme-shadow), transparent 56%) !important;
+}
+
+/* Give the support experience visual priority when it is open. */
+html[data-dlv-polish="v44"][data-access="member"]:has(.dlv-assistant.is-open) .dlv37-bottom-nav,
+html[data-dlv-polish="v44"][data-access="member"]:has(.dlv-assistant.is-open) .dlv-utility-orb,
+html[data-dlv-polish="v44"][data-access="member"]:has(.dlv-assistant.is-open) .theme-dock,
+html[data-dlv-polish="v44"][data-access="member"]:has(.dlv-assistant.is-open) .utility-dock {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+@media (max-width: 720px) {
+  /* Home: more breathing room, less oversized vertical rhythm. */
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv-app-home-v37 {
+    width: calc(100% - 24px) !important;
+    padding-top: calc(94px + env(safe-area-inset-top)) !important;
+    padding-bottom: calc(106px + env(safe-area-inset-bottom)) !important;
+    gap: 12px !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv37-welcome {
+    margin: 2px 4px 13px !important;
+    gap: 12px !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv37-welcome h1 {
+    max-width: 330px !important;
+    margin: 6px 0 8px !important;
+    font-size: clamp(30px, 9.4vw, 38px) !important;
+    line-height: .96 !important;
+    letter-spacing: -.06em !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv37-welcome p {
+    max-width: 330px !important;
+    font-size: 10px !important;
+    line-height: 1.48 !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv39-utility-row {
+    width: 100% !important;
+    gap: 7px !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv39-utility-row > button {
+    min-width: 0 !important;
+    height: 60px !important;
+    padding: 7px 4px !important;
+    border-radius: 16px !important;
+    flex: 1 1 0 !important;
+    gap: 3px !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv39-utility-row .dlv39-icon {
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv37-wallet-card {
+    min-height: 158px !important;
+    padding: 18px !important;
+    border-radius: 22px !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv37-wallet-card > strong {
+    margin-top: 14px !important;
+    font-size: clamp(36px, 11vw, 44px) !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv37-wallet-actions {
+    margin-top: 20px !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv37-quick-actions {
+    padding: 8px 4px !important;
+    border-radius: 20px !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv37-quick-actions button {
+    min-height: 82px !important;
+  }
+
+  /* Route bar: reserve real space for global theme + hamburger docks. */
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"][data-page]:not([data-page="home"]) .dlv38-routebar-wrap {
+    padding: calc(10px + env(safe-area-inset-top)) 10px 0 !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"][data-page]:not([data-page="home"]) .dlv38-routebar {
+    width: 100% !important;
+    min-height: 58px !important;
+    padding: 7px 92px 7px 7px !important;
+    border-radius: 18px !important;
+    gap: 7px !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"][data-page]:not([data-page="home"]) .dlv38-route-identity {
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+    gap: 8px !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"][data-page]:not([data-page="home"]) .dlv38-back {
+    width: 38px !important;
+    height: 38px !important;
+    flex: 0 0 38px !important;
+    border-radius: 12px !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv38-route-copy {
+    gap: 1px !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv38-route-copy small {
+    font-size: 6.5px !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv38-route-copy strong {
+    font-size: 13.5px !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv38-route-copy span,
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv38-route-state,
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv38-account,
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv39-route-utilities {
+    display: none !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv38-route-actions {
+    min-width: 0 !important;
+    gap: 5px !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv38-route-tool {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 11px !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv38-balance {
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: 74px !important;
+    height: 36px !important;
+    padding: 0 9px !important;
+    gap: 0 !important;
+    border-radius: 11px !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv38-balance > svg,
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv38-balance small {
+    display: none !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv38-balance b {
+    max-width: 58px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: 8.5px !important;
+    letter-spacing: -.02em !important;
+  }
+
+  /* Align the two global controls into the space intentionally reserved above. */
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"][data-page]:not([data-page="home"]) .utility-dock {
+    top: calc(18px + env(safe-area-inset-top)) !important;
+    right: 18px !important;
+    z-index: 190 !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"][data-page]:not([data-page="home"]) .theme-dock {
+    top: calc(18px + env(safe-area-inset-top)) !important;
+    right: 58px !important;
+    z-index: 189 !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"][data-page]:not([data-page="home"]) .utility-trigger,
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"][data-page]:not([data-page="home"]) .theme-trigger {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 11px !important;
+    box-shadow: none !important;
+    background: color-mix(in srgb, var(--theme-panel-solid), transparent 7%) !important;
+  }
+
+  /* Route content starts immediately after the app bar instead of leaving a large desktop gap. */
+  html[data-dlv-polish="v44"][data-dlv-flow="v38"][data-page="market"] .dlv-digital-market {
+    padding-top: calc(84px + env(safe-area-inset-top)) !important;
+    padding-bottom: calc(96px + env(safe-area-inset-bottom)) !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"][data-page="activity"] .history-section {
+    padding-top: calc(84px + env(safe-area-inset-top)) !important;
+    padding-bottom: calc(96px + env(safe-area-inset-bottom)) !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-flow="v38"] .dlv21-hero {
+    padding: 18px !important;
+    border-radius: 23px !important;
+    gap: 14px !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-flow="v38"] .dlv21-hero h1 {
+    font-size: clamp(27px, 8.6vw, 35px) !important;
+    line-height: .97 !important;
+  }
+
+  /* Bottom navigation: preserve 44px+ touch targets while returning more viewport to content. */
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv37-bottom-nav {
+    width: calc(100% - 24px) !important;
+    min-height: var(--dlv44-nav-height) !important;
+    padding: 5px !important;
+    bottom: calc(8px + env(safe-area-inset-bottom)) !important;
+    border-radius: 19px !important;
+    gap: 2px !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv37-bottom-nav button {
+    min-height: 46px !important;
+    padding: 4px 2px !important;
+    border-radius: 13px !important;
+    gap: 3px !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv37-bottom-nav svg {
+    width: 17px !important;
+    height: 17px !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv37-bottom-nav span {
+    font-size: 6.8px !important;
+  }
+
+  /* Utility orb: smaller and clearly separated from the bottom nav. */
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv-utility-orb {
+    --orb-size: 50px !important;
+    --orb-step: 62px !important;
+    right: max(12px, env(safe-area-inset-right)) !important;
+    bottom: calc(76px + env(safe-area-inset-bottom)) !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv-orbit-core {
+    border-radius: 17px !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv-orbit-item {
+    inset: 3px auto auto 3px !important;
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 15px !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv-orbit-item.is-close {
+    inset: 6px auto auto 6px !important;
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 13px !important;
+  }
+
+  /* Touch feedback stays restrained and never fights native iOS scrolling. */
+  html[data-dlv-polish="v44"][data-access="member"] .dlv37-bottom-nav button:active,
+  html[data-dlv-polish="v44"][data-access="member"] .dlv37-quick-actions button:active,
+  html[data-dlv-polish="v44"][data-access="member"] .dlv38-back:active,
+  html[data-dlv-polish="v44"][data-access="member"] .dlv38-route-tool:active,
+  html[data-dlv-polish="v44"][data-access="member"] .dlv38-balance:active {
+    transform: scale(.97) !important;
+    transition-duration: .08s !important;
+  }
+}
+
+@media (max-width: 390px) {
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"][data-page]:not([data-page="home"]) .dlv38-routebar {
+    padding-right: 88px !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv38-balance {
+    max-width: 66px !important;
+    padding-inline: 7px !important;
+  }
+
+  html[data-dlv-polish="v44"][data-dlv-layout="app-v37"][data-access="member"] .dlv37-welcome h1 {
+    font-size: 29px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-dlv-polish="v44"] .dlv37-bottom-nav,
+  html[data-dlv-polish="v44"] .dlv-utility-orb,
+  html[data-dlv-polish="v44"] .theme-dock,
+  html[data-dlv-polish="v44"] .utility-dock {
+    transition: none !important;
+  }
+}
