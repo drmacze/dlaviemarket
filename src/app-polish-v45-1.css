@@ -1,0 +1,38 @@
+/* DLavie v45.1 — emergency bottom-navigation geometry fix.
+   v45 mixed edge anchoring with the inherited v37 translateX(-50%), shifting
+   the whole dock half a viewport to the left on iPhone. Keep one positioning
+   model only: centered fixed dock. */
+
+@media (max-width: 720px) {
+  html[data-dlv-ui-polish="v45"][data-access="member"] .dlv37-bottom-nav {
+    position: fixed !important;
+    left: 50% !important;
+    right: auto !important;
+    width: calc(100% - 24px) !important;
+    max-width: 610px !important;
+    box-sizing: border-box !important;
+    transform: translate3d(-50%, 0, 0) !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    overflow: visible !important;
+  }
+
+  html[data-dlv-ui-polish="v45"][data-access="member"] .dlv37-bottom-nav > button {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+
+  html[data-dlv-ui-polish="v45"][data-access="member"] .dlv37-bottom-nav > button > span {
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  /* Ensure page content can always scroll clear of the fixed dock instead of
+     appearing trapped underneath it on short Safari viewports. */
+  html[data-dlv-ui-polish="v45"][data-access="member"] .dlv-app-home-v37,
+  html[data-dlv-ui-polish="v45"][data-access="member"][data-page]:not([data-page="home"]) .app {
+    padding-bottom: calc(112px + env(safe-area-inset-bottom)) !important;
+  }
+}
