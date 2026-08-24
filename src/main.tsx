@@ -56,6 +56,7 @@ import AppExperienceV39 from './AppExperienceV39'
 import AppExperienceV40 from './AppExperienceV40'
 import AppShellRouteStabilizer from './AppShellRouteStabilizer'
 import SupportBridgeV44 from './SupportBridgeV44'
+import MobilePolishV45 from './MobilePolishV45'
 import './styles.css'
 import './brand-logos.css'
 import './mobile-polish.css'
@@ -142,6 +143,7 @@ import './guest-interaction-recovery.css'
 import './home-mobile-stability-v41.css'
 import './app-shell-consolidation-v42.css'
 import './app-polish-v44.css'
+import './app-polish-v45.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -176,6 +178,7 @@ createRoot(document.getElementById('root')!).render(
     <DigitalPolicyCenterV2 />
     <AccessExperience />
     <SupportBridgeV44 />
+    <MobilePolishV45 />
     <DigitalGuestDocumentationV2 />
     <DLavieGuestDocsV36 />
     <DigitalPositioningEnhancer />
