@@ -1,0 +1,42 @@
+/* DLavie v45.2 — definitive mobile bottom-nav fix.
+   Loaded last from main.tsx so it cannot be overridden by v45/v45.1 ordering.
+   Use edge anchoring only; never combine it with inherited translateX centering. */
+
+@media (max-width: 720px) {
+  html[data-dlv-ui-polish="v45"][data-access="member"] .dlv37-bottom-nav {
+    position: fixed !important;
+    left: 12px !important;
+    right: 12px !important;
+    bottom: calc(8px + env(safe-area-inset-bottom)) !important;
+    width: auto !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+    transform: none !important;
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    gap: 2px !important;
+    overflow: hidden !important;
+  }
+
+  html[data-dlv-ui-polish="v45"][data-access="member"] .dlv37-bottom-nav > button {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+  }
+
+  html[data-dlv-ui-polish="v45"][data-access="member"] .dlv37-bottom-nav > button > span {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+  }
+
+  html[data-dlv-ui-polish="v45"][data-access="member"] .dlv-app-home-v37,
+  html[data-dlv-ui-polish="v45"][data-access="member"][data-page]:not([data-page="home"]) .app {
+    padding-bottom: calc(118px + env(safe-area-inset-bottom)) !important;
+  }
+}
