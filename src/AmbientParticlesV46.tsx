@@ -1,7 +1,9 @@
+import type { ReactNode } from 'react'
+
 type AmbientIconName = 'wallet' | 'card' | 'box' | 'receipt' | 'tag' | 'cart' | 'signal' | 'spark'
 
 function AmbientIcon({ name }: { name: AmbientIconName }) {
-  const paths: Record<AmbientIconName, React.ReactNode> = {
+  const paths: Record<AmbientIconName, ReactNode> = {
     wallet: <><path d="M4 7a3 3 0 0 1 3-3h12v16H7a3 3 0 0 1-3-3Z"/><path d="M4 8h15"/><path d="M15 12h6v4h-6a2 2 0 0 1 0-4Z"/></>,
     card: <><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3 9h18"/><path d="M7 14h4"/></>,
     box: <><path d="m4 8 8-4 8 4-8 4-8-4Z"/><path d="m4 8 8 4 8-4v8l-8 4-8-4Z"/><path d="M12 12v8"/></>,
