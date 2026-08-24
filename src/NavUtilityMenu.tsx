@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 
 type Language = 'id' | 'en'
 type StoredProfile = { username?: string; email?: string; avatarId?: string }
+type MenuIconName = 'menu' | 'profile' | 'wallet' | 'appearance' | 'music' | 'language' | 'chevron'
 
 const LANGUAGE_KEY = 'dlavie-language'
 const PROFILE_KEY = 'dlavie-account-profile-v1'
@@ -27,11 +28,13 @@ function greetingFor(language: Language, hour: number) {
   return 'Selamat malam semuanya'
 }
 
-function MenuIcon({ name }: { name: 'menu' | 'profile' | 'wallet' | 'language' | 'chevron' }) {
-  const paths = {
+function MenuIcon({ name }: { name: MenuIconName }) {
+  const paths: Record<MenuIconName, React.ReactNode> = {
     menu: <><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></>,
     profile: <><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></>,
     wallet: <><path d="M4 7a3 3 0 0 1 3-3h12v16H7a3 3 0 0 1-3-3V7Z"/><path d="M4 8h15"/><path d="M15 12h6v5h-6a2.5 2.5 0 0 1 0-5Z"/></>,
+    appearance: <><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><path d="M8 4v6M16 14v6"/></>,
+    music: <><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></>,
     language: <><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></>,
     chevron: <path d="m9 18 6-6-6-6"/>,
   }
@@ -48,8 +51,16 @@ export default function NavUtilityMenu() {
 
   const greeting = useMemo(() => greetingFor(language, hour), [language, hour])
   const labels = language === 'en'
-    ? { menu: 'Account menu', profile: 'Profile', profileSub: profile?.username || 'Sign in or manage account', wallet: 'Wallet', balance: rupiah.format(balance), language: 'Language', id: 'Indonesia', en: 'International', international: 'English' }
-    : { menu: 'Menu akun', profile: 'Profil', profileSub: profile?.username || 'Masuk atau kelola akun', wallet: 'Wallet', balance: rupiah.format(balance), language: 'Bahasa', id: 'Indonesia', en: 'Internasional', international: 'English' }
+    ? {
+        menu: 'Account menu', profile: 'Profile', profileSub: profile?.username || 'Sign in or manage account',
+        wallet: 'Wallet', balance: rupiah.format(balance), appearance: 'Appearance', appearanceSub: 'Theme, mode and accent',
+        music: 'Music', musicSub: 'Open the DLavie player', language: 'Language', id: 'Indonesia', en: 'International', international: 'English',
+      }
+    : {
+        menu: 'Menu akun', profile: 'Profil', profileSub: profile?.username || 'Masuk atau kelola akun',
+        wallet: 'Wallet', balance: rupiah.format(balance), appearance: 'Tampilan', appearanceSub: 'Tema, mode, dan warna aksen',
+        music: 'Music', musicSub: 'Buka pemutar DLavie', language: 'Bahasa', id: 'Indonesia', en: 'Internasional', international: 'English',
+      }
 
   useEffect(() => {
     const sync = () => {
@@ -83,9 +94,6 @@ export default function NavUtilityMenu() {
         node.className = 'nav-brand-greeting'
         brandText.appendChild(node)
       }
-      // Important: never rewrite an identical text node. The old implementation
-      // observed the whole document while writing this on every observer callback,
-      // which created a MutationObserver feedback loop on Safari/iOS.
       if (node.textContent !== greeting) node.textContent = greeting
     }
 
@@ -128,6 +136,16 @@ export default function NavUtilityMenu() {
     document.querySelector<HTMLButtonElement>('.balance-pill')?.click()
   }
 
+  const openAppearance = () => {
+    setOpen(false)
+    window.setTimeout(() => document.querySelector<HTMLButtonElement>('.theme-trigger')?.click(), 20)
+  }
+
+  const openMusic = () => {
+    setOpen(false)
+    window.setTimeout(() => document.querySelector<HTMLButtonElement>('.ambient-trigger')?.click(), 20)
+  }
+
   const changeLanguage = (next: Language) => {
     if (next === language) return
     localStorage.setItem(LANGUAGE_KEY, next)
@@ -157,6 +175,18 @@ export default function NavUtilityMenu() {
           <button className="utility-row" type="button" onClick={openWallet}>
             <span className="utility-row-icon"><MenuIcon name="wallet" /></span>
             <span className="utility-row-copy"><strong>{labels.wallet}</strong><small>{labels.balance}</small></span>
+            <MenuIcon name="chevron" />
+          </button>
+
+          <button className="utility-row utility-row-mobile" type="button" onClick={openAppearance}>
+            <span className="utility-row-icon"><MenuIcon name="appearance" /></span>
+            <span className="utility-row-copy"><strong>{labels.appearance}</strong><small>{labels.appearanceSub}</small></span>
+            <MenuIcon name="chevron" />
+          </button>
+
+          <button className="utility-row utility-row-mobile" type="button" onClick={openMusic}>
+            <span className="utility-row-icon"><MenuIcon name="music" /></span>
+            <span className="utility-row-copy"><strong>{labels.music}</strong><small>{labels.musicSub}</small></span>
             <MenuIcon name="chevron" />
           </button>
 
