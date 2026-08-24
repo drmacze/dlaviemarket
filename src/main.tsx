@@ -55,6 +55,7 @@ import AppFlowV38 from './AppFlowV38'
 import AppExperienceV39 from './AppExperienceV39'
 import AppExperienceV40 from './AppExperienceV40'
 import AppShellRouteStabilizer from './AppShellRouteStabilizer'
+import SupportBridgeV44 from './SupportBridgeV44'
 import './styles.css'
 import './brand-logos.css'
 import './mobile-polish.css'
@@ -140,6 +141,7 @@ import './app-experience-v40-polish.css'
 import './guest-interaction-recovery.css'
 import './home-mobile-stability-v41.css'
 import './app-shell-consolidation-v42.css'
+import './app-polish-v44.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -173,6 +175,7 @@ createRoot(document.getElementById('root')!).render(
     <MarketPolicies />
     <DigitalPolicyCenterV2 />
     <AccessExperience />
+    <SupportBridgeV44 />
     <DigitalGuestDocumentationV2 />
     <DLavieGuestDocsV36 />
     <DigitalPositioningEnhancer />
