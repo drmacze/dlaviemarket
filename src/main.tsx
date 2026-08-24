@@ -144,6 +144,7 @@ import './home-mobile-stability-v41.css'
 import './app-shell-consolidation-v42.css'
 import './app-polish-v44.css'
 import './app-polish-v45.css'
+import './app-polish-v45-2.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
