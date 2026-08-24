@@ -7,8 +7,15 @@ html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([
 html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) body {
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden !important;
+  overflow-x: clip !important;
   overscroll-behavior-x: none;
+}
+
+@supports not (overflow: clip) {
+  html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]),
+  html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) body {
+    overflow-x: hidden !important;
+  }
 }
 
 html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .app {
@@ -82,7 +89,7 @@ html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([
 
 @media (max-width: 720px) {
   html.dlv42-app-shell[data-dlv-layout="app-v37"]:not([data-access="guest"]):not([data-access="onboarding"]) .dlv-app-home-v37 {
-    width: calc(100vw - 20px) !important;
+    width: calc(100% - 20px) !important;
     padding-top: calc(88px + env(safe-area-inset-top)) !important;
     padding-bottom: calc(132px + env(safe-area-inset-bottom)) !important;
   }
