@@ -5,6 +5,7 @@ import './dlavie-guest-docs-v36.css'
 type DocPage='overview'|'faq'|'other'
 type PublicStats={active_users:number;total_users:number;overall_products:number;active_products:number;active_window_days:number}
 const STATS_API='https://ydaeukhqwishlrjyfktk.supabase.co/functions/v1/dlavie-public-stats'
+const FALLBACK_STATS:PublicStats={active_users:0,total_users:0,overall_products:0,active_products:0,active_window_days:30}
 
 function pageFromHash():DocPage{
  const route=location.hash.replace(/^#\/?/,'').split('?')[0].toLowerCase()
@@ -34,16 +35,16 @@ const faqEn=[
 ]
 
 function Overview({en}:{en:boolean}){
- const [stats,setStats]=useState<PublicStats|null>(null)
+ const [stats,setStats]=useState<PublicStats>(FALLBACK_STATS)
  useEffect(()=>{
   const controller=new AbortController()
   fetch(STATS_API,{signal:controller.signal,headers:{accept:'application/json'}})
    .then(r=>r.ok?r.json():Promise.reject(new Error('stats_unavailable')))
    .then(data=>{if(data?.ok)setStats({active_users:Number(data.active_users||0),total_users:Number(data.total_users||0),overall_products:Number(data.overall_products||0),active_products:Number(data.active_products||0),active_window_days:Number(data.active_window_days||30)})})
-   .catch(()=>{})
+   .catch(()=>setStats(FALLBACK_STATS))
   return()=>controller.abort()
  },[])
- const number=(value:number|undefined)=>value===undefined?'—':new Intl.NumberFormat(en?'en-US':'id-ID').format(value)
+ const number=(value:number)=>new Intl.NumberFormat(en?'en-US':'id-ID').format(Number.isFinite(value)?value:0)
  return <div className="dlv36-doc-page is-overview">
   <section className="dlv36-doc-hero">
    <span className="dlv36-doc-kicker">{en?'THE DLAVIE DIGITAL MARKET':'DOKUMENTASI DIGITAL MARKET DLAVIE'}</span>
@@ -56,9 +57,9 @@ function Overview({en}:{en:boolean}){
   </section>
 
   <section className="dlv36-doc-stats" aria-label={en?'DLavie live overview':'Ringkasan live DLavie'}>
-   <div><strong>{number(stats?.active_users)}</strong><span>{en?'ACTIVE USERS · 30 DAYS':'USER AKTIF · 30 HARI'}</span></div>
-   <div><strong>{number(stats?.total_users)}</strong><span>{en?'TOTAL USERS':'TOTAL PENGGUNA'}</span></div>
-   <div><strong>{number(stats?.overall_products)}</strong><span>{en?'OVERALL PRODUCTS':'TOTAL PRODUK'}</span></div>
+   <div><strong>{number(stats.active_users)}</strong><span>{en?'ACTIVE USERS · 30 DAYS':'USER AKTIF · 30 HARI'}</span></div>
+   <div><strong>{number(stats.total_users)}</strong><span>{en?'TOTAL USERS':'TOTAL PENGGUNA'}</span></div>
+   <div><strong>{number(stats.overall_products)}</strong><span>{en?'OVERALL PRODUCTS':'TOTAL PRODUK'}</span></div>
   </section>
 
   <section className="dlv36-feature-card">

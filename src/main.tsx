@@ -54,6 +54,7 @@ import GoPayInspiredShell from './GoPayInspiredShell'
 import AppFlowV38 from './AppFlowV38'
 import AppExperienceV39 from './AppExperienceV39'
 import AppExperienceV40 from './AppExperienceV40'
+import AppShellRouteStabilizer from './AppShellRouteStabilizer'
 import './styles.css'
 import './brand-logos.css'
 import './mobile-polish.css'
@@ -138,10 +139,12 @@ import './app-experience-v40.css'
 import './app-experience-v40-polish.css'
 import './guest-interaction-recovery.css'
 import './home-mobile-stability-v41.css'
+import './app-shell-consolidation-v42.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <StateBridge />
+    <AppShellRouteStabilizer />
     <ThemeSystem />
     <PageNavigation />
     <CopyRefinement />
