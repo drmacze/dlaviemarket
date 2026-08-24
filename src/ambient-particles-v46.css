@@ -1,0 +1,109 @@
+/* DLavie v46 — lightweight native ambient motion + official brand marks.
+   This intentionally does not revive legacy GSAP/Lenis motion on touch devices. */
+
+#root{
+  position:relative;
+  isolation:isolate;
+}
+
+.dlv46-ambient-particles{
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  overflow:hidden;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .35s ease;
+}
+
+html[data-access="member"] .dlv46-ambient-particles{opacity:1}
+
+.dlv46-particle{
+  position:absolute;
+  width:22px;
+  height:22px;
+  display:grid;
+  place-items:center;
+  color:color-mix(in srgb,var(--accent,#7c5cff),transparent 38%);
+  opacity:.16;
+  will-change:transform,opacity;
+  transform:translate3d(0,0,0);
+}
+
+.dlv46-particle svg{width:100%;height:100%}
+
+.dlv46-particle:nth-child(3n+1){animation:dlv46FloatA 14s ease-in-out infinite alternate}
+.dlv46-particle:nth-child(3n+2){animation:dlv46FloatB 18s ease-in-out infinite alternate}
+.dlv46-particle:nth-child(3n){animation:dlv46FloatC 21s ease-in-out infinite alternate}
+
+.dlv46-particle.p1{left:7%;top:14%;animation-delay:-3s}
+.dlv46-particle.p2{left:36%;top:8%;width:18px;height:18px;animation-delay:-7s}
+.dlv46-particle.p3{left:73%;top:13%;width:20px;height:20px;animation-delay:-11s}
+.dlv46-particle.p4{left:89%;top:27%;width:17px;height:17px;animation-delay:-5s}
+.dlv46-particle.p5{left:15%;top:34%;width:19px;height:19px;animation-delay:-9s}
+.dlv46-particle.p6{left:48%;top:30%;width:16px;height:16px;animation-delay:-13s}
+.dlv46-particle.p7{left:79%;top:43%;width:22px;height:22px;animation-delay:-4s}
+.dlv46-particle.p8{left:28%;top:49%;width:15px;height:15px;animation-delay:-10s}
+.dlv46-particle.p9{left:6%;top:61%;width:20px;height:20px;animation-delay:-12s}
+.dlv46-particle.p10{left:57%;top:58%;width:17px;height:17px;animation-delay:-6s}
+.dlv46-particle.p11{left:91%;top:67%;width:18px;height:18px;animation-delay:-14s}
+.dlv46-particle.p12{left:35%;top:72%;width:21px;height:21px;animation-delay:-2s}
+.dlv46-particle.p13{left:12%;top:83%;width:16px;height:16px;animation-delay:-8s}
+.dlv46-particle.p14{left:68%;top:81%;width:19px;height:19px;animation-delay:-15s}
+.dlv46-particle.p15{left:83%;top:91%;width:15px;height:15px;animation-delay:-1s}
+.dlv46-particle.p16{left:43%;top:94%;width:18px;height:18px;animation-delay:-9s}
+
+@keyframes dlv46FloatA{
+  0%{transform:translate3d(-8px,8px,0) rotate(-6deg);opacity:.10}
+  50%{opacity:.20}
+  100%{transform:translate3d(22px,-26px,0) rotate(12deg);opacity:.13}
+}
+@keyframes dlv46FloatB{
+  0%{transform:translate3d(8px,-6px,0) rotate(5deg);opacity:.11}
+  50%{opacity:.18}
+  100%{transform:translate3d(-20px,30px,0) rotate(-10deg);opacity:.14}
+}
+@keyframes dlv46FloatC{
+  0%{transform:translate3d(-4px,14px,0) rotate(-3deg);opacity:.09}
+  50%{opacity:.19}
+  100%{transform:translate3d(18px,-18px,0) rotate(9deg);opacity:.15}
+}
+
+/* Home popular services now use the bundled official brand SVGs instead of initials. */
+.dlv37-service-logo{
+  overflow:hidden;
+  display:grid!important;
+  place-items:center!important;
+  font-size:0!important;
+}
+.dlv37-service-logo img{
+  width:58%;
+  height:58%;
+  display:block;
+  object-fit:contain;
+  filter:drop-shadow(0 3px 7px rgba(0,0,0,.12));
+}
+
+/* v39 utility/category glyphs are vector icons rather than text/emoji placeholders. */
+.dlv39-icon svg,
+.dlv39-route-utilities svg{
+  width:16px;
+  height:16px;
+  display:block;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.dlv39-utility-row .dlv39-icon svg{width:15px;height:15px}
+
+@media(max-width:720px){
+  .dlv46-particle{opacity:.13}
+  .dlv46-particle:nth-child(n+13){display:none}
+  .dlv37-service-logo img{width:60%;height:60%}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .dlv46-particle{animation:none!important;transform:none!important;opacity:.10!important}
+}
