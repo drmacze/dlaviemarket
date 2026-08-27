@@ -47,16 +47,23 @@ html[data-access="onboarding"] .dlv51-secondary-page{display:none!important}
 .dlv51-secondary-icon{
   width:48px;
   height:48px;
+  min-width:48px;
+  min-height:48px;
+  padding:0;
+  position:static;
+  inset:auto;
   border-radius:16px;
   display:grid;
   place-items:center;
   flex:0 0 auto;
+  overflow:visible;
+  transform:none;
   background:var(--accent-soft,color-mix(in srgb,var(--accent,#6c5cff),transparent 86%));
   color:var(--accent,#6c5cff);
 }
-.dlv51-secondary-icon.hero{width:64px;height:64px;border-radius:20px}
+.dlv51-secondary-icon.is-hero{width:64px;height:64px;min-width:64px;min-height:64px;border-radius:20px}
 .dlv51-secondary-icon svg{width:24px;height:24px}
-.dlv51-secondary-icon.hero svg{width:30px;height:30px}
+.dlv51-secondary-icon.is-hero svg{width:30px;height:30px}
 
 .dlv51-secondary-grid{
   display:grid;
@@ -117,7 +124,7 @@ html[data-access="onboarding"] .dlv51-secondary-page{display:none!important}
 @media(max-width:720px){
   .dlv51-secondary-page{
     width:calc(100vw - 24px);
-    padding-top:138px;
+    padding-top:108px;
     padding-bottom:calc(138px + env(safe-area-inset-bottom));
   }
   .dlv51-secondary-hero{
@@ -126,8 +133,8 @@ html[data-access="onboarding"] .dlv51-secondary-page{display:none!important}
     padding:18px;
     border-radius:24px;
   }
-  .dlv51-secondary-icon.hero{width:52px;height:52px;border-radius:17px}
-  .dlv51-secondary-icon.hero svg{width:25px;height:25px}
+  .dlv51-secondary-icon.is-hero{width:52px;height:52px;min-width:52px;min-height:52px;border-radius:17px}
+  .dlv51-secondary-icon.is-hero svg{width:25px;height:25px}
   .dlv51-secondary-hero h1{font-size:clamp(28px,9vw,40px)}
   .dlv51-secondary-hero p{font-size:13px}
   .dlv51-secondary-grid{grid-template-columns:1fr}
