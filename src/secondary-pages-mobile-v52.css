@@ -1,10 +1,11 @@
-/* DLavie v52 — final mobile guard for secondary routes.
+/* DLavie v52/v53 — final mobile guard for secondary routes.
    Loaded last so older global route styles cannot collapse text width. */
 @media (max-width: 720px) {
   html[data-dlv-flow="v38"] .dlv51-secondary-page {
     width: calc(100vw - 24px) !important;
     max-width: none !important;
     min-width: 0 !important;
+    padding-top: 108px !important;
   }
 
   html[data-dlv-flow="v38"] .dlv51-secondary-hero {
@@ -16,11 +17,20 @@
     box-sizing: border-box !important;
   }
 
-  html[data-dlv-flow="v38"] .dlv51-secondary-hero > .dlv51-secondary-icon.hero {
+  html[data-dlv-flow="v38"] .dlv51-secondary-hero > .dlv51-secondary-icon.is-hero {
     display: grid !important;
+    position: static !important;
+    inset: auto !important;
     width: 48px !important;
     height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+    max-width: 48px !important;
+    max-height: 48px !important;
     margin: 0 0 16px !important;
+    padding: 0 !important;
+    transform: none !important;
+    border-radius: 16px !important;
   }
 
   html[data-dlv-flow="v38"] .dlv51-secondary-hero > div,

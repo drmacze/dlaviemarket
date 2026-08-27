@@ -96,7 +96,7 @@ export default function AppSecondaryPagesV51() {
   return (
     <main className="dlv51-secondary-page" data-secondary-page={page}>
       <section className="dlv51-secondary-hero">
-        <span className="dlv51-secondary-icon hero"><AppIcon name={heroIcon} /></span>
+        <span className="dlv51-secondary-icon is-hero"><AppIcon name={heroIcon} /></span>
         <div><small>{data.eyebrow}</small><h1>{data.title}</h1><p>{data.description}</p></div>
       </section>
 
