@@ -1,0 +1,89 @@
+/* DLavie v52 — final mobile guard for secondary routes.
+   Loaded last so older global route styles cannot collapse text width. */
+@media (max-width: 720px) {
+  html[data-dlv-flow="v38"] .dlv51-secondary-page {
+    width: calc(100vw - 24px) !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+
+  html[data-dlv-flow="v38"] .dlv51-secondary-hero {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    padding: 20px !important;
+    box-sizing: border-box !important;
+  }
+
+  html[data-dlv-flow="v38"] .dlv51-secondary-hero > .dlv51-secondary-icon.hero {
+    display: grid !important;
+    width: 48px !important;
+    height: 48px !important;
+    margin: 0 0 16px !important;
+  }
+
+  html[data-dlv-flow="v38"] .dlv51-secondary-hero > div,
+  html[data-dlv-flow="v38"] .dlv51-secondary-grid article > div {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    inline-size: 100% !important;
+    max-inline-size: none !important;
+  }
+
+  html[data-dlv-flow="v38"] .dlv51-secondary-hero h1 {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 7px 0 10px !important;
+    font-size: clamp(28px, 7.4vw, 34px) !important;
+    line-height: 1.02 !important;
+    letter-spacing: -0.045em !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    text-wrap: balance;
+  }
+
+  html[data-dlv-flow="v38"] .dlv51-secondary-hero p,
+  html[data-dlv-flow="v38"] .dlv51-secondary-grid p,
+  html[data-dlv-flow="v38"] .dlv51-secondary-grid h2 {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    inline-size: 100% !important;
+    max-inline-size: none !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+  }
+
+  html[data-dlv-flow="v38"] .dlv51-secondary-hero p {
+    font-size: 14px !important;
+    line-height: 1.55 !important;
+  }
+
+  html[data-dlv-flow="v38"] .dlv51-secondary-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  html[data-dlv-flow="v38"] .dlv51-secondary-grid article {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    grid-template-columns: 44px minmax(0, 1fr) !important;
+    gap: 14px !important;
+  }
+
+  html[data-dlv-flow="v38"] .dlv51-secondary-actions {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+@media (max-width: 390px) {
+  html[data-dlv-flow="v38"] .dlv51-secondary-hero h1 {
+    font-size: clamp(27px, 8vw, 31px) !important;
+  }
+}
