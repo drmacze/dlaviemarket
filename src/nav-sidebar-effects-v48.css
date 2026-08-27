@@ -1,0 +1,288 @@
+/* DLavie v48 — premium motion/effects for the v47 professional sidebar.
+   Motion is transform/opacity-first to keep iPhone scrolling independent and smooth. */
+
+.utility-sidebar{
+  animation:dlv48DrawerSpring .46s cubic-bezier(.18,.82,.24,1) both;
+}
+
+.utility-sidebar-backdrop{
+  animation:dlv48Backdrop .28s ease-out both;
+}
+
+.utility-sidebar::after{
+  content:"";
+  position:absolute;
+  z-index:0;
+  inset:-25% -45%;
+  pointer-events:none;
+  opacity:.42;
+  background:
+    radial-gradient(circle at 72% 18%,color-mix(in srgb,var(--accent),transparent 84%),transparent 24%),
+    radial-gradient(circle at 28% 78%,color-mix(in srgb,var(--accent),transparent 91%),transparent 28%);
+  transform:translate3d(0,0,0);
+  animation:dlv48AmbientGlow 10s ease-in-out infinite alternate;
+}
+
+.utility-sidebar-head,
+.utility-sidebar-scroll,
+.utility-sidebar-footer{
+  position:relative;
+  z-index:1;
+}
+
+.utility-sidebar-brandmark{
+  position:relative;
+  overflow:hidden;
+  transform:translateZ(0);
+  animation:dlv48BrandPulse 4.8s ease-in-out infinite;
+}
+
+.utility-sidebar-brandmark::after{
+  content:"";
+  position:absolute;
+  inset:-35%;
+  background:linear-gradient(115deg,transparent 34%,rgba(255,255,255,.38) 49%,transparent 64%);
+  transform:translateX(-120%) rotate(8deg);
+  animation:dlv48BrandSweep 5.8s ease-in-out infinite;
+  pointer-events:none;
+}
+
+.utility-sidebar-close{will-change:transform}
+.utility-sidebar-close:active{transform:scale(.92) rotate(5deg)}
+
+.utility-account-card,
+.utility-wallet-card,
+.utility-sidebar-list,
+.utility-language-sidebar,
+.utility-sidebar-footer{
+  opacity:0;
+  transform:translate3d(14px,10px,0);
+  animation:dlv48ContentReveal .42s cubic-bezier(.2,.8,.2,1) forwards;
+}
+
+.utility-account-card{animation-delay:.08s}
+.utility-wallet-card{animation-delay:.13s}
+.utility-sidebar-section:nth-of-type(2) .utility-sidebar-list{animation-delay:.18s}
+.utility-sidebar-section:nth-of-type(3) .utility-sidebar-list{animation-delay:.23s}
+.utility-language-sidebar{animation-delay:.28s}
+.utility-sidebar-footer{animation-delay:.32s}
+
+.utility-sidebar-section-title{
+  opacity:0;
+  transform:translateX(10px);
+  animation:dlv48SectionTitleIn .36s ease-out forwards;
+}
+
+.utility-sidebar-section:nth-of-type(2) .utility-sidebar-section-title{animation-delay:.15s}
+.utility-sidebar-section:nth-of-type(3) .utility-sidebar-section-title{animation-delay:.20s}
+
+.utility-account-avatar{
+  position:relative;
+  isolation:isolate;
+  box-shadow:
+    0 8px 24px color-mix(in srgb,var(--accent),transparent 87%),
+    0 0 0 1px color-mix(in srgb,var(--accent),transparent 70%) inset;
+}
+
+.utility-account-avatar::before{
+  content:"";
+  position:absolute;
+  inset:-4px;
+  z-index:-1;
+  border-radius:inherit;
+  border:1px solid color-mix(in srgb,var(--accent),transparent 68%);
+  opacity:.55;
+  transform:scale(.94);
+  animation:dlv48AvatarHalo 3.8s ease-in-out infinite;
+}
+
+.utility-wallet-card{
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+  background:
+    radial-gradient(circle at 90% 20%,color-mix(in srgb,var(--accent),transparent 88%),transparent 35%),
+    var(--theme-panel-solid);
+}
+
+.utility-wallet-card::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  top:-60%;
+  bottom:-60%;
+  left:-42%;
+  width:32%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.24),transparent);
+  transform:skewX(-18deg) translateX(0);
+  animation:dlv48WalletSheen 7s ease-in-out infinite;
+  pointer-events:none;
+}
+
+.utility-sidebar-row{
+  overflow:hidden;
+  isolation:isolate;
+}
+
+.utility-sidebar-row::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  opacity:0;
+  background:linear-gradient(100deg,color-mix(in srgb,var(--accent),transparent 94%),transparent 58%);
+  transform:translateX(-14px);
+  transition:opacity .2s ease,transform .24s ease;
+  pointer-events:none;
+}
+
+.utility-sidebar-row>.utility-row-icon,
+.utility-sidebar-row>svg,
+.utility-account-action svg,
+.utility-wallet-action svg{
+  transition:transform .22s ease,color .22s ease,background .22s ease,border-color .22s ease;
+}
+
+.utility-language-toggle button{
+  position:relative;
+  overflow:hidden;
+  transition:transform .2s ease,background .2s ease,border-color .2s ease,box-shadow .2s ease,color .2s ease;
+}
+
+.utility-language-toggle button.active{
+  box-shadow:
+    0 7px 22px color-mix(in srgb,var(--theme-shadow),transparent 28%),
+    0 0 0 1px color-mix(in srgb,var(--accent),transparent 78%) inset;
+}
+
+.utility-language-toggle button:active,
+.utility-account-card:active,
+.utility-wallet-card:active,
+.utility-sidebar-row:active{
+  transform:scale(.982);
+}
+
+.utility-sidebar-footer-dot{
+  animation:dlv48StatusPulse 2.8s ease-in-out infinite;
+}
+
+@media(hover:hover) and (pointer:fine){
+  .utility-account-card:hover,
+  .utility-wallet-card:hover{
+    transform:translateY(-2px) scale(1.003);
+    box-shadow:
+      0 18px 38px color-mix(in srgb,var(--theme-shadow),transparent 12%),
+      0 0 0 1px color-mix(in srgb,var(--accent),transparent 78%) inset;
+  }
+
+  .utility-sidebar-row:hover::before{opacity:1;transform:translateX(0)}
+
+  .utility-sidebar-row:hover>.utility-row-icon{
+    transform:translateY(-1px) scale(1.04);
+    color:var(--accent);
+    border-color:color-mix(in srgb,var(--accent),transparent 62%);
+    background:color-mix(in srgb,var(--accent),transparent 90%);
+  }
+
+  .utility-sidebar-row:hover>svg,
+  .utility-account-card:hover .utility-account-action svg,
+  .utility-wallet-card:hover .utility-wallet-action svg{
+    transform:translateX(3px);
+    color:var(--accent);
+  }
+
+  .utility-language-toggle button:hover{transform:translateY(-1px)}
+}
+
+@keyframes dlv48DrawerSpring{
+  0%{opacity:0;transform:translate3d(42px,0,0) scale(.982)}
+  68%{opacity:1;transform:translate3d(-4px,0,0) scale(1.002)}
+  100%{opacity:1;transform:none}
+}
+
+@keyframes dlv48Backdrop{from{opacity:0}to{opacity:1}}
+
+@keyframes dlv48ContentReveal{
+  from{opacity:0;transform:translate3d(14px,10px,0)}
+  to{opacity:1;transform:none}
+}
+
+@keyframes dlv48SectionTitleIn{
+  from{opacity:0;transform:translateX(10px)}
+  to{opacity:1;transform:none}
+}
+
+@keyframes dlv48AmbientGlow{
+  from{transform:translate3d(-2%,0,0) scale(1)}
+  to{transform:translate3d(3%,2%,0) scale(1.04)}
+}
+
+@keyframes dlv48BrandPulse{
+  0%,100%{box-shadow:0 8px 24px color-mix(in srgb,var(--accent),transparent 88%)}
+  50%{box-shadow:0 10px 30px color-mix(in srgb,var(--accent),transparent 76%)}
+}
+
+@keyframes dlv48BrandSweep{
+  0%,68%{transform:translateX(-125%) rotate(8deg);opacity:0}
+  76%{opacity:.8}
+  92%,100%{transform:translateX(125%) rotate(8deg);opacity:0}
+}
+
+@keyframes dlv48AvatarHalo{
+  0%,100%{opacity:.35;transform:scale(.94)}
+  50%{opacity:.72;transform:scale(1.05)}
+}
+
+@keyframes dlv48WalletSheen{
+  0%,72%{transform:skewX(-18deg) translateX(0);opacity:0}
+  78%{opacity:.65}
+  92%,100%{transform:skewX(-18deg) translateX(520%);opacity:0}
+}
+
+@keyframes dlv48StatusPulse{
+  0%,100%{opacity:.65;box-shadow:0 0 8px color-mix(in srgb,var(--accent),transparent 50%)}
+  50%{opacity:1;box-shadow:0 0 16px color-mix(in srgb,var(--accent),transparent 22%)}
+}
+
+/* Touch devices keep entrance motion but drop continuous decorative loops. */
+@media(pointer:coarse){
+  .utility-sidebar::after,
+  .utility-sidebar-brandmark,
+  .utility-sidebar-brandmark::after,
+  .utility-account-avatar::before,
+  .utility-wallet-card::before,
+  .utility-sidebar-footer-dot{animation:none!important}
+
+  .utility-sidebar::after{opacity:.28}
+  .utility-account-avatar::before{opacity:.42;transform:scale(1)}
+  .utility-sidebar-footer-dot{opacity:1}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .utility-sidebar,
+  .utility-sidebar-backdrop,
+  .utility-account-card,
+  .utility-wallet-card,
+  .utility-sidebar-list,
+  .utility-language-sidebar,
+  .utility-sidebar-footer,
+  .utility-sidebar-section-title,
+  .utility-sidebar::after,
+  .utility-sidebar-brandmark,
+  .utility-sidebar-brandmark::after,
+  .utility-account-avatar::before,
+  .utility-wallet-card::before,
+  .utility-sidebar-footer-dot{
+    animation:none!important;
+    opacity:1!important;
+    transform:none!important;
+  }
+
+  .utility-sidebar-row::before,
+  .utility-sidebar-row>.utility-row-icon,
+  .utility-sidebar-row>svg,
+  .utility-account-card,
+  .utility-wallet-card,
+  .utility-language-toggle button,
+  .utility-sidebar-close{transition:none!important}
+}
