@@ -2,10 +2,11 @@ import { useEffect, useMemo, useState } from 'react'
 
 type PageId = 'home' | 'market' | 'guide' | 'security' | 'activity' | 'help' | 'legal'
 type HistoryItem = { id: string; type: 'deposit' | 'order'; label: string; amount: number; time: string }
-
 type IconName = 'home' | 'market' | 'activity' | 'help' | 'more' | 'wallet' | 'phone' | 'grid' | 'history' | 'search' | 'shield' | 'arrow' | 'spark'
+type ServiceShortcut = { name: string; meta: string; price: number; initials: string; logo: string }
 
 const rupiah = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 })
+const brandAsset = (file: string) => `${import.meta.env.BASE_URL}brands/${file}`
 
 function Icon({ name }: { name: IconName }) {
   const paths: Record<IconName, React.ReactNode> = {
@@ -24,6 +25,25 @@ function Icon({ name }: { name: IconName }) {
     spark: <><path d="m12 3 1.5 4.4L18 9l-4.5 1.6L12 15l-1.5-4.4L6 9l4.5-1.6Z"/><path d="m19 15 .8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8Z"/></>,
   }
   return <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{paths[name]}</svg>
+}
+
+function ServiceBrand({ item }: { item: ServiceShortcut }) {
+  const [failed, setFailed] = useState(false)
+  return (
+    <span className="dlv37-service-logo" data-dlv49-brand-direct="true">
+      <img
+        data-dlv46-official-brand="1"
+        src={brandAsset(item.logo)}
+        alt={`${item.name} logo`}
+        loading="eager"
+        decoding="async"
+        hidden={failed}
+        onLoad={() => setFailed(false)}
+        onError={() => setFailed(true)}
+      />
+      <span className="dlv37-service-fallback" hidden={!failed}>{item.initials}</span>
+    </span>
+  )
 }
 
 function normalizePage(hash = window.location.hash): PageId {
@@ -51,11 +71,11 @@ function readBalance() {
   return Number.isFinite(value) ? value : 0
 }
 
-const serviceShortcuts = [
-  { name: 'WhatsApp', meta: 'Indonesia', price: 1250, initials: 'WA' },
-  { name: 'Telegram', meta: 'Indonesia', price: 950, initials: 'TG' },
-  { name: 'Google', meta: 'Indonesia', price: 1350, initials: 'G' },
-  { name: 'Discord', meta: 'Indonesia', price: 1100, initials: 'DC' },
+const serviceShortcuts: ServiceShortcut[] = [
+  { name: 'WhatsApp', meta: 'Indonesia', price: 1250, initials: 'WA', logo: 'whatsapp.svg' },
+  { name: 'Telegram', meta: 'Indonesia', price: 950, initials: 'TG', logo: 'telegram.svg' },
+  { name: 'Google', meta: 'Indonesia', price: 1350, initials: 'G', logo: 'google.svg' },
+  { name: 'Discord', meta: 'Indonesia', price: 1100, initials: 'DC', logo: 'discord.svg' },
 ]
 
 export default function GoPayInspiredShell() {
@@ -139,7 +159,7 @@ export default function GoPayInspiredShell() {
                 <div className="dlv37-service-row">
                   {serviceShortcuts.map((item) => (
                     <button type="button" className="dlv37-service-card" key={item.name} onClick={() => navigate('market', '?mode=nokos')}>
-                      <span className="dlv37-service-logo">{item.initials}</span>
+                      <ServiceBrand item={item} />
                       <span className="dlv37-service-copy"><b>{item.name}</b><small>{item.meta}</small></span>
                       <strong>{rupiah.format(item.price)}</strong>
                     </button>

@@ -1,0 +1,177 @@
+/* DLavie v49 — persistent sidebar state motion + brand-card final polish.
+   This layer is imported by NavUtilityMenu so Vite always bundles it for GitHub Pages. */
+
+.utility-sidebar,
+.utility-sidebar-backdrop,
+.utility-account-card,
+.utility-wallet-card,
+.utility-sidebar-list,
+.utility-language-sidebar,
+.utility-sidebar-footer,
+.utility-sidebar-section-title{
+  animation:none!important;
+}
+
+.utility-sidebar-backdrop{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:
+    opacity .26s ease-out,
+    visibility 0s linear .32s!important;
+}
+.utility-sidebar-backdrop[data-state="open"]{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+  transition:
+    opacity .26s ease-out,
+    visibility 0s linear 0s!important;
+}
+
+.utility-sidebar{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transform:translate3d(calc(100% + 24px),0,0) scale(.985)!important;
+  transform-origin:100% 50%;
+  will-change:transform,opacity;
+  transition:
+    transform .46s cubic-bezier(.16,.84,.22,1),
+    opacity .26s ease-out,
+    visibility 0s linear .48s!important;
+}
+.utility-sidebar[data-state="open"]{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+  transform:translate3d(0,0,0) scale(1)!important;
+  transition:
+    transform .46s cubic-bezier(.16,.84,.22,1),
+    opacity .26s ease-out,
+    visibility 0s linear 0s!important;
+}
+
+.utility-sidebar .utility-account-card,
+.utility-sidebar .utility-wallet-card,
+.utility-sidebar .utility-sidebar-list,
+.utility-sidebar .utility-language-sidebar,
+.utility-sidebar .utility-sidebar-footer,
+.utility-sidebar .utility-sidebar-section-title{
+  opacity:0;
+  transform:translate3d(12px,7px,0);
+  transition:
+    opacity .26s ease,
+    transform .34s cubic-bezier(.2,.8,.2,1)!important;
+}
+.utility-sidebar[data-state="open"] .utility-account-card,
+.utility-sidebar[data-state="open"] .utility-wallet-card,
+.utility-sidebar[data-state="open"] .utility-sidebar-list,
+.utility-sidebar[data-state="open"] .utility-language-sidebar,
+.utility-sidebar[data-state="open"] .utility-sidebar-footer,
+.utility-sidebar[data-state="open"] .utility-sidebar-section-title{
+  opacity:1;
+  transform:none;
+}
+.utility-sidebar[data-state="open"] .utility-account-card{transition-delay:.07s!important}
+.utility-sidebar[data-state="open"] .utility-wallet-card{transition-delay:.11s!important}
+.utility-sidebar[data-state="open"] .utility-sidebar-section:nth-of-type(2) .utility-sidebar-section-title{transition-delay:.14s!important}
+.utility-sidebar[data-state="open"] .utility-sidebar-section:nth-of-type(2) .utility-sidebar-list{transition-delay:.17s!important}
+.utility-sidebar[data-state="open"] .utility-sidebar-section:nth-of-type(3) .utility-sidebar-section-title{transition-delay:.20s!important}
+.utility-sidebar[data-state="open"] .utility-sidebar-section:nth-of-type(3) .utility-sidebar-list{transition-delay:.23s!important}
+.utility-sidebar[data-state="open"] .utility-language-sidebar{transition-delay:.26s!important}
+.utility-sidebar[data-state="open"] .utility-sidebar-footer{transition-delay:.29s!important}
+
+.utility-dock .utility-trigger{
+  transition:transform .22s ease,opacity .2s ease,background .2s ease,border-color .2s ease!important;
+}
+.utility-dock.is-open .utility-trigger{
+  transform:scale(.92) rotate(-4deg)!important;
+}
+
+/* App-level Reduce Effects may remove decorative motion, but navigation must never teleport. */
+html.dlv40-reduce-effects .utility-sidebar{
+  transition:
+    transform .24s cubic-bezier(.2,.76,.25,1),
+    opacity .18s ease-out,
+    visibility 0s linear .26s!important;
+}
+html.dlv40-reduce-effects .utility-sidebar[data-state="open"]{
+  transition:
+    transform .24s cubic-bezier(.2,.76,.25,1),
+    opacity .18s ease-out,
+    visibility 0s linear 0s!important;
+}
+html.dlv40-reduce-effects .utility-sidebar-backdrop{
+  transition:opacity .18s ease-out,visibility 0s linear .2s!important;
+}
+html.dlv40-reduce-effects .utility-sidebar-backdrop[data-state="open"]{
+  transition:opacity .18s ease-out,visibility 0s linear 0s!important;
+}
+html.dlv40-reduce-effects .utility-sidebar .utility-account-card,
+html.dlv40-reduce-effects .utility-sidebar .utility-wallet-card,
+html.dlv40-reduce-effects .utility-sidebar .utility-sidebar-list,
+html.dlv40-reduce-effects .utility-sidebar .utility-language-sidebar,
+html.dlv40-reduce-effects .utility-sidebar .utility-sidebar-footer,
+html.dlv40-reduce-effects .utility-sidebar .utility-sidebar-section-title{
+  transition:none!important;
+  opacity:1!important;
+  transform:none!important;
+}
+
+/* Official service marks stay readable; initials remain a visible emergency fallback. */
+.dlv37-service-logo{
+  position:relative;
+  isolation:isolate;
+}
+.dlv37-service-logo>img[data-dlv46-official-brand]{
+  width:58%!important;
+  height:58%!important;
+  display:block!important;
+  opacity:1!important;
+  visibility:visible!important;
+  object-fit:contain!important;
+  filter:drop-shadow(0 3px 7px rgba(0,0,0,.10));
+}
+.dlv37-service-fallback{
+  font-size:12px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  letter-spacing:-.02em;
+  color:var(--accent)!important;
+}
+
+@media(max-width:720px){
+  .utility-sidebar{
+    transform:translate3d(calc(100% + 16px),0,0) scale(.99)!important;
+  }
+  .utility-sidebar[data-state="open"]{transform:none!important}
+  .dlv37-service-logo>img[data-dlv46-official-brand]{width:62%!important;height:62%!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .utility-sidebar{
+    transform:none!important;
+    transition:opacity .14s ease-out,visibility 0s linear .16s!important;
+  }
+  .utility-sidebar[data-state="open"]{
+    transform:none!important;
+    transition:opacity .14s ease-out,visibility 0s linear 0s!important;
+  }
+  .utility-sidebar-backdrop{
+    transition:opacity .12s ease-out,visibility 0s linear .14s!important;
+  }
+  .utility-sidebar-backdrop[data-state="open"]{
+    transition:opacity .12s ease-out,visibility 0s linear 0s!important;
+  }
+  .utility-sidebar .utility-account-card,
+  .utility-sidebar .utility-wallet-card,
+  .utility-sidebar .utility-sidebar-list,
+  .utility-sidebar .utility-language-sidebar,
+  .utility-sidebar .utility-sidebar-footer,
+  .utility-sidebar .utility-sidebar-section-title{
+    transition:none!important;
+    opacity:1!important;
+    transform:none!important;
+  }
+}
