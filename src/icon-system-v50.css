@@ -1,0 +1,47 @@
+/* DLavie v50 — one native icon language for app UI. */
+.dlv-app-icon{width:22px;height:22px;display:block;flex:0 0 auto;overflow:visible}
+
+/* Home utility row */
+.dlv39-icon{width:30px!important;height:30px!important;border-radius:10px!important;display:grid!important;place-items:center!important;background:color-mix(in srgb,var(--accent,#6d5dfc),transparent 89%)!important;color:var(--accent,#6d5dfc)!important;font-size:0!important}
+.dlv39-icon>.dlv-app-icon{width:17px;height:17px}
+.dlv39-utility-row>button{gap:5px!important}
+.dlv39-utility-row>button>span:last-child{font-size:9px!important;line-height:1!important;font-weight:750!important}
+
+/* Route utility buttons */
+.dlv39-route-utilities>button>.dlv-app-icon{width:19px;height:19px}
+
+/* Favorites and search */
+.dlv39-favorite-row>button>span,.dlv39-search-favorites>button>span,.dlv39-result-main>span{font-size:0!important}
+.dlv39-favorite-row>button>span>.dlv-app-icon{width:21px;height:21px}
+.dlv39-search-favorites>button>span>.dlv-app-icon{width:19px;height:19px}
+.dlv39-result-main>span>.dlv-app-icon{width:21px;height:21px}
+.dlv39-global-search>span{display:grid;place-items:center}
+.dlv39-global-search>span>.dlv-app-icon{width:20px;height:20px}
+.dlv39-fav-toggle{display:grid!important;place-items:center!important;font-size:0!important}
+.dlv39-fav-toggle>.dlv-app-icon{width:18px;height:18px}
+.dlv39-row-arrow{display:grid!important;place-items:center!important;color:var(--dlv39-muted)!important}
+.dlv39-row-arrow>.dlv-app-icon{width:17px;height:17px}
+
+/* Notification, rewards and profile hub */
+.dlv39-notification-list>button>span,.dlv39-rewards-intro>span,.dlv39-reward-grid>article>span,.dlv39-profile-menu>button>span{font-size:0!important}
+.dlv39-notification-list>button>span>.dlv-app-icon{width:20px;height:20px}
+.dlv39-rewards-intro>span>.dlv-app-icon{width:24px;height:24px}
+.dlv39-reward-grid>article>span>.dlv-app-icon{width:20px;height:20px}
+.dlv39-profile-menu>button>span>.dlv-app-icon{width:23px;height:23px}
+.dlv39-panel-head>button{display:grid!important;place-items:center!important;font-size:0!important}
+.dlv39-panel-head>button>.dlv-app-icon{width:20px;height:20px}
+.dlv39-reward-grid button b{display:inline-grid;place-items:center;vertical-align:middle}
+.dlv39-reward-grid button b>.dlv-app-icon{width:14px;height:14px}
+
+/* Official brand marks rendered directly by React in v49+. */
+.dlv37-service-logo[data-dlv49-brand-direct="true"]{position:relative;display:grid!important;place-items:center!important;overflow:hidden}
+.dlv37-service-logo[data-dlv49-brand-direct="true"]>img{display:block;width:58%!important;height:58%!important;max-width:40px;max-height:40px;object-fit:contain}
+.dlv37-service-logo[data-dlv49-brand-direct="true"]>img[hidden],.dlv37-service-logo[data-dlv49-brand-direct="true"]>.dlv37-service-fallback[hidden]{display:none!important}
+.dlv37-service-fallback{font-size:13px;font-weight:850;letter-spacing:-.03em;color:var(--accent,#6d5dfc)}
+
+@media(max-width:560px){
+  .dlv39-icon{width:32px!important;height:32px!important;border-radius:11px!important}
+  .dlv39-icon>.dlv-app-icon{width:18px;height:18px}
+  .dlv39-favorite-row>button>span>.dlv-app-icon{width:23px;height:23px}
+  .dlv39-profile-menu>button>span>.dlv-app-icon{width:24px;height:24px}
+}
