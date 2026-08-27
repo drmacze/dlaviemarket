@@ -52,6 +52,7 @@ import DLavieRefundAdminQueue from './DLavieRefundAdminQueue'
 import DLavieOrderEvidenceBridge from './DLavieOrderEvidenceBridge'
 import GoPayInspiredShell from './GoPayInspiredShell'
 import AppFlowV38 from './AppFlowV38'
+import AppSecondaryPagesV51 from './AppSecondaryPagesV51'
 import AppExperienceV39 from './AppExperienceV39'
 import AppExperienceV40 from './AppExperienceV40'
 import AppShellRouteStabilizer from './AppShellRouteStabilizer'
@@ -204,6 +205,7 @@ createRoot(document.getElementById('root')!).render(
     <App />
     <GoPayInspiredShell />
     <AppFlowV38 />
+    <AppSecondaryPagesV51 />
     <AppExperienceV39 />
     <AppExperienceV40 />
   </StrictMode>,
