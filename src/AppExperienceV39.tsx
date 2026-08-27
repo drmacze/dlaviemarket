@@ -1,12 +1,15 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
+import AppIcon, { type AppIconName } from './AppIcon'
+import './icon-system-v50.css'
 
 type Panel = 'search' | 'notifications' | 'rewards' | 'profile' | null
 type Profile = { id?: string; username?: string; email?: string; avatarId?: string }
 type HistoryItem = { id?: string; type?: string; label?: string; detail?: string; amount?: number; time?: string }
 type StoredOrder = { id: string; serviceName?: string; providerName?: string; countryName?: string; flag?: string; status?: string; expiresAt?: number; price?: number }
-type SearchItem = { id: string; name: string; subtitle: string; group: string; route: string; symbol: string }
-type Reward = { id: string; label: string; title: string; body: string; route: string; symbol: string }
+type SearchItem = { id: string; name: string; subtitle: string; group: string; route: string; icon: AppIconName }
+type Reward = { id: string; label: string; title: string; body: string; route: string; icon: AppIconName }
+type NotificationItem = { id: string; title: string; body: string; icon: AppIconName; route?: string }
 
 const PROFILE_KEY = 'dlavie-account-profile-v1'
 const HISTORY_KEY = 'dlavie-history'
@@ -19,23 +22,23 @@ const STATE_EVENT = 'dlavie:state-changed'
 const rupiah = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 })
 
 const catalog: SearchItem[] = [
-  { id: 'nokos', name: 'Nomor Virtual', subtitle: 'Nomor verifikasi & OTP', group: 'Market', route: '#/market?mode=nokos', symbol: 'OTP' },
-  { id: 'pulsa', name: 'Pulsa', subtitle: 'Isi pulsa semua operator', group: 'Produk Digital', route: '#/market?category=Pulsa', symbol: 'Rp' },
-  { id: 'data', name: 'Paket Data', subtitle: 'Kuota & paket internet', group: 'Produk Digital', route: '#/market?category=Paket%20Data', symbol: '5G' },
-  { id: 'pln', name: 'PLN', subtitle: 'Token listrik & layanan PLN', group: 'Produk Digital', route: '#/market?category=PLN', symbol: '⚡' },
-  { id: 'wallet', name: 'E-Wallet', subtitle: 'DANA, OVO, GoPay & lainnya', group: 'Produk Digital', route: '#/market?category=E-Wallet', symbol: 'W' },
-  { id: 'game', name: 'Voucher & Game', subtitle: 'Diamond, UC, voucher dan item', group: 'Produk Digital', route: '#/market?category=Voucher%20%26%20Game', symbol: '✦' },
-  { id: 'streaming', name: 'Streaming & Hiburan', subtitle: 'Voucher layanan hiburan', group: 'Produk Digital', route: '#/market?category=Streaming%20%26%20Hiburan', symbol: '▶' },
-  { id: 'activity', name: 'Aktivitas', subtitle: 'Pesanan, OTP, pembayaran & refund', group: 'Akun', route: '#/activity', symbol: '↺' },
-  { id: 'help', name: 'Bantuan', subtitle: 'FAQ dan dukungan transaksi', group: 'Akun', route: '#/help', symbol: '?' },
-  { id: 'security', name: 'Keamanan', subtitle: 'Proteksi akun & transaksi', group: 'Akun', route: '#/security', symbol: '✓' },
+  { id: 'nokos', name: 'Nomor Virtual', subtitle: 'Nomor verifikasi & OTP', group: 'Market', route: '#/market?mode=nokos', icon: 'sim' },
+  { id: 'pulsa', name: 'Pulsa', subtitle: 'Isi pulsa semua operator', group: 'Produk Digital', route: '#/market?category=Pulsa', icon: 'phone' },
+  { id: 'data', name: 'Paket Data', subtitle: 'Kuota & paket internet', group: 'Produk Digital', route: '#/market?category=Paket%20Data', icon: 'network' },
+  { id: 'pln', name: 'PLN', subtitle: 'Token listrik & layanan PLN', group: 'Produk Digital', route: '#/market?category=PLN', icon: 'bolt' },
+  { id: 'wallet', name: 'E-Wallet', subtitle: 'DANA, OVO, GoPay & lainnya', group: 'Produk Digital', route: '#/market?category=E-Wallet', icon: 'wallet' },
+  { id: 'game', name: 'Voucher & Game', subtitle: 'Diamond, UC, voucher dan item', group: 'Produk Digital', route: '#/market?category=Voucher%20%26%20Game', icon: 'game' },
+  { id: 'streaming', name: 'Streaming & Hiburan', subtitle: 'Voucher layanan hiburan', group: 'Produk Digital', route: '#/market?category=Streaming%20%26%20Hiburan', icon: 'play' },
+  { id: 'activity', name: 'Aktivitas', subtitle: 'Pesanan, OTP, pembayaran & refund', group: 'Akun', route: '#/activity', icon: 'activity' },
+  { id: 'help', name: 'Bantuan', subtitle: 'FAQ dan dukungan transaksi', group: 'Akun', route: '#/help', icon: 'help' },
+  { id: 'security', name: 'Keamanan', subtitle: 'Proteksi akun & transaksi', group: 'Akun', route: '#/security', icon: 'shield' },
 ]
 
 const rewards: Reward[] = [
-  { id: 'cheap-nokos', label: 'REKOMENDASI', title: 'Nomor virtual mulai dari pilihan termurah.', body: 'Bandingkan provider, stok, dan estimasi SMS sebelum mengaktifkan nomor.', route: '#/market?mode=nokos', symbol: 'OTP' },
-  { id: 'data-auto', label: 'FITUR', title: 'Cari paket data dari nomor.', body: 'Masukkan nomor untuk membantu mendeteksi operator, atau pilih operator secara manual.', route: '#/market?category=Paket%20Data', symbol: '5G' },
-  { id: 'game-hub', label: 'KOLEKSI', title: 'Voucher game dalam satu hub.', body: 'Buka Mobile Legends, Free Fire, PUBG, Roblox, Valorant, dan judul lain dari kategori yang sama.', route: '#/market?category=Voucher%20%26%20Game', symbol: '✦' },
-  { id: 'wallet-safe', label: 'TIPS', title: 'Periksa tujuan sebelum top up.', body: 'Buka pilihan e-wallet dan cek kembali nomor serta nominal sebelum transaksi dikirim.', route: '#/market?category=E-Wallet', symbol: 'W' },
+  { id: 'cheap-nokos', label: 'REKOMENDASI', title: 'Nomor virtual mulai dari pilihan termurah.', body: 'Bandingkan provider, stok, dan estimasi SMS sebelum mengaktifkan nomor.', route: '#/market?mode=nokos', icon: 'sim' },
+  { id: 'data-auto', label: 'FITUR', title: 'Cari paket data dari nomor.', body: 'Masukkan nomor untuk membantu mendeteksi operator, atau pilih operator secara manual.', route: '#/market?category=Paket%20Data', icon: 'network' },
+  { id: 'game-hub', label: 'KOLEKSI', title: 'Voucher game dalam satu hub.', body: 'Buka Mobile Legends, Free Fire, PUBG, Roblox, Valorant, dan judul lain dari kategori yang sama.', route: '#/market?category=Voucher%20%26%20Game', icon: 'game' },
+  { id: 'wallet-safe', label: 'TIPS', title: 'Periksa tujuan sebelum top up.', body: 'Buka pilihan e-wallet dan cek kembali nomor serta nominal sebelum transaksi dikirim.', route: '#/market?category=E-Wallet', icon: 'wallet' },
 ]
 
 function parseArray<T>(key: string): T[] {
@@ -60,12 +63,8 @@ function writeArray<T>(key: string, value: T[]) {
   localStorage.setItem(key, JSON.stringify(value))
 }
 
-function Icon({ children }: { children: ReactNode }) {
-  return <span className="dlv39-icon">{children}</span>
-}
-
-function routePage() {
-  return location.hash.replace(/^#\/?/, '').split('?')[0].toLowerCase() || 'home'
+function Icon({ name }: { name: AppIconName }) {
+  return <span className="dlv39-icon"><AppIcon name={name} /></span>
 }
 
 export default function AppExperienceV39() {
@@ -174,22 +173,28 @@ export default function AppExperienceV39() {
     return `${orderSignal}::${historySignal}`
   }, [history, orders])
 
-  const notifications = useMemo(() => {
-    const items: Array<{ id: string; title: string; body: string; symbol: string; route?: string }> = []
+  const notifications = useMemo<NotificationItem[]>(() => {
+    const items: NotificationItem[] = []
     orders.filter((item) => item.status === 'waiting' || item.status === 'received').slice(0, 3).forEach((item) => {
       items.push({
         id: `order-${item.id}`,
         title: item.status === 'received' ? `OTP ${item.serviceName || 'pesanan'} sudah masuk` : `${item.serviceName || 'Nomor virtual'} sedang menunggu SMS`,
         body: item.providerName ? `${item.providerName}${item.flag ? ` · ${item.flag}` : ''}` : 'Pantau status pesanan dari Aktivitas.',
-        symbol: item.status === 'received' ? '✓' : 'SMS',
+        icon: item.status === 'received' ? 'check' : 'message',
         route: '#/activity',
       })
     })
     history.slice(0, 2).forEach((item, index) => {
-      items.push({ id: `history-${item.id || index}`, title: item.label || 'Aktivitas terbaru', body: item.detail || item.time || 'Transaksi DLavie', symbol: item.type === 'refund' ? '↺' : item.type === 'deposit' ? '+' : '→', route: '#/activity' })
+      items.push({
+        id: `history-${item.id || index}`,
+        title: item.label || 'Aktivitas terbaru',
+        body: item.detail || item.time || 'Transaksi DLavie',
+        icon: item.type === 'deposit' ? 'deposit' : 'activity',
+        route: '#/activity',
+      })
     })
-    if (!items.length) items.push({ id: 'welcome', title: 'Semua siap digunakan', body: 'Cari produk, simpan layanan favorit, atau buka Market untuk memulai.', symbol: 'D', route: '#/market' })
-    items.push({ id: 'security', title: 'Periksa data sebelum bayar', body: 'Pastikan nomor, User ID, provider, dan nominal sudah benar sebelum konfirmasi.', symbol: '✓', route: '#/security' })
+    if (!items.length) items.push({ id: 'welcome', title: 'Semua siap digunakan', body: 'Cari produk, simpan layanan favorit, atau buka Market untuk memulai.', icon: 'spark', route: '#/market' })
+    items.push({ id: 'security', title: 'Periksa data sebelum bayar', body: 'Pastikan nomor, User ID, provider, dan nominal sudah benar sebelum konfirmasi.', icon: 'shield', route: '#/security' })
     return items
   }, [history, orders])
 
@@ -242,44 +247,59 @@ export default function AppExperienceV39() {
 
   const utilityButtons = (
     <div className="dlv39-utility-row">
-      <button type="button" onClick={() => setPanel('search')}><Icon>⌕</Icon><span>Cari</span></button>
-      <button type="button" onClick={() => setPanel('rewards')}><Icon>✦</Icon><span>Promo</span></button>
-      <button type="button" className="dlv39-notif-button" onClick={() => setPanel('notifications')}><Icon>◌</Icon><span>Inbox</span>{unreadCount > 0 && <b>{unreadCount}</b>}</button>
-      <button type="button" onClick={() => setPanel('profile')}><Icon>{initials}</Icon><span>Akun</span></button>
+      <button type="button" onClick={() => setPanel('search')}><Icon name="search" /><span>Cari</span></button>
+      <button type="button" onClick={() => setPanel('rewards')}><Icon name="spark" /><span>Promo</span></button>
+      <button type="button" className="dlv39-notif-button" onClick={() => setPanel('notifications')}><Icon name="inbox" /><span>Inbox</span>{unreadCount > 0 && <b>{unreadCount}</b>}</button>
+      <button type="button" onClick={() => setPanel('profile')}><Icon name="user" /><span>Akun</span></button>
     </div>
   )
 
   return <>
     {homeToolsHost && createPortal(utilityButtons, homeToolsHost)}
-    {routeToolsHost && createPortal(<div className="dlv39-route-utilities"><button type="button" onClick={() => setPanel('search')} aria-label="Cari semua layanan">⌕</button><button type="button" onClick={() => setPanel('rewards')} aria-label="Promo dan rekomendasi">✦</button><button className="dlv39-route-inbox" type="button" onClick={() => setPanel('notifications')} aria-label="Notifikasi">◌{unreadCount > 0 && <b>{unreadCount}</b>}</button></div>, routeToolsHost)}
-    {homeQuickHost && createPortal(<section className="dlv39-favorites-card"><div className="dlv39-section-head"><div><small>Akses cepat</small><h2>Favorit & terakhir dibuka</h2></div><button type="button" onClick={() => setPanel('search')}>Atur</button></div><div className="dlv39-favorite-row">{favoriteItems.map((item) => <button type="button" key={item.id} onClick={() => navigate(item)}><span>{item.symbol}</span><b>{item.name}</b><small>{item.subtitle}</small></button>)}</div>{recentItems.length > 0 && <div className="dlv39-recent-line"><span>Terakhir:</span>{recentItems.map((item) => <button type="button" key={item.id} onClick={() => navigate(item)}>{item.name}</button>)}</div>}</section>, homeQuickHost)}
+    {routeToolsHost && createPortal(
+      <div className="dlv39-route-utilities">
+        <button type="button" onClick={() => setPanel('search')} aria-label="Cari semua layanan"><AppIcon name="search" /></button>
+        <button type="button" onClick={() => setPanel('rewards')} aria-label="Promo dan rekomendasi"><AppIcon name="spark" /></button>
+        <button className="dlv39-route-inbox" type="button" onClick={() => setPanel('notifications')} aria-label="Notifikasi"><AppIcon name="inbox" />{unreadCount > 0 && <b>{unreadCount}</b>}</button>
+      </div>, routeToolsHost)}
+
+    {homeQuickHost && createPortal(
+      <section className="dlv39-favorites-card">
+        <div className="dlv39-section-head"><div><small>Akses cepat</small><h2>Favorit & terakhir dibuka</h2></div><button type="button" onClick={() => setPanel('search')}>Atur</button></div>
+        <div className="dlv39-favorite-row">{favoriteItems.map((item) => <button type="button" key={item.id} onClick={() => navigate(item)}><span><AppIcon name={item.icon} /></span><b>{item.name}</b><small>{item.subtitle}</small></button>)}</div>
+        {recentItems.length > 0 && <div className="dlv39-recent-line"><span>Terakhir:</span>{recentItems.map((item) => <button type="button" key={item.id} onClick={() => navigate(item)}>{item.name}</button>)}</div>}
+      </section>, homeQuickHost)}
 
     {panel && <div className="dlv39-panel-backdrop" onMouseDown={(event) => event.target === event.currentTarget && setPanel(null)}>
       <section className={`dlv39-panel dlv39-panel-${panel}`} role="dialog" aria-modal="true">
         <div className="dlv39-panel-handle" />
-        <header className="dlv39-panel-head"><div><small>DLavie Market</small><h2>{panel === 'search' ? 'Cari semua layanan' : panel === 'notifications' ? 'Notifikasi' : panel === 'rewards' ? 'Promo & rekomendasi' : 'Akun saya'}</h2></div><button type="button" onClick={() => setPanel(null)} aria-label="Tutup">×</button></header>
+        <header className="dlv39-panel-head"><div><small>DLavie Market</small><h2>{panel === 'search' ? 'Cari semua layanan' : panel === 'notifications' ? 'Notifikasi' : panel === 'rewards' ? 'Promo & rekomendasi' : 'Akun saya'}</h2></div><button type="button" onClick={() => setPanel(null)} aria-label="Tutup"><AppIcon name="close" /></button></header>
 
         {panel === 'search' && <div className="dlv39-search-view">
-          <label className="dlv39-global-search"><span>⌕</span><input autoFocus value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Cari nomor virtual, pulsa, PLN, game..." /><kbd>ESC</kbd></label>
-          {!query && favoriteItems.length > 0 && <section><div className="dlv39-subhead"><b>Favorit</b><small>Tekan ★ untuk mengubah</small></div><div className="dlv39-search-favorites">{favoriteItems.map((item) => <button key={item.id} type="button" onClick={() => navigate(item)}><span>{item.symbol}</span><b>{item.name}</b></button>)}</div></section>}
-          <div className="dlv39-search-results">{filtered.map((item) => <article key={item.id}><button className="dlv39-result-main" type="button" onClick={() => navigate(item)}><span>{item.symbol}</span><p><small>{item.group}</small><b>{item.name}</b><em>{item.subtitle}</em></p><strong>→</strong></button><button className={`dlv39-fav-toggle${favorites.includes(item.id) ? ' is-active' : ''}`} type="button" onClick={() => toggleFavorite(item.id)} aria-label={favorites.includes(item.id) ? 'Hapus favorit' : 'Tambah favorit'}>{favorites.includes(item.id) ? '★' : '☆'}</button></article>)}</div>
+          <label className="dlv39-global-search"><span><AppIcon name="search" /></span><input autoFocus value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Cari nomor virtual, pulsa, PLN, game..." /><kbd>ESC</kbd></label>
+          {!query && favoriteItems.length > 0 && <section><div className="dlv39-subhead"><b>Favorit</b><small>Gunakan bintang untuk mengubah</small></div><div className="dlv39-search-favorites">{favoriteItems.map((item) => <button key={item.id} type="button" onClick={() => navigate(item)}><span><AppIcon name={item.icon} /></span><b>{item.name}</b></button>)}</div></section>}
+          <div className="dlv39-search-results">{filtered.map((item) => <article key={item.id}><button className="dlv39-result-main" type="button" onClick={() => navigate(item)}><span><AppIcon name={item.icon} /></span><p><small>{item.group}</small><b>{item.name}</b><em>{item.subtitle}</em></p><strong className="dlv39-row-arrow"><AppIcon name="arrow" /></strong></button><button className={`dlv39-fav-toggle${favorites.includes(item.id) ? ' is-active' : ''}`} type="button" onClick={() => toggleFavorite(item.id)} aria-label={favorites.includes(item.id) ? 'Hapus favorit' : 'Tambah favorit'}><AppIcon name="star" filled={favorites.includes(item.id)} /></button></article>)}</div>
           {!filtered.length && <div className="dlv39-empty"><b>Tidak ditemukan</b><span>Coba nama produk, kategori, atau layanan lain.</span></div>}
         </div>}
 
         {panel === 'notifications' && <div className="dlv39-notification-view">
           <div className="dlv39-notification-toolbar"><span>{notifications.length} informasi terbaru</span><button type="button" onClick={markRead}>Tandai sudah dibaca</button></div>
-          <div className="dlv39-notification-list">{notifications.map((item) => <button type="button" key={item.id} onClick={() => item.route && navigate({ route: item.route })}><span>{item.symbol}</span><p><b>{item.title}</b><small>{item.body}</small></p><strong>›</strong></button>)}</div>
+          <div className="dlv39-notification-list">{notifications.map((item) => <button type="button" key={item.id} onClick={() => item.route && navigate({ route: item.route })}><span><AppIcon name={item.icon} /></span><p><b>{item.title}</b><small>{item.body}</small></p><strong className="dlv39-row-arrow"><AppIcon name="arrow" /></strong></button>)}</div>
         </div>}
 
         {panel === 'rewards' && <div className="dlv39-rewards-view">
-          <div className="dlv39-rewards-intro"><span>✦</span><div><small>DISCOVERY CENTER</small><h3>Temukan fitur dan pilihan yang relevan.</h3><p>Bagian ini menyimpan rekomendasi, bukan menjanjikan cashback atau saldo tambahan.</p></div></div>
-          <div className="dlv39-reward-grid">{rewards.map((reward) => <article key={reward.id}><span>{reward.symbol}</span><small>{reward.label}</small><h3>{reward.title}</h3><p>{reward.body}</p><div><button type="button" onClick={() => navigate({ route: reward.route, id: reward.id })}>Buka <b>→</b></button><button className={savedRewards.includes(reward.id) ? 'is-saved' : ''} type="button" onClick={() => toggleReward(reward.id)}>{savedRewards.includes(reward.id) ? 'Tersimpan' : 'Simpan'}</button></div></article>)}</div>
+          <div className="dlv39-rewards-intro"><span><AppIcon name="spark" /></span><div><small>DISCOVERY CENTER</small><h3>Temukan fitur dan pilihan yang relevan.</h3><p>Bagian ini menyimpan rekomendasi, bukan menjanjikan cashback atau saldo tambahan.</p></div></div>
+          <div className="dlv39-reward-grid">{rewards.map((reward) => <article key={reward.id}><span><AppIcon name={reward.icon} /></span><small>{reward.label}</small><h3>{reward.title}</h3><p>{reward.body}</p><div><button type="button" onClick={() => navigate({ route: reward.route, id: reward.id })}>Buka <b><AppIcon name="arrow" /></b></button><button className={savedRewards.includes(reward.id) ? 'is-saved' : ''} type="button" onClick={() => toggleReward(reward.id)}>{savedRewards.includes(reward.id) ? 'Tersimpan' : 'Simpan'}</button></div></article>)}</div>
         </div>}
 
         {panel === 'profile' && <div className="dlv39-profile-view">
           <article className="dlv39-profile-hero"><span className="dlv39-profile-avatar">{initials}</span><div><small>{profile ? 'AKUN DLAVIE' : 'MODE TAMU'}</small><h3>{profile?.username || 'Belum masuk'}</h3><p>{profile?.email || 'Masuk untuk mengelola identitas dan avatar akun.'}</p></div><button type="button" onClick={openAccount}>{profile ? 'Kelola akun' : 'Masuk / Daftar'}</button></article>
           <div className="dlv39-profile-stats"><div><small>Saldo</small><strong>{rupiah.format(balance)}</strong></div><div><small>Transaksi lokal</small><strong>{history.length}</strong></div><div><small>Favorit</small><strong>{favorites.length}</strong></div></div>
-          <div className="dlv39-profile-menu"><button type="button" onClick={() => navigate({ route: '#/activity' })}><span>↺</span><p><b>Aktivitas</b><small>Pesanan, pembayaran, OTP dan refund.</small></p><strong>›</strong></button><button type="button" onClick={() => navigate({ route: '#/security' })}><span>✓</span><p><b>Keamanan</b><small>Proteksi akun dan alur transaksi.</small></p><strong>›</strong></button><button type="button" onClick={() => navigate({ route: '#/help' })}><span>?</span><p><b>Bantuan</b><small>FAQ dan dukungan DLavie.</small></p><strong>›</strong></button></div>
+          <div className="dlv39-profile-menu">
+            <button type="button" onClick={() => navigate({ route: '#/activity' })}><span><AppIcon name="activity" /></span><p><b>Aktivitas</b><small>Pesanan, pembayaran, OTP dan refund.</small></p><strong className="dlv39-row-arrow"><AppIcon name="arrow" /></strong></button>
+            <button type="button" onClick={() => navigate({ route: '#/security' })}><span><AppIcon name="shield" /></span><p><b>Keamanan</b><small>Proteksi akun dan alur transaksi.</small></p><strong className="dlv39-row-arrow"><AppIcon name="arrow" /></strong></button>
+            <button type="button" onClick={() => navigate({ route: '#/help' })}><span><AppIcon name="help" /></span><p><b>Bantuan</b><small>FAQ dan dukungan DLavie.</small></p><strong className="dlv39-row-arrow"><AppIcon name="arrow" /></strong></button>
+          </div>
         </div>}
       </section>
     </div>}
