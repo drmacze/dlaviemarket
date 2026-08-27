@@ -146,6 +146,7 @@ import './app-polish-v44.css'
 import './app-polish-v45.css'
 import './app-polish-v45-2.css'
 import './nav-sidebar-v47.css'
+import './nav-sidebar-effects-v48.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
