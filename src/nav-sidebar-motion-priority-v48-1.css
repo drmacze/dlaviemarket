@@ -1,0 +1,104 @@
+/* DLavie v48.1 — functional sidebar motion priority.
+   This layer intentionally beats the v40 global reduce-effects wildcard so the
+   drawer never teleports into view. Decorative loops can still be reduced. */
+
+html body .utility-dock.is-open .utility-sidebar{
+  animation-name:dlv481SidebarOpen!important;
+  animation-duration:.44s!important;
+  animation-timing-function:cubic-bezier(.16,.84,.22,1)!important;
+  animation-fill-mode:both!important;
+  animation-iteration-count:1!important;
+}
+
+html body .utility-dock.is-open .utility-sidebar-backdrop{
+  animation:dlv481BackdropOpen .24s ease-out both!important;
+}
+
+html body .utility-dock.is-open .utility-account-card,
+html body .utility-dock.is-open .utility-wallet-card,
+html body .utility-dock.is-open .utility-sidebar-list,
+html body .utility-dock.is-open .utility-language-sidebar,
+html body .utility-dock.is-open .utility-sidebar-footer{
+  animation-name:dlv481ItemIn!important;
+  animation-duration:.34s!important;
+  animation-timing-function:cubic-bezier(.2,.8,.2,1)!important;
+  animation-fill-mode:both!important;
+}
+
+html body .utility-dock.is-open .utility-account-card{animation-delay:.09s!important}
+html body .utility-dock.is-open .utility-wallet-card{animation-delay:.13s!important}
+html body .utility-dock.is-open .utility-sidebar-section:nth-of-type(2) .utility-sidebar-list{animation-delay:.18s!important}
+html body .utility-dock.is-open .utility-sidebar-section:nth-of-type(3) .utility-sidebar-list{animation-delay:.22s!important}
+html body .utility-dock.is-open .utility-language-sidebar{animation-delay:.26s!important}
+html body .utility-dock.is-open .utility-sidebar-footer{animation-delay:.29s!important}
+
+@keyframes dlv481SidebarOpen{
+  0%{opacity:0;transform:translate3d(48px,0,0) scale(.978)}
+  62%{opacity:1;transform:translate3d(-5px,0,0) scale(1.002)}
+  82%{transform:translate3d(2px,0,0) scale(1)}
+  100%{opacity:1;transform:none}
+}
+
+@keyframes dlv481BackdropOpen{
+  from{opacity:0}
+  to{opacity:1}
+}
+
+@keyframes dlv481ItemIn{
+  from{opacity:0;transform:translate3d(12px,8px,0)}
+  to{opacity:1;transform:none}
+}
+
+/* App-level "Kurangi efek visual": retain a short functional slide, but remove
+   decorative/staggered motion. This is deliberately not 0.001ms. */
+html.dlv40-reduce-effects body .utility-dock.is-open .utility-sidebar{
+  animation-name:dlv481SidebarReduced!important;
+  animation-duration:.24s!important;
+  animation-timing-function:cubic-bezier(.2,.76,.25,1)!important;
+}
+
+html.dlv40-reduce-effects body .utility-dock.is-open .utility-sidebar-backdrop{
+  animation:dlv481BackdropOpen .16s ease-out both!important;
+}
+
+html.dlv40-reduce-effects body .utility-dock.is-open .utility-account-card,
+html.dlv40-reduce-effects body .utility-dock.is-open .utility-wallet-card,
+html.dlv40-reduce-effects body .utility-dock.is-open .utility-sidebar-list,
+html.dlv40-reduce-effects body .utility-dock.is-open .utility-language-sidebar,
+html.dlv40-reduce-effects body .utility-dock.is-open .utility-sidebar-footer,
+html.dlv40-reduce-effects body .utility-dock.is-open .utility-sidebar-section-title{
+  animation:none!important;
+  opacity:1!important;
+  transform:none!important;
+}
+
+@keyframes dlv481SidebarReduced{
+  from{opacity:.45;transform:translate3d(24px,0,0) scale(.99)}
+  to{opacity:1;transform:none}
+}
+
+/* OS-level Reduce Motion is still respected. A tiny opacity crossfade prevents
+   a harsh visual pop without spatial movement. */
+@media(prefers-reduced-motion:reduce){
+  html body .utility-dock.is-open .utility-sidebar{
+    animation:dlv481AccessibleFade .14s ease-out both!important;
+  }
+  html body .utility-dock.is-open .utility-sidebar-backdrop{
+    animation:dlv481BackdropOpen .12s ease-out both!important;
+  }
+  html body .utility-dock.is-open .utility-account-card,
+  html body .utility-dock.is-open .utility-wallet-card,
+  html body .utility-dock.is-open .utility-sidebar-list,
+  html body .utility-dock.is-open .utility-language-sidebar,
+  html body .utility-dock.is-open .utility-sidebar-footer,
+  html body .utility-dock.is-open .utility-sidebar-section-title{
+    animation:none!important;
+    opacity:1!important;
+    transform:none!important;
+  }
+}
+
+@keyframes dlv481AccessibleFade{
+  from{opacity:.65}
+  to{opacity:1}
+}
