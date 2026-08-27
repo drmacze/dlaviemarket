@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import './nav-sidebar-state-v49.css'
 
 type Language = 'id' | 'en'
 type StoredProfile = { username?: string; email?: string; avatarId?: string }
@@ -52,6 +53,7 @@ export default function NavUtilityMenu() {
   const [balance, setBalance] = useState(() => Number(localStorage.getItem(BALANCE_KEY) || 0))
   const [hour, setHour] = useState(() => new Date().getHours())
   const rootRef = useRef<HTMLDivElement>(null)
+  const sidebarRef = useRef<HTMLElement>(null)
 
   const greeting = useMemo(() => greetingFor(language, hour), [language, hour])
   const accountName = profile?.username || (language === 'en' ? 'Guest account' : 'Akun tamu')
@@ -120,8 +122,13 @@ export default function NavUtilityMenu() {
   }, [greeting])
 
   useEffect(() => {
+    sidebarRef.current?.toggleAttribute('inert', !open)
+    document.documentElement.classList.toggle('utility-sidebar-open', open)
+    return () => document.documentElement.classList.remove('utility-sidebar-open')
+  }, [open])
+
+  useEffect(() => {
     if (!open) return
-    document.documentElement.classList.add('utility-sidebar-open')
     const closeOutside = (event: PointerEvent) => {
       const target = event.target as Node
       if (!rootRef.current?.contains(target)) setOpen(false)
@@ -132,7 +139,6 @@ export default function NavUtilityMenu() {
     document.addEventListener('pointerdown', closeOutside)
     document.addEventListener('keydown', closeEscape)
     return () => {
-      document.documentElement.classList.remove('utility-sidebar-open')
       document.removeEventListener('pointerdown', closeOutside)
       document.removeEventListener('keydown', closeEscape)
     }
@@ -140,27 +146,27 @@ export default function NavUtilityMenu() {
 
   const openProfile = () => {
     setOpen(false)
-    document.querySelector<HTMLButtonElement>('.avatar-button')?.click()
+    window.setTimeout(() => document.querySelector<HTMLButtonElement>('.avatar-button')?.click(), 180)
   }
 
   const openWallet = () => {
     setOpen(false)
-    document.querySelector<HTMLButtonElement>('.balance-pill')?.click()
+    window.setTimeout(() => document.querySelector<HTMLButtonElement>('.balance-pill')?.click(), 180)
   }
 
   const openAppearance = () => {
     setOpen(false)
-    window.setTimeout(() => document.querySelector<HTMLButtonElement>('.theme-trigger')?.click(), 20)
+    window.setTimeout(() => document.querySelector<HTMLButtonElement>('.theme-trigger')?.click(), 190)
   }
 
   const openMusic = () => {
     setOpen(false)
-    window.setTimeout(() => document.querySelector<HTMLButtonElement>('.ambient-trigger')?.click(), 20)
+    window.setTimeout(() => document.querySelector<HTMLButtonElement>('.ambient-trigger')?.click(), 190)
   }
 
   const navigate = (route: string) => {
     setOpen(false)
-    window.location.hash = route
+    window.setTimeout(() => { window.location.hash = route }, 180)
   }
 
   const changeLanguage = (next: Language) => {
@@ -170,81 +176,92 @@ export default function NavUtilityMenu() {
     window.location.reload()
   }
 
+  const refreshSummary = () => {
+    setProfile(readProfile())
+    setBalance(Number(localStorage.getItem(BALANCE_KEY) || 0))
+  }
+
   return (
     <div className={`utility-dock${open ? ' is-open' : ''}`} ref={rootRef}>
-      <button className="utility-trigger" type="button" onClick={() => { setOpen((value) => !value); setProfile(readProfile()); setBalance(Number(localStorage.getItem(BALANCE_KEY) || 0)) }} aria-expanded={open} aria-label={labels.menu}>
+      <button className="utility-trigger" type="button" onClick={() => { refreshSummary(); setOpen((value) => !value) }} aria-expanded={open} aria-label={labels.menu}>
         <MenuIcon name="menu" />
       </button>
 
-      {open && <div className="utility-sidebar-backdrop" onPointerDown={() => setOpen(false)} aria-hidden="true" />}
+      <div className="utility-sidebar-backdrop" data-state={open ? 'open' : 'closed'} onPointerDown={() => setOpen(false)} aria-hidden="true" />
 
-      {open && (
-        <aside className="utility-sidebar" role="dialog" aria-modal="true" aria-label={labels.menu}>
-          <header className="utility-sidebar-head">
-            <div className="utility-sidebar-brand">
-              <span className="utility-sidebar-brandmark">D</span>
-              <span><strong>DLavie Market</strong><small>{greeting} · {labels.status}</small></span>
-            </div>
-            <button className="utility-sidebar-close" type="button" onClick={() => setOpen(false)} aria-label={labels.close}><MenuIcon name="close" /></button>
-          </header>
-
-          <div className="utility-sidebar-scroll">
-            <section className="utility-account-summary" aria-label={labels.account}>
-              <button className="utility-account-card" type="button" onClick={openProfile}>
-                <span className="utility-account-avatar">{initials}</span>
-                <span className="utility-account-copy"><small>{labels.account}</small><strong>{accountName}</strong><em>{accountSub}</em></span>
-                <span className="utility-account-action">{labels.profile}<MenuIcon name="chevron" /></span>
-              </button>
-
-              <button className="utility-wallet-card" type="button" onClick={openWallet}>
-                <span className="utility-wallet-icon"><MenuIcon name="wallet" /></span>
-                <span><small>{labels.wallet}</small><strong>{rupiah.format(balance)}</strong></span>
-                <span className="utility-wallet-action">{labels.walletAction}<MenuIcon name="chevron" /></span>
-              </button>
-            </section>
-
-            <section className="utility-sidebar-section">
-              <div className="utility-sidebar-section-title"><span>{labels.navigation}</span><i /></div>
-              <div className="utility-sidebar-list">
-                <button className="utility-sidebar-row" type="button" onClick={() => navigate('#/activity')}>
-                  <span className="utility-row-icon"><MenuIcon name="activity" /></span><span className="utility-row-copy"><strong>{labels.activity}</strong><small>{labels.activitySub}</small></span><MenuIcon name="chevron" />
-                </button>
-                <button className="utility-sidebar-row" type="button" onClick={() => navigate('#/security')}>
-                  <span className="utility-row-icon"><MenuIcon name="shield" /></span><span className="utility-row-copy"><strong>{labels.security}</strong><small>{labels.securitySub}</small></span><MenuIcon name="chevron" />
-                </button>
-                <button className="utility-sidebar-row" type="button" onClick={() => navigate('#/help')}>
-                  <span className="utility-row-icon"><MenuIcon name="help" /></span><span className="utility-row-copy"><strong>{labels.help}</strong><small>{labels.helpSub}</small></span><MenuIcon name="chevron" />
-                </button>
-              </div>
-            </section>
-
-            <section className="utility-sidebar-section">
-              <div className="utility-sidebar-section-title"><span>{labels.preferences}</span><i /></div>
-              <div className="utility-sidebar-list">
-                <button className="utility-sidebar-row" type="button" onClick={openAppearance}>
-                  <span className="utility-row-icon"><MenuIcon name="appearance" /></span><span className="utility-row-copy"><strong>{labels.appearance}</strong><small>{labels.appearanceSub}</small></span><MenuIcon name="chevron" />
-                </button>
-                <button className="utility-sidebar-row" type="button" onClick={openMusic}>
-                  <span className="utility-row-icon"><MenuIcon name="music" /></span><span className="utility-row-copy"><strong>{labels.music}</strong><small>{labels.musicSub}</small></span><MenuIcon name="chevron" />
-                </button>
-              </div>
-            </section>
-
-            <section className="utility-language utility-language-sidebar">
-              <div className="utility-language-head">
-                <span className="utility-row-icon"><MenuIcon name="language" /></span>
-                <span><strong>{labels.language}</strong><small>{language === 'id' ? 'Bahasa Indonesia' : 'International · English'}</small></span>
-              </div>
-              <div className="utility-language-toggle" role="group" aria-label={labels.language}>
-                <button type="button" className={language === 'id' ? 'active' : ''} onClick={() => changeLanguage('id')}><b>ID</b><span>{labels.id}</span></button>
-                <button type="button" className={language === 'en' ? 'active' : ''} onClick={() => changeLanguage('en')}><b>EN</b><span>{labels.en}<small>{labels.international}</small></span></button>
-              </div>
-            </section>
+      <aside
+        ref={sidebarRef}
+        className="utility-sidebar"
+        data-state={open ? 'open' : 'closed'}
+        role="dialog"
+        aria-modal={open ? 'true' : undefined}
+        aria-hidden={!open}
+        aria-label={labels.menu}
+      >
+        <header className="utility-sidebar-head">
+          <div className="utility-sidebar-brand">
+            <span className="utility-sidebar-brandmark">D</span>
+            <span><strong>DLavie Market</strong><small>{greeting} · {labels.status}</small></span>
           </div>
+          <button className="utility-sidebar-close" type="button" onClick={() => setOpen(false)} aria-label={labels.close}><MenuIcon name="close" /></button>
+        </header>
 
-          <footer className="utility-sidebar-footer"><span className="utility-sidebar-footer-dot" /><span>DLavie Market</span><small>Secure digital commerce interface</small></footer>
-        </aside>
-      )}
+        <div className="utility-sidebar-scroll">
+          <section className="utility-account-summary" aria-label={labels.account}>
+            <button className="utility-account-card" type="button" onClick={openProfile}>
+              <span className="utility-account-avatar">{initials}</span>
+              <span className="utility-account-copy"><small>{labels.account}</small><strong>{accountName}</strong><em>{accountSub}</em></span>
+              <span className="utility-account-action">{labels.profile}<MenuIcon name="chevron" /></span>
+            </button>
+
+            <button className="utility-wallet-card" type="button" onClick={openWallet}>
+              <span className="utility-wallet-icon"><MenuIcon name="wallet" /></span>
+              <span><small>{labels.wallet}</small><strong>{rupiah.format(balance)}</strong></span>
+              <span className="utility-wallet-action">{labels.walletAction}<MenuIcon name="chevron" /></span>
+            </button>
+          </section>
+
+          <section className="utility-sidebar-section">
+            <div className="utility-sidebar-section-title"><span>{labels.navigation}</span><i /></div>
+            <div className="utility-sidebar-list">
+              <button className="utility-sidebar-row" type="button" onClick={() => navigate('#/activity')}>
+                <span className="utility-row-icon"><MenuIcon name="activity" /></span><span className="utility-row-copy"><strong>{labels.activity}</strong><small>{labels.activitySub}</small></span><MenuIcon name="chevron" />
+              </button>
+              <button className="utility-sidebar-row" type="button" onClick={() => navigate('#/security')}>
+                <span className="utility-row-icon"><MenuIcon name="shield" /></span><span className="utility-row-copy"><strong>{labels.security}</strong><small>{labels.securitySub}</small></span><MenuIcon name="chevron" />
+              </button>
+              <button className="utility-sidebar-row" type="button" onClick={() => navigate('#/help')}>
+                <span className="utility-row-icon"><MenuIcon name="help" /></span><span className="utility-row-copy"><strong>{labels.help}</strong><small>{labels.helpSub}</small></span><MenuIcon name="chevron" />
+              </button>
+            </div>
+          </section>
+
+          <section className="utility-sidebar-section">
+            <div className="utility-sidebar-section-title"><span>{labels.preferences}</span><i /></div>
+            <div className="utility-sidebar-list">
+              <button className="utility-sidebar-row" type="button" onClick={openAppearance}>
+                <span className="utility-row-icon"><MenuIcon name="appearance" /></span><span className="utility-row-copy"><strong>{labels.appearance}</strong><small>{labels.appearanceSub}</small></span><MenuIcon name="chevron" />
+              </button>
+              <button className="utility-sidebar-row" type="button" onClick={openMusic}>
+                <span className="utility-row-icon"><MenuIcon name="music" /></span><span className="utility-row-copy"><strong>{labels.music}</strong><small>{labels.musicSub}</small></span><MenuIcon name="chevron" />
+              </button>
+            </div>
+          </section>
+
+          <section className="utility-language utility-language-sidebar">
+            <div className="utility-language-head">
+              <span className="utility-row-icon"><MenuIcon name="language" /></span>
+              <span><strong>{labels.language}</strong><small>{language === 'id' ? 'Bahasa Indonesia' : 'International · English'}</small></span>
+            </div>
+            <div className="utility-language-toggle" role="group" aria-label={labels.language}>
+              <button type="button" className={language === 'id' ? 'active' : ''} onClick={() => changeLanguage('id')}><b>ID</b><span>{labels.id}</span></button>
+              <button type="button" className={language === 'en' ? 'active' : ''} onClick={() => changeLanguage('en')}><b>EN</b><span>{labels.en}<small>{labels.international}</small></span></button>
+            </div>
+          </section>
+        </div>
+
+        <footer className="utility-sidebar-footer"><span className="utility-sidebar-footer-dot" /><span>DLavie Market</span><small>Secure digital commerce interface</small></footer>
+      </aside>
     </div>
   )
 }
